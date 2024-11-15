@@ -1,0 +1,182 @@
+﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.EventosAdminGetViewModel>
+@{
+    Layout = "~/Views/Shared/Layout_admin.cshtml";
+    ViewData["Title"] = "Eventos";
+}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+    body {
+        background-color: #333333 !important;
+    }
+
+    .list-group-item {
+        padding: 20px 30px; /* Aumenta el espaciado interno para hacer los botones más grandes */
+        border: none; /* Elimina el borde de los elementos de lista */
+        background-color: #343a40; /* Color de fondo gris para los botones */
+        transition: background 0.2s; /* Transición suave para el color de fondo al pasar el mouse */
+        font-size: 1.2rem; /* Aumenta el tamaño de la fuente para mayor legibilidad */
+        border-radius: 8px; /* Bordes redondeados para un aspecto más moderno */
+    }
+
+</style>
+
+<h1 style="color: white">Eventos</h1>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nuevo EVENTO</a>
+</p>
+
+<div class="container mt-4">
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-dark">
+            <thead class="thead-light">
+                <tr>
+                    <th>Fecha de creación</th>
+                    <th>Titulo</th>
+                    <th>Descripción</th>
+                    <th>Correo</th>
+                    <th>Celular</th>
+                    <th>Fecha</th>
+                    <th>Hora de Inicio</th>
+                    <th>Hora de finalización</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.FechaEvento.ToString(" HH:mm - dd/MM/yyyy")</td>
+                        <td>@item.NombreEvento</td>
+                        <td>@item.DescripcionEvento</td>
+                        <td>@item.CorreoClienteEvento</td>
+                        <td>@item.TelefonoClienteEvento</td>
+                        <td>@item.FechaHorario.ToString("dd-MM-yyyy")</td>
+                        <td>@item.HoraInicio.ToString("HH\\:mm")</td>
+                        <td>@item.HoraFin.ToString("HH\\:mm")</td>
+                        <td>@item.NombreEstadoReserva</td>
+                        <td>
+
+                            <!-- Botón Cancelar (solo visible si el estado es CONFIRMADA) -->
+                            @if (item.NombreEstadoReserva == "CONFIRMADA")
+                            {
+                                <!-- Botón Cancelar -->
+                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
+                                        data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                        data-inicio="@item.HoraInicio.ToString("HH\\:mm")"
+                                        data-fin="@item.HoraFin.ToString("HH\\:mm")"
+                                        data-id="@item.IdEvento">
+                                    Cancelar
+                                </button>
+                            }
+                            <!-- Botón Eliminar (solo visible si el estado es PENDIENTE o CANCELADA) -->
+                            @if (item.NombreEstadoReserva != "CONFIRMADA")
+                            {
+                                <!-- Botón ELIMINAR -->
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+                                        data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                        data-inicio="@item.HoraInicio.ToString("HH\\:mm")"
+                                        data-fin="@item.HoraFin.ToString("HH\\:mm")"
+                                        data-id="@item.IdEvento">
+                                    Eliminar
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal de Cancelación -->
+<div class="modal fade" id="confirmCancelModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="color: black" id="confirmCancelModalLabel">Detalles</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" style="color: black;">
+                <strong>Detalles del evento:</strong><br><strong>Fecha:</strong> <span id="ObjectFechaCancel"></span><br><strong>Horario:</strong> <span id="ObjectHoraCancel"></span><br><strong>¿Seguro que deseas cancelar este evento?</strong>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <form id="cancelForm" method="post" asp-action="Cancel">
+                    <input type="hidden" name="id" id="cancelId" />
+                    <button type="submit" class="btn btn-danger">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal de Eliminación -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="color: black" id="confirmCancelModalLabel">Detalles</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" style="color: black;">
+                <strong>Detalles del evento:</strong><br><strong>Fecha:</strong> <span id="ObjectFechaDelete"></span><br><strong>Horario:</strong> <span id="ObjectHoraDelete"></span><br><strong>¿Seguro que deseas eliminar este evento?</strong>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <form id="deleteForm" method="post" asp-action="Delete">
+                    <input type="hidden" name="id" id="deleteId" />
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    var confirmCancelModal = document.getElementById('confirmCancelModal');
+
+    confirmCancelModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var objectId = button.getAttribute('data-id');  // Obtener el ID del evento
+        var objectFecha = button.getAttribute('data-fecha');
+        var objectHoraInicio = button.getAttribute('data-inicio');
+        var objectHoraFin = button.getAttribute('data-fin');
+        var inputId = document.getElementById('cancelId');  // El input oculto en el formulario
+
+        // Actualizamos los detalles en el modal de cancelación
+        var objectFechaSpan = document.getElementById('ObjectFechaCancel');
+        var objectHoraSpan = document.getElementById('ObjectHoraCancel');
+        objectFechaSpan.textContent = objectFecha;
+        objectHoraSpan.textContent = objectHoraInicio + ' a ' + objectHoraFin + 'hs';
+        // Establecer los valores en los elementos del modal
+        inputId.value = objectId;  // Asignar el ID al campo oculto
+
+    });
+
+    // Modal de Eliminación
+    var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+    confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var objectId = button.getAttribute('data-id');  // Obtener el ID del evento
+        var objectFecha = button.getAttribute('data-fecha');
+        var objectHoraInicio = button.getAttribute('data-inicio');
+        var objectHoraFin = button.getAttribute('data-fin');
+        var inputId = document.getElementById('deleteId');  // El input oculto en el formulario de eliminación
+
+        // Actualizamos los detalles en el modal de eliminación
+        var objectFechaSpan = document.getElementById('ObjectFechaDelete');
+        var objectHoraSpan = document.getElementById('ObjectHoraDelete');
+        objectFechaSpan.textContent = objectFecha;
+        objectHoraSpan.textContent = objectHoraInicio + ' a ' + objectHoraFin + 'hs';
+
+        // Establecer el ID en el campo oculto
+        inputId.value = objectId;
+    });
+
+</script>

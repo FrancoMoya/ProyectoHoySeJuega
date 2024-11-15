@@ -1,0 +1,82 @@
+﻿@model ProyectoHsj_Beta.Models.Usuario;
+@{
+    Layout = null; // Esto elimina el layout para que no se muestre la navbar
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <title>Mi Perfil</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3>Mi Perfil</h3>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="NombreUsuario" class="form-label">Nombre de Usuario</label>
+                                <input type="text" class="form-control" id="NombreUsuario" value="@Model.NombreUsuario" readonly />
+                            </div>
+                            <div class="mb-3">
+                                <label for="ApellidoUsuario" class="form-label">Apellido de Usuario</label>
+                                <input type="text" class="form-control" id="ApellidoUsuario" value="@Model.ApellidoUsuario" readonly />
+                            </div>
+                            <div class="mb-3">
+                                <label for="CorreoUsuario" class="form-label">Correo Electrónico</label>
+                                <input type="email" class="form-control" id="CorreoUsuario" value="@Model.CorreoUsuario" readonly />
+                            </div>
+                            <div class="mb-3">
+                                <label for="ContraseniaUsuario" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="ContraseniaUsuario" value="********" readonly />
+                                <small class="form-text text-muted">La contraseña está encriptada y no es visible.</small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="TelefonoUsuario" class="form-label">Teléfono</label>
+                                <input type="text" class="form-control" id="TelefonoUsuario" value="@Model.TelefonoUsuario" readonly />
+                            </div>
+                            <div class="mb-3 text-center">
+
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">Cambiar contraseña</button>
+                            </div>
+                        </form>
+                        <!-- Botón para volver al Home -->
+                        <div class="text-center mt-4">
+                            <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">Volver al inicio</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Resetear Contraseña -->
+    <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resetPasswordModalLabel">Cambiar Contraseña</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas cambiar la contraseña?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <a href="@Url.Action("ForgotPassword", "Account", new { id = Model.IdUsuario })" class="btn btn-primary">Confirmar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>

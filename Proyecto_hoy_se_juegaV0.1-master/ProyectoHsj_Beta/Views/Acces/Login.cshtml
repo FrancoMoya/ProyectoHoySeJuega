@@ -1,0 +1,89 @@
+﻿@model ProyectoHsj_Beta.ViewsModels.LoginVM;
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Iniciar Sesión</title>
+</head>
+<body>
+    <div class="container">
+        <section> class="d-flex align-items-center justify-content-center min-vh-100"
+                
+            <div class="row d-flex justify-content-center align-items-center w-100">
+                <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+                    <div class="card" style="border-radius: 15px;">
+                        <div class="card-body p-5">
+                            <h2 class="text-uppercase text-center mb-5">Iniciar Sesión</h2>
+
+                            <form asp-controller="Acces" asp-action="Login" method="post">
+                                <div class="form-outline mb-4">
+                                    <input type="email" class="form-control form-control-user"
+                                           placeholder="Correo electrónico" required asp-for="CorreoUsuario" />
+                                </div>
+
+                                <div class="form-outline mb-4">
+                                    <input type="password" class="form-control form-control-user"
+                                           placeholder="Contraseña" required asp-for="ContraseniaUsuario" />
+                                </div>
+
+                                <div class="d-flex justify-content-center">
+                                    <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">
+                                        Iniciar Sesión
+                                    </button>
+                                </div>
+
+                                @if (ViewData["ShowResendLink"] != null && (bool)ViewData["ShowResendLink"])
+                                {
+                                    <p class="text-center mt-3">¿No has confirmado tu correo? <a href="@Url.Action("resendEmail", "Acces", new { email = Model.CorreoUsuario })">Reenviar correo de confirmación</a></p>
+                                }
+
+                                @if (ViewData["Message"] != null)
+                                {
+                                    <div class="alert alert-danger mt-3" role="alert">
+                                        @ViewData["Message"]
+                                    </div>
+                                }
+
+                                <div class="google-login-box mt-4">
+                                    <a href="/Acces/GoogleLogin" class="d-flex align-items-center justify-content-center p-2">
+                                        <img src="~/css/img/google.jpeg" alt="Google Logo" style="width: 25px; height: 25px; margin-right: 10px;">
+                                        <span style="font-size: 1em;">Acceso rápido con Google</span>
+                                    </a>
+                                </div>
+
+                                <p class="text-center text-muted mt-4 mb-0">
+                                    ¿No tienes una cuenta? <a class="fw-bold text-body" asp-controller="Acces" asp-action="Signup"><u>Registrar aquí</u></a>
+                                </p>
+
+                                <p class="text-center text-muted mt-2 mb-0">
+                                    ¿Olvidaste tu contraseña? <a class="fw-bold text-body" asp-controller="Account" asp-action="ForgotPassword"><u>Recuperar contraseña</u></a>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <style>
+        .google-login-box {
+            width: 260px;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+            .google-login-box a {
+                color: #000;
+                text-decoration: none;
+            }
+
+                .google-login-box a:hover {
+                    text-decoration: underline;
+                }
+    </style>
+</body>
+</html>

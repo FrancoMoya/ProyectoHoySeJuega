@@ -1,0 +1,53 @@
+﻿@model ProyectoHsj_Beta.ViewsModels.RolCreateViewModel
+
+@{
+    ViewData["Title"] = "Create";
+
+    Layout = "~/Views/Shared/Layout_admin.cshtml";
+}
+
+@using (Html.BeginForm("Create", "Rols", FormMethod.Post))
+
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        Nombre del nuevo rol:
+        @Html.TextBoxFor(model => model.NombreRol, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="permisosSeleccionados">Selecciona Permisos:</label>
+        @if (Model.PermisosDisponibles != null && Model.PermisosDisponibles.Any())
+
+        {
+            <div>
+                @foreach (var permiso in Model.PermisosDisponibles)
+
+                {
+                    <div class="form-check">
+                        <input type="checkbox"
+                               class="form-check-input"
+                               id="permiso_@permiso.Value"
+                               name="PermisosSeleccionados"
+                               value="@permiso.Value"
+                        @(Model.PermisosSeleccionados.Contains(int.Parse(permiso.Value)) ? "checked" : "") />
+                        <label class="form-check-label" for="permiso_@permiso.Value">@permiso.Text</label>
+                    </div>
+                }
+            </div>
+        }
+
+        else
+
+        {
+            <p>No hay permisos disponibles.</p>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary">Crear Rol</button>
+}
+
+
+
+

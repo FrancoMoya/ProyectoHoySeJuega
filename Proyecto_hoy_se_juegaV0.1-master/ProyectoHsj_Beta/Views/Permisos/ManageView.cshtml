@@ -1,0 +1,72 @@
+﻿@model IEnumerable<ProyectoHsj_Beta.Models.Permiso>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/Layout_admin.cshtml";
+}
+<h2>PERMISOS</h2>
+<a asp-controller="Permisos"  asp-action="Create" class="btn btn-primary">Crear Nuevo Permiso</a>
+<a asp-controller="Permisos" asp-action="AsignarPermisosARol" asp-route-idRol="1" class="btn btn-success">Asignar Permisos a Rol</a>
+<table class="table table-striped table-bordered table-dark">
+    <thead class="thead-light">
+        <tr>
+            <th>Nombre Permiso</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var permiso in Model)
+            {
+                <tr>
+                    <td>@permiso.NombrePermiso</td>
+                    <td>
+                        <a asp-action="Editar" asp-route-id="@permiso.IdPermiso" class="btn btn-warning btn-sm">Editar</a>
+
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@permiso.IdPermiso">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="2" class="text-center">No se encontraron permisos.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title bg-color" style="color: black" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body bg-color" style="color: black;">
+                ¿Estás seguro de que deseas eliminar este permiso?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteForm" method="post" asp-action="Delete">
+                    <input type="hidden" name="id" id="permisoId" />
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Este script captura el ID del permiso y lo coloca en el modal
+    var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+    confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget; // Botón que disparó el modal
+        var permisoId = button.getAttribute('data-id'); // Extraer el ID del permiso
+        var inputPermisoId = document.getElementById('permisoId'); // Campo oculto en el form del modal
+        inputPermisoId.value = permisoId; // Asignar el ID al campo oculto
+    });
+</script>

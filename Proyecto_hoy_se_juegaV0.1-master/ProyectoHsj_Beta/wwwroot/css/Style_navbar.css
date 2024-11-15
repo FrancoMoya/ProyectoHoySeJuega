@@ -1,0 +1,45 @@
+﻿/* Contenedor principal del navbar */
+.container-center {
+    width: 80%; /* Ajusta según sea necesario */
+    margin: 0 auto; /* Centra el contenedor horizontalmente */
+    display: flex;
+    justify-content: center; /* Centra el navbar horizontalmente */
+}
+
+.lg {
+    color: green;
+    text-decoration: none; /* Elimina el subrayado del enlace */
+}
+
+/* Estilo del navbar */
+.navbar {
+    display: flex; /* Usa flexbox para alinear los ítems del navbar en una sola línea */
+    justify-content: center; /* Centra los ítems dentro del navbar */
+    background-color: #000000; /* Color de fondo del navbar */
+    border-radius: 50px; /* Bordes redondeados en todo el navbar */
+    width: auto; /* El ancho se ajusta automáticamente al contenido */
+    padding: 0.5rem 1rem; /* Espaciado interno para hacer el navbar más visible */
+}
+
+/* Estilo de los enlaces dentro del navbar */
+.navbar-nav {
+    display: flex; /* Usa flexbox para alinear los ítems del navbar en una sola línea */
+    list-style-type: none; /* Elimina los puntos de lista por defecto */
+    margin: 0; /* Elimina el margen por defecto */
+    padding: 0; /* Elimina el padding por defecto */
+}
+
+.nav-item {
+    margin-left: 10px; /* Espacio entre ítems */
+    margin-right: 10px;
+}
+
+.nav-link {
+    color: #ffffff; /* Color del texto de los enlaces */
+    text-decoration: none; /* Elimina el subrayado de los enlaces */
+    padding: 0.5rem 1rem; /* Espaciado interno de los enlaces */
+}
+
+    .nav-link:hover {
+        background-color: aqua;
+    }

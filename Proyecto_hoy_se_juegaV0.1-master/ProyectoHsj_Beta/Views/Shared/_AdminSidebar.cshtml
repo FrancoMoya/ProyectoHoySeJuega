@@ -1,0 +1,138 @@
+﻿<!-- _AdminSidebar.cshtml -->
+<!-- _AdminSidebar.cshtml -->
+<div class="sidebar">
+    <!-- Encabezado de la barra lateral -->
+    <div class="sidebar-heading">
+        <a href="~/">
+            <img src="~/css/img/hoysejuegaa.png" alt="Logo" class="sidebar-logo" />
+        </a>
+    </div>
+    <ul class="list-group list-group-flush">
+        <!-- Elemento de lista para "Inicio" 
+        <li class="list-group-item">
+            <a class="link-no-style" asp-controller="Home" asp-action="Index">
+                <i class="fas fa-home"></i> Inicio
+            </a>
+        </li>
+        -->
+        <li class="list-group-item">
+            <a class="link-no-style" asp-controller="Horario" asp-action="ManageView">
+                <i class="fas fa-users"></i> Horarios
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a class="link-no-style" asp-controller="Admin" asp-action="Index">
+                <i class="fas fa-users"></i> Reservas
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a class="link-no-style" asp-controller="Evento" asp-action="Index">
+                <i class="fas fa-users"></i> Eventos
+            </a>
+        </li>
+        <!-- Elemento de lista para "Roles" -->
+        <li class="list-group-item">
+            <a class="link-no-style" asp-area="" asp-controller="Rols" asp-action="Index">
+                <i class="fas fa-user-shield"></i> Roles
+            </a>
+        </li>
+        <!-- Elemento de lista para "Usuarios" -->
+        <li class="list-group-item">
+            <a class="link-no-style" asp-controller="Usuarios" asp-action="Index">
+                <i class="fas fa-users"></i> Usuarios
+            </a>
+        </li>
+        <!-- Elemento de lista para "Estadísticas" -->
+        <li class="list-group-item">
+            <a class="link-no-style" asp-controller="Home" asp-action="Admin_home">
+                <i class="fas fa-chart-line"></i> Estadísticas
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a class="link-no-style" asp-controller="ConfiguracionPago" asp-action="Index">
+                <i class="fas fa-users"></i> Monto Pago
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a class="link-no-style" asp-controller="Auditoria" asp-action="Index">
+                <i class="fas fa-lock"></i> Auditoría
+            </a>
+        </li>
+        @*<!-- Condición para mostrar "Permisos" solo si el usuario tiene el rol correspondiente -->
+        @if (User.IsInRole("2"))
+        {
+            <li class="list-group-item">
+                <a class="link-no-style" asp-controller="Permisos" asp-action="ManageView">
+                    <i class="fas fa-lock"></i> Permisos
+                </a>
+            </li>
+        }*@
+    </ul>
+</div>
+
+<style>
+    .sidebar {
+        width: 250px; /* Ancho de la barra lateral */
+        background-color: #343a40; /* Color de fondo de la barra lateral */
+        color: white; /* Color del texto */
+        height: 100vh; /* Altura de la barra lateral para ocupar toda la pantalla */
+        position: fixed; /* Fija la barra lateral a la izquierda */
+        padding: 20px; /* Espaciado interno */
+        transition: width 0.3s; /* Transición suave al cambiar el ancho */
+    }
+
+    .sidebar-heading {
+        display: flex; /* Utiliza flexbox para alinear el logo y el título */
+        align-items: center; /* Centra verticalmente los elementos dentro de la barra lateral */
+        justify-content: center; /* Centra horizontalmente el contenido */
+        margin-bottom: 20px; /* Espacio inferior para separar el encabezado de la lista */
+        background-color: #6c757d; /* Cambia el color de fondo a gris */
+        padding: 10px 15px; /* Agrega padding para mayor espacio interno */
+        border-radius: 8px; /* Bordes redondeados para un aspecto más moderno */
+        font-size: 0.6rem; /* Ajusta el tamaño de la fuente a más pequeño */
+        color: white; /* Color del texto */
+        border: 1px solid #5a6268; /* Añade un borde oscuro */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Añade sombra para el efecto de tecla */
+        cursor: pointer; /* Cambia el cursor a puntero para indicar que es clickeable */
+        transition: background 0.2s, box-shadow 0.2s; /* Transiciones suaves para efectos de hover */
+    }
+
+        .sidebar-heading:hover {
+            background-color: #5a6268; /* Cambia el fondo al pasar el mouse */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Aumenta la sombra al pasar el mouse */
+        }
+
+
+
+    .sidebar-logo {
+        width: 40px; /* Ancho del logo */
+        margin-right: 10px; /* Espacio a la derecha del logo */
+    }
+
+    .list-group-item {
+        padding: 20px 30px; /* Aumenta el espaciado interno para hacer los botones más grandes */
+        border: none; /* Elimina el borde de los elementos de lista */
+        background-color: #343a40; /* Color de fondo gris para los botones */
+        transition: background 0.2s; /* Transición suave para el color de fondo al pasar el mouse */
+        font-size: 1.2rem; /* Aumenta el tamaño de la fuente para mayor legibilidad */
+        border-radius: 8px; /* Bordes redondeados para un aspecto más moderno */
+    }
+
+        .list-group-item a {
+            color: white; /* Color del texto de los enlaces */
+            text-decoration: none; /* Elimina el subrayado de los enlaces */
+            display: flex; /* Utiliza flexbox para alinear íconos y texto */
+            align-items: center; /* Centra verticalmente los íconos y el texto */
+        }
+
+            .list-group-item a:hover {
+                background-color: #5a6268; /* Color de fondo más oscuro al pasar el mouse */
+            }
+
+        .list-group-item i {
+            margin-right: 10px; /* Espacio a la derecha de los íconos */
+        }
+</style>
+
+<!-- Asegúrate de tener Font Awesome para los íconos -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">

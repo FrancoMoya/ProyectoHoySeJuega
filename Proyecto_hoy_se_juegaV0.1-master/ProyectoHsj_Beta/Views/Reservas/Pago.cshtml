@@ -1,0 +1,16 @@
+﻿@model ProyectoHsj_Beta.Models.Reserva
+
+<div>
+    <h2>Detalles de la reserva</h2>
+    <p><strong>Fecha de reserva:</strong> @Model.FechaReserva?.ToString("dd/MM/yyyy")</p>
+
+    <!-- Acceso a la propiedad de navegación HorarioDisponible -->
+    <p>
+        <strong>Horario seleccionado:</strong>
+        @Model.IdHorarioDisponibleNavigation.HoraInicio.ToString("HH\\:mm") - @Model.IdHorarioDisponibleNavigation.HoraFin.ToString("HH\\:mm")
+    </p>
+
+    <p><strong>Precio total:</strong> $4000</p>
+</div>
+
+<!-- Aquí iría el formulario de pago con Mercado Pago -->

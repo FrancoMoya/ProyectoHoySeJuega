@@ -1,0 +1,71 @@
+﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.RolesPermisosGetViewModel>
+
+@{
+    ViewData["Title"] = "Roles";
+    Layout = "~/Views/Shared/Layout_admin.cshtml";
+}
+
+<h1> Roles </h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nuevo Rol</a>
+</p>
+<table class="table table-striped table-bordered table-dark">
+    <thead class="thead-light">
+        <tr>
+            <th>Nombre del rol</th>
+            <th>Permisos</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.NombreRol</td>
+                <td>@item.Permisos</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+                            data-id="@item.IdRol" data-nombre="@item.NombreRol">
+                        Eliminar
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="color: black" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" style="color: black;">
+                ¿Estás seguro de que deseas eliminar el rol <span id="deleteObjectName"></span>?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteForm" method="post" asp-action="Delete">
+                    <input type="hidden" name="id" id="deleteId" />
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Script para capturar el ID y nombre del objeto a eliminar y mostrarlo en el modal
+    var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+    confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget; // Botón que disparó el modal
+        var objectId = button.getAttribute('data-id'); // Extraer el ID del objeto
+        var objectName = button.getAttribute('data-nombre'); // Extraer el nombre del objeto
+        var inputId = document.getElementById('deleteId'); // Campo oculto en el form del modal
+        var objectNameSpan = document.getElementById('deleteObjectName'); // Span para mostrar el nombre del objeto
+
+        inputId.value = objectId; // Asignar el ID al campo oculto
+        objectNameSpan.textContent = objectName; // Mostrar el nombre en el modal
+    });
+</script>

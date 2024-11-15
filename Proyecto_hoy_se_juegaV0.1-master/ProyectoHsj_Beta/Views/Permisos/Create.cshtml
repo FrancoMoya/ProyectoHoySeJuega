@@ -1,0 +1,31 @@
+﻿@model ProyectoHsj_Beta.Models.Permiso;
+
+@{
+    ViewData["Title"] = "Crear permiso";
+}
+
+<h2 style="color:white"> @ViewData["Title"]</h2>
+
+@if(ViewData["Error"] != null)
+{
+    <div class= "alert alert-danger">
+        @ViewData["Error"]
+    </div>
+}
+
+<form asp-action="Create">
+    <div class="form-group">
+        <label style="color:white" asp-for="NombrePermiso" class="control-label"></label>
+        <input asp-for="NombrePermiso" class="form-control" />
+        <span asp-validation-for="NombrePermiso" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <input type="submit" value="Crear" class="btn btn-primary" />
+        <a  asp-controller="Permisos" asp-action="ManageView" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+};

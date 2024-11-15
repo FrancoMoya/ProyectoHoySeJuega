@@ -1,0 +1,9 @@
+Librerias y paquetes de nuguet:
+FluentEmail.Core //Esto todavia no esta en uso pero ya tiene las dependencias en builder.
+FluentEmail.smtp // Por lo tanto podria tirar error, asi es mejor descargarlas.
+Microsoft.AspNetCore.Identity.EntityFrameworkCore // Todavia no esta en uso
+Microsoft.EntityFrameworkCore
+Microsoft.EntityFrameworkCore.SqlServer
+Microsoft.EntityFrameworkCore.Tools
+Microsoft.AspCore.Authentication.Google
+

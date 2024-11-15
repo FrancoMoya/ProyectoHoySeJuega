@@ -1,0 +1,38 @@
+﻿@model ProyectoHsj_Beta.ViewsModels.OtorgarPViewModel
+
+@{
+    ViewData["Title"] = "Asignar Permisos";
+    Layout = "~/Views/Shared/Layout_admin.cshtml";
+}
+
+<h2>Asignar Permisos al Rol: @Model.NombreRol</h2>
+
+<form asp-action="AsignarPermisosARol" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="IdRolSeleccionado" />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Permiso</th>
+                <th>Asignado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var permiso in Model.Permisos)
+            {
+                <div>
+                    <!-- Campo oculto para enviar el ID del permiso -->
+                      <input type="hidden" name="Permisos[@permiso.IdPermiso].IdPermiso" value="@permiso.IdPermiso" />
+
+                    <label>
+                        <input type="checkbox" name="Permisos[@permiso.IdPermiso].Asignado" value="true" @(permiso.Asignado ? "checked" : "") />
+                        @permiso.NombrePermiso
+                    </label>
+                </div>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Asignar Permisos</button>
+</form>

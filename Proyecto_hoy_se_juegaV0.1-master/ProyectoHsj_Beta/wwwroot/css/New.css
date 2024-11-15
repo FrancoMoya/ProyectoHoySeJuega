@@ -1,0 +1,21 @@
+﻿body {
+    background-color: #000;
+    color: #fff;
+}
+
+.table-dark {
+    background-color: #343a40;
+}
+
+    .table-dark th, .table-dark td {
+        border-color: #454d55;
+    }
+
+.thead-light th {
+    background-color: #e9ecef;
+    color: #000;
+}
+
+.btn {
+    margin-right: 5px;
+}

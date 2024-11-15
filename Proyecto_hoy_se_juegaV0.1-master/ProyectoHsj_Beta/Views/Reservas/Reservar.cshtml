@@ -1,0 +1,461 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario Interactivo</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .bodya {
+            font-family: 'Arial', sans-serif;
+            background-color: #fafbfd;
+        }
+
+        .calendar-day {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .calendar-day.selected {
+                background-color: #007bff;
+                color: white;
+            }
+
+            .calendar-day:hover {
+                background-color: #e2e6ea;
+            }
+
+            .calendar-day.disabled {
+                background-color: #dcdcdc;
+                cursor: not-allowed;
+            }
+
+        .calendar-header {
+            text-align: center;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .calendar-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            margin-top: 5px; /* Ajustar para eliminar espacio extra arriba */
+        }
+
+        .week-navigation {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .calendar-row {
+            display: flex;
+            justify-content: space-evenly;
+            width: 100%;
+        }
+
+        .calendar-day-label {
+            font-weight: bold;
+            text-align: center;
+            width: 40px;
+            font-size: 1em;
+        }
+
+        #month-name {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 0;
+            color: #007bff;
+            text-align: center;
+            flex-grow: 1;
+            margin-bottom: 10px;
+        }
+
+        #calendar {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #schedule h5 {
+            color: #007bff;
+            font-size: 1.2em;
+        }
+
+        #schedule-list {
+            font-size: 1.1em;
+        }
+
+        .schedule-item {
+            cursor: pointer;
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+            .schedule-item:hover {
+                background-color: #e2e6ea;
+            }
+
+        .selected-schedule {
+            background-color: #007bff;
+            color: white;
+        }
+
+        @@media (max-width: 767px) {
+            .calendar-day-label {
+                font-size: 0.8em;
+                width: 35px;
+            }
+
+            .calendar-day {
+                width: 35px;
+                height: 35px;
+            }
+            /* Ajustes adicionales para el contenedor del calendario */
+            .calendar-container {
+                padding: 5px; /* Ajustado para móviles */
+            }
+
+            .calendar-header {
+                font-size: 0.9em;
+            }
+
+            #month-name {
+                font-size: 1.2em;
+            }
+
+            .week-navigation {
+                font-size: 1em;
+            }
+
+            #text-mp {
+                font-size: 1.0em !important;
+            }
+        }
+    </style>
+</head>
+<body class="bodyReserva">
+
+    <div class="container my-4" style="margin-top: 0.5rem !important;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <!-- Botón "Home" (izquierda) -->
+            <a href="/" class="btn btn-secondary">
+                <i class="bi bi-house-door"></i> Volver al home
+            </a>
+            <div class="info-container d-flex flex-column align-items-center justify-content-center ml-4">
+
+                <img src="~/css/img/mercadopago.png" alt="Logo Mercado Pago" class="img-fluid mb-1" style="max-width: 150px;">
+                <p class="text-center" id="text-mp" style="font-size: 1.1em; font-weight: bold; margin-bottom: 0rem;">¡Se puede pagar con Mercado Pago!<br>(Monto del valor de reserva: $5.000)</p>
+
+            </div>
+            <!-- Botón "Mis Reservas" (derecha) -->
+            <a href="/Reservas/MisReservas" class="btn btn-primary">
+                Mis Reservas <i class="bi bi-calendar-check"></i>
+            </a>
+        </div>
+        <div class="calendar-container">
+            <!-- Month Name -->
+            <div id="month-name"></div> <!-- El nombre del mes irá aquí -->
+            <!-- Top navigation with week navigation -->
+            <div class="d-flex justify-content-between align-items-center w-100">
+                <button class="btn btn-outline-primary" id="prev-week">←</button>
+                <div class="calendar-header" id="current-week">Semana actual</div>
+                <button class="btn btn-outline-primary" id="next-week">→</button>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div id="calendar">
+                <!-- Aquí se llenarán los días dinámicamente -->
+            </div>
+
+            <!-- Lista de horarios -->
+            <div id="schedule" class="mt-4">
+                <h5>Horarios disponibles</h5>
+                <ul id="schedule-list" class="list-group">
+                    <!-- Los horarios se mostrarán aquí -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para confirmar reserva -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">CONFIRMAR SELECCIÓN</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de confirmar la reserva para el horario seleccionado?</p>
+                    <p id="modal-schedule-details"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="confirm-reservation">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form id="reservation-form" method="post">
+        @Html.AntiForgeryToken()
+    </form>
+
+
+    <!-- Bootstrap JS, Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/&#64;popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            const daysOfWeek = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+            const monthsOfYear = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            let currentDate = new Date();  // Fecha inicial, que será el lunes de la semana actual
+            let selectedDate = null;
+            let selectedSlot = null;
+
+            // Función para formatear la fecha en formato YYYY-MM-DD (sin incluir hora)
+            function formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+
+            function formatDateVerbose(date) {
+                const days = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+                const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+                const day = days[date.getDay()];
+                const month = months[date.getMonth()];
+                const dayOfMonth = date.getDate();
+                const year = date.getFullYear();
+                return `${day}, ${dayOfMonth} de ${month} de ${year}`;
+            }
+
+
+            // Obtener el lunes de la semana de una fecha dada
+            function getMonday(date) {
+                const day = date.getDay(),
+                    diff = date.getDate() - day + (day == 0 ? -6 : 1); // Ajuste para que el lunes sea el inicio de la semana
+                return new Date(date.setDate(diff));
+            }
+
+            // Renderizar el calendario para la semana de inicio
+            function renderCalendar(weekStartDate) {
+                const calendarElement = document.getElementById('calendar');
+                calendarElement.innerHTML = '';  // Limpiar el contenido anterior
+
+                const startDate = getMonday(new Date(weekStartDate));  // Obtener lunes de la semana actual
+                const currentWeek = document.getElementById('current-week');
+                currentWeek.textContent = `Semana del ${startDate.toLocaleDateString()}`;
+
+                const monthName = monthsOfYear[startDate.getMonth()];
+                document.getElementById('month-name').textContent = monthName;
+
+                // Crear la fila para los nombres de los días
+                const daysRow = document.createElement('div');
+                daysRow.classList.add('calendar-row');
+                daysOfWeek.forEach(day => {
+                    const dayLabel = document.createElement('div');
+                    dayLabel.classList.add('calendar-day-label');
+                    dayLabel.textContent = day;
+                    daysRow.appendChild(dayLabel);
+                });
+                calendarElement.appendChild(daysRow);
+
+                // Crear la fila para los números de los días
+                const daysRowContent = document.createElement('div');
+                daysRowContent.classList.add('calendar-row');
+                for (let i = 0; i < 7; i++) {
+                    const day = new Date(startDate);
+                    day.setDate(startDate.getDate() + i);
+
+                    const dayString = formatDate(day);
+                    const isSelected = selectedDate && formatDate(selectedDate) === dayString;
+                    const isToday = formatDate(new Date()) === dayString;
+                    const isDisabled = day < new Date(); // Fecha anterior al día actual
+
+                    const dayElement = document.createElement('div');
+                    dayElement.classList.add('calendar-day');
+
+                    if (isSelected) {
+                        dayElement.classList.add('selected');
+                    }
+
+                    if (isDisabled && !isToday) {
+                        dayElement.classList.add('disabled');
+                    } else {
+                        dayElement.addEventListener('click', () => selectDay(day));
+                    }
+
+                    // Preseleccionar la fecha actual solo si no hay una fecha seleccionada
+                    if (isToday && !selectedDate) {
+                        dayElement.classList.add('selected');
+                        selectedDate = day;  // Asegurarse de que se seleccione solo una vez
+                    }
+
+                    dayElement.textContent = day.getDate();
+                    dayElement.setAttribute('data-date', dayString);
+
+                    daysRowContent.appendChild(dayElement);
+                }
+                calendarElement.appendChild(daysRowContent);
+            }
+
+            // Seleccionar un día y mostrar los horarios
+            function selectDay(day) {
+                selectedDate = day;
+                const selectedDayElement = document.querySelector('.calendar-day.selected');
+                if (selectedDayElement) {
+                    selectedDayElement.classList.remove('selected');
+                }
+
+                const clickedDayElement = document.querySelector(`[data-date="${formatDate(day)}"]`);
+                clickedDayElement.classList.add('selected');
+
+                console.log("Fecha seleccionada:", formatDate(day));  // Verifica que la fecha esté bien formateada
+                fetchAvailableTimes(formatDate(day));  // Mostrar los horarios del día seleccionado
+            }
+
+            // Función para obtener los horarios disponibles
+            function fetchAvailableTimes(day) {
+                fetch(`/Reservas/GetAvailableTimeSlots?fecha=${day}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const scheduleList = document.getElementById('schedule-list');
+                        scheduleList.innerHTML = '';
+                        if (data.length === 0) {
+                            scheduleList.innerHTML = '<li class="list-group-item">No hay horarios disponibles</li>';
+                        } else {
+                            data.forEach(slot => {
+                                const listItem = document.createElement('li');
+                                listItem.classList.add('schedule-item');
+                                listItem.textContent = `${slot.horaInicio} - ${slot.horaFin}`;
+                                listItem.setAttribute('data-id', slot.idHorarioDisponible);  // Guardar el ID del horario
+                                listItem.addEventListener('click', () => selectSlot(slot.idHorarioDisponible));  // Evento para seleccionar el horario
+                                scheduleList.appendChild(listItem);
+                            });
+                        }
+                    })
+                    .catch(error => alert('Error al obtener horarios: ' + error.message));
+            }
+
+            // Seleccionar un horario
+            function selectSlot(id) {
+                selectedSlot = id;  // Guardar el ID del horario seleccionado
+                console.log("Horario seleccionado con ID:", id);
+
+                const formattedDate = formatDateVerbose(selectedDate);  // Formatear la fecha seleccionada
+                const slotDetails = document.querySelector(`[data-id="${id}"]`).textContent;  // Obtener los detalles del horario
+
+
+                document.querySelectorAll('#schedule-list .schedule-item').forEach(item => {
+                    item.classList.remove('selected-schedule');  // Desmarcar todos los horarios
+                });
+
+                const selectedItem = document.querySelector(`[data-id="${id}"]`);
+                selectedItem.classList.add('selected-schedule');  // Marcar el horario seleccionado
+
+                // Actualizar los detalles del modal con la fecha y el horario
+                document.getElementById('modal-schedule-details').innerHTML = `
+                        <strong>Fecha:</strong> ${formattedDate} <br>
+                                <strong>Horario:</strong> ${slotDetails}hs
+                    `;
+
+                // Mostrar el modal
+                const myModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+                myModal.show();
+            }
+
+            // Confirmar selección con solo el ID del horario en el cuerpo
+            function confirmSelection() {
+                console.log("Confirmar selección: ", selectedSlot);
+                if (selectedSlot) {
+                    fetch('/Reservas/ReservaCreate', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': token  // Agregar el token a las cabeceras
+                        },
+                        body: JSON.stringify({
+                            IdHorarioDisponible: selectedSlot  // Solo el ID del horario
+                        })
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error en la respuesta del servidor: ' + response.statusText);
+                            }
+                            return response.json();
+                            
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                alert('Selección confirmada: ' + data.message);
+                                // Redirigir a la vista ConfirmarReserva con el idReserva
+                                const reservaId = data.idReserva;  // Suponiendo que la respuesta contiene el ID de la reserva
+                                window.location.href = `/Pagoes/Index?reservaId=${reservaId}`;
+                            } else {
+                                alert('Error: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            alert('Error al confirmar la selección: ' + error.message);
+                        });
+
+                } else {
+                    console.log("No se ha seleccionado un horario.");
+                }
+            }
+
+            //MODAL
+            document.getElementById('confirm-reservation').addEventListener('click', function () {
+                confirmSelection();  // Confirmar la selección desde el modal
+                const myModal = bootstrap.Modal.getInstance(document.getElementById('confirmModal'));
+                myModal.hide();  // Cerrar el modal
+            });
+
+            // Función para cambiar la semana (anterior o siguiente)
+            function changeWeek(direction) {
+                const currentStartDate = new Date(currentDate);
+                currentStartDate.setDate(currentStartDate.getDate() + direction * 7);  // Mover una semana hacia adelante o atrás
+                currentDate = currentStartDate;
+                renderCalendar(currentDate);
+            }
+
+            // Eventos de las flechas de navegación
+            document.getElementById('prev-week').addEventListener('click', () => changeWeek(-1));  // Semana anterior
+            document.getElementById('next-week').addEventListener('click', () => changeWeek(1));   // Semana siguiente
+
+            // Inicializar el calendario y los eventos
+            renderCalendar(currentDate);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+Use Hsj;
+
+CREATE TABLE ACCION_REALIZADA (
+    ID_accion_realizada int NOT NULL IDENTITY,
+    Titulo_Accion_Realizada nvarchar(70) NOT NULL,
+    CONSTRAINT PK_ACCION_REALIZADA PRIMARY KEY (ID_accion_realizada)
+);
+
+CREATE TABLE CANCHA (
+    ID_cancha int NOT NULL IDENTITY,
+    Nombre_Cancha nvarchar(70) NOT NULL,
+    Ubicacion_Cancha nvarchar(120) NOT NULL,
+    CONSTRAINT PK_CANCHA PRIMARY KEY (ID_cancha)
+);
+
+CREATE TABLE ESTADO_RESERVA (
+    ID_estado_reserva int NOT NULL IDENTITY,
+    Nombre_Estado_Reserva varchar(25) NOT NULL,
+    CONSTRAINT PK_ESTADO_RESERVA PRIMARY KEY (ID_estado_reserva)
+);
+
+CREATE TABLE HistorialReservas (
+    IdHistorialReserva INT IDENTITY(1,1) PRIMARY KEY,
+    IdReserva INT NOT NULL,
+    ID_usuario INT NOT NULL,
+    FechaReserva DATETIME NOT NULL,
+    HoraInicio TIME NOT NULL,
+    HoraFin TIME NOT NULL,
+    EstadoReserva VARCHAR(50) NOT NULL,
+    FechaEliminacion DATETIME NOT NULL,
+    
+    -- Opcional: Campos adicionales si deseas registrar más información
+    NombreUsuario NVARCHAR(100),
+    TelefonoUsuario NVARCHAR(15),
+    
+    
+);
+
+CREATE TABLE PERMISO (
+    ID_permiso int NOT NULL IDENTITY,
+    Nombre_Permiso nvarchar(50) NOT NULL,
+    CONSTRAINT PK_PERMISO PRIMARY KEY (ID_permiso)
+);
+
+CREATE TABLE ROL (
+    ID_rol int NOT NULL IDENTITY,
+    Nombre_Rol nvarchar(50) NOT NULL,
+    CONSTRAINT PK_ROL PRIMARY KEY (ID_rol)
+);
+
+CREATE TABLE TITULO_NOTIFICACION (
+    ID_titulo_notificacion int NOT NULL IDENTITY,
+    Titulo_Notificacion nvarchar(80) NOT NULL,
+    CONSTRAINT PK_TITULO_NOTIFICACION PRIMARY KEY (ID_titulo_notificacion)
+);
+
+CREATE TABLE TITULO_REPORTE (
+    ID_titulo_reporte int NOT NULL IDENTITY,
+    Titulo_Reporte nvarchar(80) NOT NULL,
+    CONSTRAINT PK_TITULO_REPORTE PRIMARY KEY (ID_titulo_reporte)
+);
+
+CREATE TABLE HORARIO_DISPONIBLE (
+    ID_horario_disponible int NOT NULL IDENTITY,
+    ID_cancha int NOT NULL,
+    Fecha_Horario date NOT NULL DEFAULT ((getdate())),
+    Hora_Inicio time NOT NULL,
+    Hora_Fin time NOT NULL,
+    Disponible_Horario bit NULL DEFAULT CAST(1 AS bit),
+    CONSTRAINT PK_HORARIO_DISPONIBLE PRIMARY KEY (ID_horario_disponible),
+    FOREIGN KEY (ID_cancha) REFERENCES CANCHA(ID_cancha)
+);
+
+CREATE TABLE PERMISO_ROL (
+    ID_rol int NOT NULL,
+    ID_permiso int NOT NULL,
+    CONSTRAINT PK_PERMISO_ROL PRIMARY KEY (ID_rol, ID_permiso),
+    FOREIGN KEY (ID_permiso) REFERENCES PERMISO(ID_permiso),
+    FOREIGN KEY (ID_rol) REFERENCES ROL(ID_rol)
+);
+
+CREATE TABLE USUARIO (
+    ID_usuario int NOT NULL IDENTITY,
+    Nombre_Usuario nvarchar(30) NOT NULL,
+    Apellido_Usuario nvarchar(30) NOT NULL,
+    Correo_Usuario varchar(100) NOT NULL,
+    Contrasenia_Usuario nvarchar(255) NOT NULL,
+    Telefono_Usuario int NOT NULL,
+    Activo bit NULL DEFAULT CAST(1 AS bit),
+    PasswordResetToken nvarchar(max) NULL,
+    PasswordResetTokenExpiry datetime NULL,
+    EmailConfirmationToken nvarchar(255) NULL,
+    EmailConfirmed bit NULL,
+    ID_rol int NOT NULL,
+    CONSTRAINT PK_USUARIO PRIMARY KEY (ID_usuario),
+    FOREIGN KEY (ID_rol) REFERENCES ROL(ID_rol)
+);
+
+CREATE TABLE REPORTE (
+    ID_reporte int NOT NULL IDENTITY,
+    Mes_Reporte tinyint NOT NULL,
+    Anio_Reporte smallint NOT NULL,
+    Usuarios_Registrados_Reporte int NULL,
+    Reservas_Realizadas_Reporte int NULL,
+    Fecha_De_Reporte datetime NULL DEFAULT ((getdate())),
+    Descripcion_Reporte varchar(max) NOT NULL,
+    ID_titulo_reporte int NOT NULL,
+    CONSTRAINT PK_REPORTE PRIMARY KEY (ID_reporte),
+    FOREIGN KEY (ID_titulo_reporte) REFERENCES TITULO_REPORTE(ID_titulo_reporte)
+);
+
+CREATE TABLE AUDITORIA (
+    ID_auditoria int NOT NULL IDENTITY,
+    ID_usuario int NOT NULL,
+    Fecha_Auditoria datetime NOT NULL DEFAULT ((getdate())),
+    Descripcion_De_Accion nvarchar(max) NOT NULL,
+    ID_accion_realizada int NOT NULL,
+    CONSTRAINT PK_AUDITORIA PRIMARY KEY (ID_auditoria),
+    FOREIGN KEY (ID_accion_realizada) REFERENCES ACCION_REALIZADA(ID_accion_realizada),
+    FOREIGN KEY (ID_usuario) REFERENCES USUARIO(ID_usuario)
+);
+
+CREATE TABLE RESERVA (
+    ID_reserva int NOT NULL IDENTITY,
+    ID_usuario int NOT NULL,
+    ID_horario_disponible int NOT NULL,
+    Fecha_Reserva datetime NULL DEFAULT ((getdate())),
+    ID_estado_reserva int NOT NULL,
+    CONSTRAINT PK_RESERVA PRIMARY KEY (ID_reserva),
+    FOREIGN KEY (ID_estado_reserva) REFERENCES ESTADO_RESERVA(ID_estado_reserva),
+    FOREIGN KEY (ID_horario_disponible) REFERENCES HORARIO_DISPONIBLE(ID_horario_disponible),
+    FOREIGN KEY (ID_usuario) REFERENCES USUARIO(ID_usuario)
+);
+
+CREATE TABLE NOTIFICACION (
+    ID_notificacion int NOT NULL IDENTITY,
+    ID_usuario int NOT NULL,
+    ID_reserva int NOT NULL,
+    Mensaje_Notificacion nvarchar(max) NOT NULL,
+    Fecha_Envio_Notificacion datetime NOT NULL DEFAULT ((getdate())),
+    ID_titulo_notificacion int NOT NULL,
+    CONSTRAINT PK_NOTIFICACION PRIMARY KEY (ID_notificacion),
+    FOREIGN KEY (ID_reserva) REFERENCES RESERVA(ID_reserva),
+    FOREIGN KEY (ID_titulo_notificacion) REFERENCES TITULO_NOTIFICACION(ID_titulo_notificacion),
+    FOREIGN KEY (ID_usuario) REFERENCES USUARIO(ID_usuario)
+);
+
+-- INSERTS NECESARIOS
+INSERT INTO CANCHA (Nombre_Cancha, Ubicacion_Cancha) VALUES 
+('Cancha A', 'Centro Deportivo Norte');
+
+INSERT INTO ESTADO_RESERVA (Nombre_Estado_Reserva) VALUES 
+('PENDIENTE'),
+('CONFIRMADA'),
+('CANCELADA');
+
+INSERT INTO TITULO_NOTIFICACION (Titulo_Notificacion) VALUES 
+('Confirmación de Reserva'),
+('Cancelación de Reserva');
+
+INSERT INTO NOTIFICACION (ID_usuario, ID_reserva, Mensaje_Notificacion, ID_titulo_notificacion) VALUES 
+(2, 1, 'Su reserva está pendiente de confirmación.', 1), 
+(1, 2, 'Su reserva ha sido confirmada con éxito.', 1);
+
+
+INSERT INTO ROL (ID_rol, Nombre_Rol) VALUES (1, 'User');
+INSERT INTO ROL (ID_rol, Nombre_Rol) VALUES (2, 'Admin');
+INSERT INTO ROL (ID_rol, Nombre_Rol) VALUES (3, 'Employed');

@@ -1,0 +1,33 @@
+﻿@{
+    Layout = null; // No usar un layout para esta vista específica
+}
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <link href="~/css/AccesDenied.css" rel="stylesheet" />
+        <title>ERROR</title>
+    </head>
+    <body>
+    <div id="app">
+        <div>403</div>
+        <div class="txt">
+            Acceso denegado<span class="blink">_</span>
+        </div>
+        @if (User.IsInRole("3"))
+        {
+            <p>
+                <a style="color: var(--color); text-decoration: none;" asp-controller="Home" asp-action="Admin_home" >Go to Home</a>
+            </p>
+        }
+        else
+        {
+            <p>
+                <a href="/" style="color: var(--color); text-decoration: none;">Go to Home</a>
+            </p>
+
+        }
+    </div>
+</body>
+</html>

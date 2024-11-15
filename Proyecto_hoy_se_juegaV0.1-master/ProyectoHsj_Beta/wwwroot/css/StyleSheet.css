@@ -1,0 +1,54 @@
+﻿.btn-custom {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 7px;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    margin-bottom: 15px
+}
+
+    .btn-custom:hover {
+        background-color: #0056b3;
+    }
+
+.toggle-btn {
+    margin-left: 20px; /* Espacio a la izquierda del botón */
+    margin-top: 10px; /* Espacio arriba del botón */
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    margin-left: -250px; /* Ajuste del sidebar al estar oculto */
+    transition: margin 0.3s ease;
+}
+
+
+.link-no-style {
+    text-decoration: none; /* Elimina el subrayado */
+    color: inherit; /* Usa el color del elemento padre */
+    cursor: pointer; /* Mantiene el cursor de enlace */
+}
+
+    .link-no-style:hover {
+        color: inherit; /* Asegura que el color no cambie al pasar el ratón */
+        text-decoration: none; /* Mantiene el subrayado desactivado */
+    }
+
+
+.sidebar-heading {
+    background-color: #000; /* Fondo negro */
+    color: #fff; /* Texto blanco */
+    padding: 15px; /* Espacio interno alrededor del texto */
+    margin-bottom: 20px; /* Espacio debajo del título */
+    display: flex; /* Hace que el contenedor sea flexible para alinear la imagen y el texto */
+    align-items: center; /* Alinea el contenido verticalmente en el centro */
+}
+
+    .sidebar-heading img {
+        margin-right: 10px; /* Espacio entre la imagen y el texto */
+        max-height: 40px; /* Ajusta el tamaño máximo de la imagen */
+    }

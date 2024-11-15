@@ -1,0 +1,157 @@
+﻿@{
+    Layout = "~/Views/Shared/Layout_admin.cshtml";
+    ViewData["Title"] = "Panel de Administración - Reservas";
+}
+
+<style>
+    h2 {
+        color: white; /* Color del título en blanco */
+        text-align: center;
+        margin-top: 20px;
+        margin-bottom: 30px;
+    }
+
+    #calendar {
+        max-width: 90%;
+        margin: 0 auto;
+        border: 1px solid black; /* Bordes del calendario */
+        border-radius: 10px; /* Bordes redondeados */
+        overflow: hidden; /* Para el desbordamiento */
+        background-color: white; /* Fondo blanco para el calendario */
+        z-index: 1; /* Asegurar que el calendario esté por delante */
+        position: relative; /* Posición relativa para el z-index */
+    }
+
+    .fc-daygrid-day {
+        border: 1px solid #e0e0e0; /* Bordes de los días */
+    }
+
+        .fc-daygrid-day.fc-day {
+            color: black !important; /* Aseguramos que el texto de los días sea negro */
+        }
+
+    .fc-toolbar-title {
+        text-transform: capitalize; /* Capitalizar la primera letra de cada mes */
+        color: black; /* Color del texto del título del calendario en negro */
+    }
+
+    .fc-toolbar h2 {
+        color: black; /* Asegura que el mes y año también estén en negro */
+    }
+
+    .fc-col-header-cell {
+        text-transform: capitalize; /* Capitalizar la primera letra de los días de la semana */
+        color: black; /* Color del texto de los días de la semana en negro */
+    }
+
+    .modal-content {
+        border-radius: 10px; /* Bordes redondeados para el modal */
+    }
+
+    .modal-header {
+        background-color: black; /* Color de fondo del encabezado del modal */
+        color: white; /* Color del texto del encabezado */
+    }
+
+    .modal-footer {
+        border-top: none; /* Quitar borde superior */
+    }
+
+    .modal-body p {
+        margin: 0; /* Sin margen en los párrafos del modal */
+    }
+
+    .btn {
+        border-radius: 5px; /* Bordes redondeados para botones */
+    }
+
+    .btn-secondary {
+        background-color: #6c757d; /* Color personalizado para el botón secundario */
+        border: none; /* Sin borde */
+    }
+
+        .btn-secondary:hover {
+            background-color: #5a6268; /* Color al pasar el mouse */
+        }
+</style>
+
+<h2>@ViewData["Title"]</h2>
+
+<!-- Contenedor del Calendario -->
+<div id="calendar"></div>
+
+<!-- Modal para Detalles de la Reserva -->
+<div class="modal fade" id="reservationDetailModal" tabindex="-1" aria-labelledby="reservationDetailModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reservationDetailModalLabel">Detalles de la Reserva</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="color: black">
+                <p><strong>Reserva ID:</strong> <span id="modalReservaId"></span></p>
+                <p><strong>Estado:</strong> <span id="modalEstado"></span></p>
+                <p><strong>Nombre Usuario:</strong> <span id="modalNombreUsuario"></span></p>
+                <p><strong>Teléfono Usuario:</strong> <span id="modalTelefonoUsuario"></span></p>
+                <p><strong>Fecha Reserva:</strong> <span id="modalFechaReserva"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts de FullCalendar y Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let calendarEl = document.getElementById('calendar');
+        let calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'es', // Cambiar idioma a español
+            initialView: 'dayGridMonth',
+            buttonText: {
+                today: 'Hoy' // Cambiar el texto del botón "Today" a "Hoy"
+            },
+            events: '/Admin/GetReservas', // Cargar eventos desde el backend
+
+            // Al hacer clic en una fecha, mostrar el modal con todas las reservas de esa fecha
+            dateClick: function (info) {
+                // Filtrar las reservas para la fecha seleccionada
+                const reservasEnFecha = calendar.getEvents().filter(
+                    r => new Date(r.start).toDateString() === info.date.toDateString()
+                );
+
+                if (reservasEnFecha.length > 0) {
+                    let reservasHtml = ''; // Inicializamos el HTML
+
+                    reservasEnFecha.forEach(reserva => {
+                        reservasHtml += `
+                                        <p><strong>Reserva ID:</strong> ${reserva.extendedProps.idReserva}</p>
+                                        <p><strong>Estado:</strong> ${reserva.extendedProps.estado}</p>
+                                        <p><strong>Nombre Usuario:</strong> ${reserva.extendedProps.usuarioNombre}</p>
+                                        <p><strong>Teléfono Usuario:</strong> ${reserva.extendedProps.usuarioTelefono}</p>
+                                        <p><strong>Fecha Reserva:</strong> ${new Date(reserva.start).toLocaleString()}</p>
+                                        <hr />
+                                    `;
+                    });
+
+                    // Insertamos el contenido en el modal
+                    document.querySelector('#reservationDetailModal .modal-body').innerHTML = reservasHtml;
+
+                    // Mostramos el modal
+                    const modal = new bootstrap.Modal(document.getElementById('reservationDetailModal'));
+                    modal.show();
+                } else {
+                    alert('No hay reservas para esta fecha.');
+                }
+            }
+        });
+
+        calendar.render();
+    });
+</script>

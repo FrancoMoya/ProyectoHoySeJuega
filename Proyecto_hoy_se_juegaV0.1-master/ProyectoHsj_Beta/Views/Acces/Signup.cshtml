@@ -1,0 +1,156 @@
+﻿@model ProyectoHsj_Beta.ViewsModels.UsuarioVM;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>Crear cuenta</title>
+    <style>
+        /* Ocultar controles de entrada numérica en navegadores modernos */
+        .no-arrows {
+            -moz-appearance: textfield; /* Firefox */
+        }
+        
+        .no-arrows::-webkit-inner-spin-button, 
+        .no-arrows::-webkit-outer-spin-button {
+            -webkit-appearance: none; /* Chrome y Safari */
+            margin: 0; /* Para evitar margen */
+        }
+        .bodysignup{
+            background-color: #1f2124;
+        }
+        
+    </style>
+</head>
+<body class="bodysignup">
+
+<div class="container">
+    <section class="d-flex align-items-center justify-content-center min-vh-80">
+            
+        <div class="row d-flex justify-content-center align-items-center w-100">
+            <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+                <!-- Tarjeta de registro -->
+                <div class="card" style="border-radius: 15px;">
+                    <div class="card-body p-5">
+                        <h2 class="text-uppercase text-center mb-5">Crear cuenta de usuario</h2>
+
+                        <form asp-controller="Acces" asp-action="Signup" method="post">
+                            <div class="row">
+                                <!-- Nombre completo -->
+                                <div class="col-md-6">
+                                    <div class="form-outline mb-4">
+                                        <input type="text" class="form-control form-control-user"
+                                               placeholder="Nombre" required asp-for="NombreUsuario" />
+                                    </div>
+                                </div>
+
+                                <!-- Apellido -->
+                                <div class="col-md-6">
+                                    <div class="form-outline mb-4">
+                                        <input type="text" class="form-control form-control-user"
+                                               placeholder="Apellido" required asp-for="ApellidoUsuario" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <!-- Correo electrónico -->
+                                <div class="col-md-6">
+                                    <div class="form-outline mb-4">
+                                        <input type="email" class="form-control form-control-user"
+                                               placeholder="Correo electrónico" required asp-for="CorreoUsuario" />
+                                    </div>
+                                </div>
+
+                                <!-- Número de teléfono sin controles -->
+                                <div class="col-md-6">
+                                    <div class="form-outline mb-4">
+                                        <input type="number" class="form-control form-control-user no-arrows"
+                                               placeholder="Número de celular" required asp-for="TelefonoUsuario" />
+                                    </div>
+                                </div>
+                            </div>
+
+                                <div class="row">
+                                    <!-- Contraseña -->
+                                    <div class="col-md-6">
+                                        <div class="form-outline mb-4 position-relative">
+                                            <input type="password" class="form-control form-control-user"
+                                                   placeholder="Contraseña" required asp-for="ContraseniaUsuario" id="passwordField1" />
+                                            <button type="button" onclick="togglePassword('passwordField1', 'toggleIcon1')"
+                                                    class="btn position-absolute end-0 top-50 translate-middle-y"
+                                                    style="border: none; background: transparent; right: 10px;">
+                                                <i class="fas fa-eye" id="toggleIcon1"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Confirmar contraseña -->
+                                    <div class="col-md-6">
+                                        <div class="form-outline mb-4 position-relative">
+                                            <input type="password" class="form-control form-control-user"
+                                                   placeholder="Confirme contraseña" required asp-for="ConfirmarContraseña" id="passwordField2" />
+                                            <button type="button" onclick="togglePassword('passwordField2', 'toggleIcon2')"
+                                                    class="btn position-absolute end-0 top-50 translate-middle-y"
+                                                    style="border: none; background: transparent; right: 10px;">
+                                                <i class="fas fa-eye" id="toggleIcon2"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <script>
+                                    function togglePassword(passwordFieldId, toggleIconId) {
+                                        const passwordField = document.getElementById(passwordFieldId);
+                                        const toggleIcon = document.getElementById(toggleIconId);
+                                        if (passwordField.type === 'password') {
+                                            passwordField.type = 'text';
+                                            toggleIcon.classList.remove('fa-eye');
+                                            toggleIcon.classList.add('fa-eye-slash');
+                                        } else {
+                                            passwordField.type = 'password';
+                                            toggleIcon.classList.remove('fa-eye-slash');
+                                            toggleIcon.classList.add('fa-eye');
+                                        }
+                                    }
+                                </script>
+
+
+                            <!-- Términos de servicio -->
+                            <div class="form-check d-flex justify-content-center mb-3">
+                                <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3cg" />
+                                <label class="form-check-label" for="form2Example3g">
+                                    Estoy de acuerdo con los <a href="#!" class="text-body"><u>Términos de servicio</u></a>
+                                </label>
+                            </div>
+
+                            <!-- Botón de registro -->
+                            <div class="d-flex justify-content-center">
+                                <button type="submit" class="btn btn-success btn-block btn-lg gradient-custom-4 text-body">
+                                    Registrarse
+                                </button>
+                            </div>
+
+                            <!-- Mensaje de error -->
+                            @if (ViewData["Message"] != null)
+                            {
+                                <div class="alert alert-danger mt-4" role="alert">
+                                    @ViewData["Message"]
+                                </div>
+                            }
+
+                            <!-- Enlace a inicio de sesión -->
+                            <p class="text-center text-muted mt-3 mb-0">
+                                ¿Ya tienes una cuenta? <a class="fw-bold text-body" asp-controller="Acces" asp-action="Login"><u>Inicia sesión aquí</u></a>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>

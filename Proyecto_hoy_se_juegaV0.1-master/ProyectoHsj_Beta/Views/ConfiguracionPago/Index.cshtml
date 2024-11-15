@@ -1,0 +1,59 @@
+﻿@model IEnumerable<ConfiguracionPago>
+
+@{
+    Layout = "~/Views/Shared/Layout_admin.cshtml";
+    ViewData["Title"] = "Configuración de Pago";
+}
+
+<h2 class="text-center text-white">Configuración de Monto de Seña</h2>
+
+
+<div class="table-responsive">
+    <table class="table table-dark table-hover table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th class="text-black">Monto Seña</th>
+                <th class="text-black">Fecha de Modificación</th>
+                <th class="text-black">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.MontoSena</td>
+                    <td>@item.FechaModificacion</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.IdConfiguracion" class="btn btn-warning btn-sm">Editar</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    h2 {
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+
+    table {
+        background-color: #343a40;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    th, td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .btn {
+        margin-right: 5px;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #495057;
+    }
+</style>

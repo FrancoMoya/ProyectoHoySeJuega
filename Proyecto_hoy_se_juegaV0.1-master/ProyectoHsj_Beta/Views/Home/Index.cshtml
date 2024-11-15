@@ -1,0 +1,229 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<style>
+    p {
+        color: aliceblue;
+    }
+
+
+</style>
+
+
+<!-- Carrusel -->
+<div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3500">
+    <div class="carousel-indicators">
+        <link href="c:\users\tiago\source\repos\proyectohsj_alpha\proyectohsj_alpha\wwwroot\css\style_navbar.css" rel="stylesheet" />
+        <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <div class="overlay"></div> <!-- Superposición negra -->
+            <img src="~/css/img/cancha.jpeg" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+            <div class="overlay"></div>
+            <img src="~/css/img/entrada.jpeg" class="d-block w-100" alt="...">
+        </div>
+        <div class="carousel-item">
+            <div class="overlay"></div>
+            <img src="~/css/img/cancha y pelota.jpeg" class="d-block w-100" alt="...">
+        </div>
+        <!-- Botón centrado personalizado -->
+        @if (User.Identity.IsAuthenticated)
+
+        {
+            <div class="carousel-caption d-flex justify-content-center align-items-center h-100">
+                <a asp-controller="Reservas" asp-action="Reservar" class="btn btn-custom">Reserva Acá</a>
+            </div>
+
+        }
+
+        else
+
+        {
+            <div class="alert alert-warning" role="alert">
+                Debes estar autenticado para crear una reserva.
+                <a href="/Acces/Login">Inicia sesión</a> para continuar.
+            </div>
+        }
+
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+
+<!-- CSS personalizado -->
+<style>
+    .full-width-carousel {
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+        position: relative;
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1;
+    }
+
+    .carousel-item img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+
+    .btn-custom {
+        background-color: black;
+        color: white;
+        border: 2px solid white;
+        padding: 10px 20px;
+        font-size: 18px;
+        text-transform: uppercase;
+        z-index: 2;
+    }
+
+        .btn-custom:hover {
+            background-color: white;
+            color: black;
+        }
+
+    .carousel-caption {
+        z-index: 2;
+    }
+
+    body, html {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+</style>
+
+<!-- Nuevo apartado debajo del carrusel -->
+<section class="photo-text-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <img src="~/css/img/cumples.jpeg" alt="Celebración de cumpleaños en la cancha de fútbol" class="img-fluid">
+            </div>
+            <div class="col-md-6">
+                <h2>Cumpleaños</h2>
+                <p>
+                    🎉⚽ ¡Celebra tu cumpleaños con un emocionante partido en nuestra cancha de fútbol 5! ⚽🎉<br>
+                    🔹 Espacio Ideal 🔹 Disfruta de una cancha de primer nivel, perfecta para que corran, jueguen y celebren en grande.<br>
+                    🔹 Diversión Garantizada 🔹 Con un ambiente seguro y amigable, nuestro campo está diseñado para que todos se diviertan mientras juegan el deporte que más les gusta.<br>
+                    🔹 ¡Contáctanos! 🔹 Para más información y reservas de cumpleaños. Envíanos un mensaje por
+                    <a href="https://wa.me/5491122760377" target="_blank" class="whatsapp-link">
+                        <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                    </a>.
+                </p>
+            </div>
+        </div>
+    </div>
+    <style>
+        .photo-text-section {
+            background-color: black;
+            padding: 40px 0;
+            position: relative;
+            left: 0;
+            right: 0;
+            margin-left: calc(-50vw + 50%);
+            margin-right: calc(-50vw + 50%);
+            width: 100vw;
+            box-sizing: border-box;
+        }
+
+            .photo-text-section h2 {
+                color: #FFD700;
+                font-size: 2.5em;
+                font-weight: bold;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+                margin-bottom: 20px;
+            }
+
+            .photo-text-section p {
+                color: #FFFFFF;
+                font-size: 1.2em;
+                line-height: 1.5;
+                margin-bottom: 0;
+            }
+
+        .whatsapp-link {
+            color: #25D366;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+            .whatsapp-link:hover {
+                color: #1EBE5B;
+            }
+
+            .whatsapp-link i {
+                margin-right: 5px;
+            }
+    </style>
+</section>
+
+<section class="photo-text-section2">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2 class="section-title">Grabamos tu partido</h2>
+                <p>
+                    📷⚽ Revive cada momento de la acción con las cámaras de
+                    <a href="https://beelup.com/ar/" target="_blank" style="color: #FFD700; text-decoration: none;">
+                        Beelup <i class="bi bi-display"></i>
+                    </a>.
+                    Un servicio que te permite disfrutar de una grabación de alta calidad de tu partido, asegurando que no te pierdas ni un solo detalle de tus jugadas, goles y celebraciones.
+                </p>
+                <p>
+                    Además, podrás compartir los mejores momentos con tus compañeros y familiares a través de la plataforma digital. Con Beelup, no solo guardas recuerdos, sino que también puedes analizar tu rendimiento y mejorar en cada partido. ¡Haz que cada juego cuente y dale vida a tus mejores momentos con nuestras grabaciones! 📷⚽
+                </p>
+            </div>
+            <div class="col-md-6">
+                <img src="~/css/img/beelup.jpeg" alt="Descripción de la foto" class="img-fluid">
+            </div>
+        </div>
+    </div>
+    <style>
+        .photo-text-section2 {
+            background-color: black;
+            padding: 40px 0;
+            position: relative;
+            left: 0;
+            right: 0;
+            margin-left: calc(-50vw + 50%);
+            margin-right: calc(-50vw + 50%);
+            width: 100vw;
+            box-sizing: border-box;
+        }
+
+        .section-title {
+            color: #FFD700;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+
+        .photo-text-section2 p {
+            color: #FFFFFF;
+            font-size: 1.2em;
+            line-height: 1.5;
+            margin-bottom: 0;
+        }
+    </style>
+</section>

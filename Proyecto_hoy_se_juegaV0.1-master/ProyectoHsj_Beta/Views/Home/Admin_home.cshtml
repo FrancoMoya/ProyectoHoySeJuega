@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewData["Title"] = "Admin_home";
+    Layout = "~/Views/Shared/Layout_admin.cshtml";
+}
+<style>
+    .card-title {
+        font-weight: bold;
+    }
+  
+</style>
+
+
+<div class="card" style="background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <div class="card-body">
+        <h5 class="card-title">User Statistics</h5>
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '@Url.Action("GetUserStatistics", "Estadisticas")',
+                method: 'GET',
+                success: function (data) {
+                    console.log(data); // Muestra los datos en la consola del navegador
+
+                    var ctx = document.getElementById('myChart').getContext('2d');
+
+                    // Verificar si el canvas se obtiene correctamente
+                    if (!ctx) {
+                        console.error("No se encontró el canvas 'myChart'.");
+                        return;
+                    }
+                    var registrados = parseInt(data.registrados, 10);
+                    var autenticados = parseInt(data.autenticados, 10);
+
+                    var chart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Usuarios Registrados', 'Usuarios Autenticados'],
+                            datasets: [{
+                                label: 'Cantidad de Usuarios',
+                                data: [registrados, autenticados], // Verifica que estos campos existan en data
+                                backgroundColor: ['#36A2EB', '#4BC0C0'],
+                                borderColor: ['#36A2EB', '#4BC0C0'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}

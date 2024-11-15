@@ -1,0 +1,150 @@
+﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.MisReservasGetViewModel>
+@{
+}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+    .table-responsive {
+        overflow-x: auto;
+    }
+    body {
+        background-color: #333333 !important;
+    }
+
+</style>
+
+<h1 style="color: white">Mis reservas</h1>
+
+<div class="container mt-4">
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-dark">
+            <thead class="thead-light">
+                <tr>
+                    <th>Fecha de creación</th>
+                    <th>Estado</th>
+                    <th>Fecha reservada</th>
+                    <th>Hora de Inicio</th>
+                    <th>Hora de finalización</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    // Generar el mensaje dinámico en Razor
+                    var mensajeCancelacion = "Hola, quiero cancelar mi reserva con fecha " +
+                    item.FechaHorario.ToString("dd-MM-yyyy") +
+                    " de " + item.HoraInicio.ToString("HH\\:mm") +
+                    " a " + item.HoraFin.ToString("HH\\:mm") + " hs.";
+
+
+                    <tr>
+                        <td>@item.FechaReserva.ToString(" HH:mm - dd/MM/yyyy")</td>
+                        <td>@item.NombreEstadoReserva</td>
+                        <td>@item.FechaHorario.ToString("dd-MM-yyyy")</td>
+                        <td>@item.HoraInicio.ToString("HH\\:mm")</td>
+                        <td>@item.HoraFin.ToString("HH\\:mm")</td>
+                        <td>
+                            <!-- Botón Detalles -->
+                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDetailsModal"
+                                    data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                    data-inicio="@item.HoraInicio.ToString("HH\\:mm")"
+                                    data-fin="@item.HoraFin.ToString("HH\\:mm")">
+                                Detalles
+                            </button>
+
+                            <!-- Botón Cancelar (solo visible si el estado es CONFIRMADA) -->
+                            @if (item.NombreEstadoReserva == "CONFIRMADA")
+                            {
+                                <!-- Botón Cancelar -->
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
+                                        data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                        data-inicio="@item.HoraInicio.ToString("HH\\:mm")"
+                                        data-fin="@item.HoraFin.ToString("HH\\:mm")"
+                                        data-msg="@mensajeCancelacion">
+                                    Cancelar
+                                </button>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal de Detalles -->
+<div class="modal fade" id="confirmDetailsModal" tabindex="-1" aria-labelledby="confirmDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="color: black" id="confirmDetailsModalLabel">Detalles</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" style="color: black;">
+                <strong>Detalles de la reserva:</strong><br><strong>Fecha:</strong> <span id="ObjectFecha"></span><br><strong>Horario:</strong> <span id="ObjectHora"></span><br><strong>Otros campos, como el pago, etc...</strong>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Cancelación -->
+<div class="modal fade" id="confirmCancelModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" style="color: black" id="confirmCancelModalLabel">Detalles</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" style="color: black;">
+                <strong>Detalles de la reserva:</strong><br><strong>Fecha:</strong> <span id="ObjectFechaCancel"></span><br><strong>Horario:</strong> <span id="ObjectHoraCancel"></span><br><strong>¿Seguro que deseas cancelar esta reserva?</strong>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <!-- Enlace de WhatsApp con el mensaje dinámico -->
+                <a id="whatsappLink" class="btn btn-danger" target="_blank">Cancelar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    var confirmDetailsModal = document.getElementById('confirmDetailsModal');
+    var confirmCancelModal = document.getElementById('confirmCancelModal');
+    var whatsappLink = document.getElementById('whatsappLink');
+
+    confirmDetailsModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var objectFecha = button.getAttribute('data-fecha');
+        var objectHoraInicio = button.getAttribute('data-inicio');
+        var objectHoraFin = button.getAttribute('data-fin');
+
+        // Actualizamos los detalles en el modal de detalles
+        var objectFechaSpan = document.getElementById('ObjectFecha');
+        var objectHoraSpan = document.getElementById('ObjectHora');
+        objectFechaSpan.textContent = objectFecha;
+        objectHoraSpan.textContent = objectHoraInicio + ' a ' + objectHoraFin + 'hs';
+    });
+
+    confirmCancelModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+        var objectFecha = button.getAttribute('data-fecha');
+        var objectHoraInicio = button.getAttribute('data-inicio');
+        var objectHoraFin = button.getAttribute('data-fin');
+        var mensaje = button.getAttribute('data-msg');
+
+        // Actualizamos los detalles en el modal de cancelación
+        var objectFechaSpan = document.getElementById('ObjectFechaCancel');
+        var objectHoraSpan = document.getElementById('ObjectHoraCancel');
+        objectFechaSpan.textContent = objectFecha;
+        objectHoraSpan.textContent = objectHoraInicio + ' a ' + objectHoraFin + 'hs';
+
+        // Actualizamos el enlace de WhatsApp con el mensaje dinámico
+        whatsappLink.href = "https://wa.me/1234567890?text=" + encodeURIComponent(mensaje);
+    });
+</script>
