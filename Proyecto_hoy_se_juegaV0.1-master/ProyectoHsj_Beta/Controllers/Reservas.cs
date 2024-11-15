@@ -110,6 +110,21 @@ namespace ProyectoHsj_Beta.Controllers
                         return View(new List<MisReservasGetViewModel>());
                     }
 
+                    // Obtener el número de WhatsApp de alguna tabla de configuración
+                    var celularCancelaciones = await _context.ConfiguracionPagos
+                        .Select(c => c.CelularCancelaciones)
+                        .FirstOrDefaultAsync();  // Toma el primer (y único) resultado que cumple la condición
+
+                    // Si no existe el número de WhatsApp en la configuración, asignar un valor predeterminado
+                    if (celularCancelaciones == null)
+                    {
+                        celularCancelaciones = 1234567890; // Valor predeterminado o lanzar un error si prefieres
+                    }
+
+                    string number = celularCancelaciones.ToString();
+                    // Pasar las reservas y el número de WhatsApp a la vista
+                    ViewData["number"] = number;
+
                     return View(misReservas);
                 }
                 catch (Exception ex)

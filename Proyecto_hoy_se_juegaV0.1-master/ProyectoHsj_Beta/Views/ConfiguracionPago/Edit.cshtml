@@ -16,6 +16,12 @@
         <span asp-validation-for="MontoSena" class="text-danger"></span>
     </div>
     <div class="form-group">
+        <label asp-for="CelularCancelaciones" class="control-label">WhatsApp cancelaciones</label>
+        <input asp-for="CelularCancelaciones" class="form-control" />
+        <span asp-validation-for="CelularCancelaciones" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
         <input type="submit" value="Guardar Cambios" class="btn btn-primary" />
         <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
     </div>

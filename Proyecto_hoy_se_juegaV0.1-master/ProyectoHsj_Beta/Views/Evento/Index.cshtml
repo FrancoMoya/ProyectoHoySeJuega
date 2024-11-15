@@ -56,8 +56,8 @@
                         <td>@item.CorreoClienteEvento</td>
                         <td>@item.TelefonoClienteEvento</td>
                         <td>@item.FechaHorario.ToString("dd-MM-yyyy")</td>
-                        <td>@item.HoraInicio.ToString("HH\\:mm")</td>
-                        <td>@item.HoraFin.ToString("HH\\:mm")</td>
+                        <td>@item.HoraInicio.ToString("HH:mm")</td>
+                        <td>@item.HoraFin.ToString("HH:mm")</td>
                         <td>@item.NombreEstadoReserva</td>
                         <td>
 
@@ -67,8 +67,8 @@
                                 <!-- Botón Cancelar -->
                                 <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
                                         data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
-                                        data-inicio="@item.HoraInicio.ToString("HH\\:mm")"
-                                        data-fin="@item.HoraFin.ToString("HH\\:mm")"
+                                        data-inicio="@item.HoraInicio.ToString("HH:mm")"
+                                        data-fin="@item.HoraFin.ToString("HH:mm")"
                                         data-id="@item.IdEvento">
                                     Cancelar
                                 </button>
@@ -79,8 +79,8 @@
                                 <!-- Botón ELIMINAR -->
                                 <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
                                         data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
-                                        data-inicio="@item.HoraInicio.ToString("HH\\:mm")"
-                                        data-fin="@item.HoraFin.ToString("HH\\:mm")"
+                                        data-inicio="@item.HoraInicio.ToString("HH:mm")"
+                                        data-fin="@item.HoraFin.ToString("HH:mm")"
                                         data-id="@item.IdEvento">
                                     Eliminar
                                 </button>

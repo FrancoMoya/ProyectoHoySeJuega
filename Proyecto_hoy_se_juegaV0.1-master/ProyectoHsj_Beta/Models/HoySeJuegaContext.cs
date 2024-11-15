@@ -119,6 +119,7 @@ public partial class HoySeJuegaContext : DbContext
             entity.Property(e => e.MontoSena)
                 .HasColumnType("decimal(10, 2)")
                 .HasColumnName("Monto_Sena");
+            entity.Property(e => e.CelularCancelaciones).HasColumnName("CelularCancelaciones");
         });
 
         modelBuilder.Entity<EstadoReserva>(entity =>

@@ -20,10 +20,7 @@ builder.Services.AddDbContext<HoySeJuegaContext>(Options =>
     Options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion"));
 });
 
-// seteo de contraseña de aplicacion
-// dotnet user-secrets set "smtp:Password" "dzur havz dgxu vtgd"
 
-// dotnet user-secrets set "smtp:Password" "ibgx iwca lltn tduv"
 builder.Services.AddFluentEmail(builder.Configuration["Smtp:Username"], "HoySeJuega")
     .AddSmtpSender(new SmtpClient(builder.Configuration["Smtp:Host"])
     {
@@ -50,10 +47,7 @@ builder.Services.AddAuthentication(options =>
     )
   .AddGoogle(options =>
   {
-      // Setear los secrets para posteriormente usarlos en el builder (De lo posible hacerlo en la termianal de powershell )
-      // dotnet user-secrets set "Authentication:Google:ClientId" "925616110531-4n85qcuq48afgvi06sdp0qos60g2q8ph.apps.googleusercontent.com"
 
-      // dotnet user-secrets set "Authentication:Google:ClientSecret" "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"
 
       options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
       options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];

@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.MisReservasGetViewModel>
 @{
+    var number = ViewData["number"].ToString();  // Obtiene el número de WhatsApp desde ViewData
 }
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -32,24 +33,24 @@
                 @foreach (var item in Model)
                 {
                     // Generar el mensaje dinámico en Razor
-                    var mensajeCancelacion = "Hola, quiero cancelar mi reserva con fecha " +
+                    var mensajeCancelacion = "Hola, quiero cancelar mi reserva con ID: " + item.IdReserva.ToString() + " y fecha " +
                     item.FechaHorario.ToString("dd-MM-yyyy") +
-                    " de " + item.HoraInicio.ToString("HH\\:mm") +
-                    " a " + item.HoraFin.ToString("HH\\:mm") + " hs.";
+                    " de " + item.HoraInicio.ToString("hh\\:mm") +
+                    " a " + item.HoraFin.ToString("hh\\:mm") + " hs.";
 
 
                     <tr>
                         <td>@item.FechaReserva.ToString(" HH:mm - dd/MM/yyyy")</td>
                         <td>@item.NombreEstadoReserva</td>
                         <td>@item.FechaHorario.ToString("dd-MM-yyyy")</td>
-                        <td>@item.HoraInicio.ToString("HH\\:mm")</td>
-                        <td>@item.HoraFin.ToString("HH\\:mm")</td>
+                        <td>@item.HoraInicio.ToString("hh\\:mm")</td>
+                        <td>@item.HoraFin.ToString("hh\\:mm")</td>
                         <td>
                             <!-- Botón Detalles -->
                             <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDetailsModal"
                                     data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
-                                    data-inicio="@item.HoraInicio.ToString("HH\\:mm")"
-                                    data-fin="@item.HoraFin.ToString("HH\\:mm")">
+                                    data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
+                                    data-fin="@item.HoraFin.ToString("hh\\:mm")">
                                 Detalles
                             </button>
 
@@ -59,8 +60,8 @@
                                 <!-- Botón Cancelar -->
                                 <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
                                         data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
-                                        data-inicio="@item.HoraInicio.ToString("HH\\:mm")"
-                                        data-fin="@item.HoraFin.ToString("HH\\:mm")"
+                                        data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
+                                        data-fin="@item.HoraFin.ToString("hh\\:mm")"
                                         data-msg="@mensajeCancelacion">
                                     Cancelar
                                 </button>
@@ -105,7 +106,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 <!-- Enlace de WhatsApp con el mensaje dinámico -->
-                <a id="whatsappLink" class="btn btn-danger" target="_blank">Cancelar</a>
+                <a id="whatsappLink" class="btn btn-danger" target="_blank" data-whatsapp-number="@number">Cancelar</a>
             </div>
         </div>
     </div>
@@ -144,7 +145,10 @@
         objectFechaSpan.textContent = objectFecha;
         objectHoraSpan.textContent = objectHoraInicio + ' a ' + objectHoraFin + 'hs';
 
+        // Obtener el número de WhatsApp del atributo data-whatsapp-number
+        var number = whatsappLink.getAttribute('data-whatsapp-number');
+
         // Actualizamos el enlace de WhatsApp con el mensaje dinámico
-        whatsappLink.href = "https://wa.me/1234567890?text=" + encodeURIComponent(mensaje);
+        whatsappLink.href = "https://wa.me/" + number + "?text=" + encodeURIComponent(mensaje);
     });
 </script>
