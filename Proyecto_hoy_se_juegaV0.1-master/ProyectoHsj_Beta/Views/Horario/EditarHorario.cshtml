@@ -4,33 +4,125 @@
     ViewData["Title"] = "Editar Horario";
 }
 
-<h2>Editar Horario</h2>
+<!-- Estilos personalizados -->
+<style>
+    body {
+        background-color: dimgrey; /* Fondo suave para todo el cuerpo */
+    }
 
-<form asp-action="EditarHorario" method="post">
-    <input type="hidden" asp-for="IdHorarioDisponible" />
+    .card {
+        border-radius: 20px; /* Bordes redondeados */
+        overflow: hidden;
+    }
 
-    <div class="form-group">
-        <label asp-for="FechaHorario">Fecha</label>
-        <input asp-for="FechaHorario" class="form-control" type="date" />
+    .card-header {
+        background: linear-gradient(135deg, #89f7fe, #66a6ff); /* Degradado elegante en el encabezado */
+        text-align: center;
+        padding: 1.5rem;
+    }
+
+        .card-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: white;
+            margin: 0;
+        }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    label {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        border: 2px solid #e0e0e0;
+        padding: 10px;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #66a6ff; /* Color de foco elegante */
+            box-shadow: none;
+        }
+
+    .btn-primary {
+        background-color: #66a6ff;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #5578e2;
+        }
+
+    .btn-secondary {
+        background-color: #e0e0e0;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-secondary:hover {
+            background-color: #c9c9c9;
+        }
+
+    .form-check-label {
+        color: #666;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 400;
+    }
+
+    .btn {
+        border-radius: 30px; /* Botones con bordes redondeados */
+        padding: 10px 20px;
+        font-family: 'Poppins', sans-serif;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header">
+                    <h2>Editar Horario</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="EditarHorario" method="post">
+                        <input type="hidden" asp-for="IdHorarioDisponible" />
+
+                        <div class="form-group mb-3">
+                            <label asp-for="FechaHorario" class="form-label">Fecha</label>
+                            <input asp-for="FechaHorario" class="form-control" type="date" />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="HoraInicio" class="form-label">Hora Inicio</label>
+                            <input asp-for="HoraInicio" class="form-control" type="time" />
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="HoraFin" class="form-label">Hora Fin</label>
+                            <input asp-for="HoraFin" class="form-control" type="time" />
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input asp-for="DisponibleHorario" class="form-check-input" type="checkbox" id="disponibleCheck" />
+                            <label asp-for="DisponibleHorario" class="form-check-label" for="disponibleCheck">¿Disponible?</label>
+                            <input type="hidden" name="DisponibleHorario" value="false" />
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary px-4">Guardar Cambios</button>
+                            <a asp-action="ManageView" class="btn btn-secondary px-4">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="HoraInicio">Hora Inicio</label>
-        <input asp-for="HoraInicio" class="form-control" type="time" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="HoraFin">Hora Fin</label>
-        <input asp-for="HoraFin" class="form-control" type="time" />
-    </div>
-
-    <div class="form-group form-check">
-        <input asp-for="DisponibleHorario" class="form-check-input" type="checkbox" />
-        <label asp-for="DisponibleHorario" class="form-check-label">¿Disponible?</label>
-        <!-- Campo oculto para manejar el false -->
-        <input type="hidden" name="DisponibleHorario" value="false" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-    <a asp-action="ManageView" class="btn btn-secondary">Cancelar</a>
-</form>
+</div>

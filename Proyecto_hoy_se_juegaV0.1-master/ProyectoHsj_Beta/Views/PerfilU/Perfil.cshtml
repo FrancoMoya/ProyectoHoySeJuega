@@ -23,15 +23,15 @@
                     <div class="card-body">
                         <form>
                             <div class="mb-3">
-                                <label for="NombreUsuario" class="form-label">Nombre de Usuario</label>
+                                <label for="NombreUsuario" class="form-label">Nombre/s</label>
                                 <input type="text" class="form-control" id="NombreUsuario" value="@Model.NombreUsuario" readonly />
                             </div>
                             <div class="mb-3">
-                                <label for="ApellidoUsuario" class="form-label">Apellido de Usuario</label>
+                                <label for="ApellidoUsuario" class="form-label">Apellido/s</label>
                                 <input type="text" class="form-control" id="ApellidoUsuario" value="@Model.ApellidoUsuario" readonly />
                             </div>
                             <div class="mb-3">
-                                <label for="CorreoUsuario" class="form-label">Correo Electrónico</label>
+                                <label for="CorreoUsuario" class="form-label">Correo electrónico</label>
                                 <input type="email" class="form-control" id="CorreoUsuario" value="@Model.CorreoUsuario" readonly />
                             </div>
                             <div class="mb-3">
@@ -40,8 +40,9 @@
                                 <small class="form-text text-muted">La contraseña está encriptada y no es visible.</small>
                             </div>
                             <div class="mb-3">
-                                <label for="TelefonoUsuario" class="form-label">Teléfono</label>
+                                <label for="TelefonoUsuario" class="form-label">Celular</label> <small class="form-text text-muted">(Recuerde siempre tenerlo actualizado)</small>
                                 <input type="text" class="form-control" id="TelefonoUsuario" value="@Model.TelefonoUsuario" readonly />
+                                <a href="@Url.Action("EditMiPerfil", "PerfilU")" class="btn btn-success">Modificar</a>
                             </div>
                             <div class="mb-3 text-center">
 

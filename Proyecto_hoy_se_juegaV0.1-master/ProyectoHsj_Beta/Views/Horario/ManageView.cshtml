@@ -3,10 +3,21 @@
 @{
     ViewData["Title"] = "Horarios Disponibles";
 
+
+
     Layout = "~/Views/Shared/Layout_admin.cshtml";
 }
 
 <style>
+
+    body {
+        background-image: url('/css/img/logo fondo admin.png');
+        background-size: contain; /* Ajusta la imagen para cubrir el fondo */
+        background-repeat: no-repeat; /* Evita que la imagen se repita */
+        background-attachment: fixed; /* Mantiene la imagen fija al hacer scroll */
+        background-position: center; /* Centra la imagen de fondo */
+    }
+
     h1 {
         color: #f8f9fa; /* Color blanco para el encabezado */
         text-align: center;
@@ -101,7 +112,7 @@
         }
 </style>
 
-<h1>Gestión de Horarios Disponibles</h1>
+<h1></h1>
 
 <div class="card shadow-lg">
     <div class="card-header">
@@ -110,13 +121,19 @@
 
     @if (TempData["Message"] != null)
 
+
+
     {
         <div class="alert alert-success" role="alert">
             @TempData["Message"]
         </div>
     }
 
+
+
     else if (TempData["ErrorMessage"] != null)
+
+
 
     {
         <div class="alert alert-danger" role="alert">
@@ -160,13 +177,19 @@
 
         @if (!Model.Any())
 
+
+
         {
             <div class="alert alert-warning" role="alert">
                 No hay horarios disponibles.
             </div>
         }
 
+
+
         else
+
+
 
         {
             <table class="table table-bordered table-striped">
@@ -189,11 +212,17 @@
                             <td>
                                 @if (horario.DisponibleHorario == true)
 
+
+
                                 {
                                     <span class="badge bg-success">Disponible</span>
                                 }
 
+
+
                                 else
+
+
 
                                 {
                                     <span class="badge bg-danger">No Disponible</span>

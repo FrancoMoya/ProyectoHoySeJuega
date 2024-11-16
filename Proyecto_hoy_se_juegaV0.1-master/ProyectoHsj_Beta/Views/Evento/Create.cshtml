@@ -360,7 +360,7 @@
 
             // Función para obtener los horarios disponibles
             function fetchAvailableTimes(day) {
-                fetch(`/Reservas/GetAvailableTimeSlots?fecha=${day}`)
+                fetch(`/Evento/GetAvailableTimeSlotsAdmin?fecha=${day}`)
                     .then(response => response.json())
                     .then(data => {
                         const scheduleList = document.getElementById('schedule-list');

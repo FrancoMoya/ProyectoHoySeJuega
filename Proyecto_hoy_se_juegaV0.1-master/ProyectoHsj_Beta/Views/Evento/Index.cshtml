@@ -6,11 +6,65 @@
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
-    .table-responsive {
-        overflow-x: auto;
-    }
     body {
         background-color: #333333 !important;
+        color: #ffffff;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+    }
+
+    .card {
+        background-color: #444444;
+        border: none;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        color: #ffffff;
+        max-width: 100%;
+    }
+
+    .card-header {
+        background-color: #555555;
+        border-bottom: 2px solid #777777;
+        font-size: 1rem;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .btn {
+        border-radius: 5px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+    .btn-warning {
+        color: #000;
+        background-color: #ffc107;
+        border: none;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+    }
+
+    .card-body p {
+        font-size: 0.9rem;
+        margin-bottom: 5px;
     }
 
     .list-group-item {
@@ -21,75 +75,56 @@
         font-size: 1.2rem; /* Aumenta el tamaño de la fuente para mayor legibilidad */
         border-radius: 8px; /* Bordes redondeados para un aspecto más moderno */
     }
-
 </style>
 
-<h1 style="color: white">Eventos</h1>
-<p>
-    <a asp-action="Create" class="btn btn-primary">Nuevo EVENTO</a>
-</p>
-
 <div class="container mt-4">
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered table-dark">
-            <thead class="thead-light">
-                <tr>
-                    <th>Fecha de creación</th>
-                    <th>Titulo</th>
-                    <th>Descripción</th>
-                    <th>Correo</th>
-                    <th>Celular</th>
-                    <th>Fecha</th>
-                    <th>Hora de Inicio</th>
-                    <th>Hora de finalización</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@item.FechaEvento.ToString(" HH:mm - dd/MM/yyyy")</td>
-                        <td>@item.NombreEvento</td>
-                        <td>@item.DescripcionEvento</td>
-                        <td>@item.CorreoClienteEvento</td>
-                        <td>@item.TelefonoClienteEvento</td>
-                        <td>@item.FechaHorario.ToString("dd-MM-yyyy")</td>
-                        <td>@item.HoraInicio.ToString("HH:mm")</td>
-                        <td>@item.HoraFin.ToString("HH:mm")</td>
-                        <td>@item.NombreEstadoReserva</td>
-                        <td>
+    <h1>Eventos</h1>
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Nuevo EVENTO</a>
+    </p>
 
-                            <!-- Botón Cancelar (solo visible si el estado es CONFIRMADA) -->
-                            @if (item.NombreEstadoReserva == "CONFIRMADA")
-                            {
-                                <!-- Botón Cancelar -->
-                                <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
-                                        data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
-                                        data-inicio="@item.HoraInicio.ToString("HH:mm")"
-                                        data-fin="@item.HoraFin.ToString("HH:mm")"
-                                        data-id="@item.IdEvento">
-                                    Cancelar
-                                </button>
-                            }
-                            <!-- Botón Eliminar (solo visible si el estado es PENDIENTE o CANCELADA) -->
-                            @if (item.NombreEstadoReserva != "CONFIRMADA")
-                            {
-                                <!-- Botón ELIMINAR -->
-                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
-                                        data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
-                                        data-inicio="@item.HoraInicio.ToString("HH:mm")"
-                                        data-fin="@item.HoraFin.ToString("HH:mm")"
-                                        data-id="@item.IdEvento">
-                                    Eliminar
-                                </button>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    <div class="grid-container">
+        @foreach (var item in Model)
+        {
+            <div class="card">
+                <div class="card-header">
+                    @item.NombreEvento
+                </div>
+                <div class="card-body">
+                    <p><strong>Creación:</strong> @item.FechaEvento.ToString("HH:mm - dd/MM/yyyy")</p>
+                    <p><strong>Descripción:</strong> @item.DescripcionEvento</p>
+                    <p><strong>Correo:</strong> @item.CorreoClienteEvento</p>
+                    <p><strong>Celular:</strong> @item.TelefonoClienteEvento</p>
+                    <p><strong>Fecha:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
+                    <p><strong>Hora de Inicio:</strong> @item.HoraInicio.ToString("HH:mm")</p>
+                    <p><strong>Hora de finalización:</strong> @item.HoraFin.ToString("HH:mm")</p>
+                    <p><strong>Estado:</strong> @item.NombreEstadoReserva</p>
+
+                    <div class="d-flex justify-content-end">
+                        @if (item.NombreEstadoReserva == "CONFIRMADA")
+                        {
+                            <button type="button" class="btn btn-warning btn-sm me-2" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
+                                    data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                    data-inicio="@item.HoraInicio.ToString("HH:mm")"
+                                    data-fin="@item.HoraFin.ToString("HH:mm")"
+                                    data-id="@item.IdEvento">
+                                Cancelar
+                            </button>
+                        }
+                        @if (item.NombreEstadoReserva != "CONFIRMADA")
+                        {
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+                                    data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                    data-inicio="@item.HoraInicio.ToString("HH:mm")"
+                                    data-fin="@item.HoraFin.ToString("HH:mm")"
+                                    data-id="@item.IdEvento">
+                                Eliminar
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 </div>
 

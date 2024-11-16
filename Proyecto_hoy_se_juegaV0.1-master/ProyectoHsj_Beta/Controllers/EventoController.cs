@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using ProyectoHsj_Beta.Models;
 using ProyectoHsj_Beta.Services;
 using ProyectoHsj_Beta.ViewsModels;
@@ -27,6 +28,31 @@ namespace ProyectoHsj_Beta.Controllers
             return View(eventos);
         }
 
+        //Obtener y renderizar los horarios PARA EVENTOS ADMIN
+        [HttpGet]
+        public async Task<IActionResult> GetAvailableTimeSlotsAdmin(DateTime fecha) //Modificado para incluir solo los horarios dentro de 2 semanas
+        {
+            TimeOnly horaLimite = TimeOnly.FromDateTime(DateTime.Now);
+            var horarios = await _context.HorarioDisponibles
+                .Where(h => (h.DisponibleHorario ?? false) && h.FechaHorario == DateOnly.FromDateTime(fecha) && (
+                    // Si es hoy, la hora de inicio debe ser mayor o igual a la hora actual
+                    (h.FechaHorario == DateOnly.FromDateTime(DateTime.Now) && h.HoraInicio >= horaLimite) ||
+                    // Si no es hoy, cualquier horario de inicio futuro es válido
+                    h.FechaHorario > DateOnly.FromDateTime(DateTime.Now)
+                    )) // Hasta 2 semanas después)
+                .Select(h => new
+                {
+                    IdHorarioDisponible = h.IdHorarioDisponible, // Agrega el ID
+                    HoraInicio = h.HoraInicio.ToString("HH:mm"),
+                    HoraFin = h.HoraFin.ToString("HH:mm")
+                })
+                .ToListAsync();
+
+            // Cambiar el return para incluir ID y las horas
+            return Json(horarios);
+        }
+
+
         // POST: EventoController/Cancel/5
         [HttpPost, ActionName("Cancel")]
         [ValidateAntiForgeryToken]
@@ -37,15 +63,11 @@ namespace ProyectoHsj_Beta.Controllers
             {
                 var horario = await _context.HorarioDisponibles
                                              .FirstOrDefaultAsync(h => h.IdHorarioDisponible == evento.IdHorarioDisponible);
-                if (horario != null)
+                var estado = evento.IdEstadoReserva;
+                if ((horario != null) && (estado != null))
                 {
                     horario.DisponibleHorario = true;
                     // Guardar los cambios en la tabla HorariosDisponibles
-                    await _context.SaveChangesAsync();
-                }
-                var estado = evento.IdEstadoReserva;
-                if (estado != null)
-                {
                     evento.IdEstadoReserva = 3;
                     // Cambiar a estado cancelado
                     await _context.SaveChangesAsync();

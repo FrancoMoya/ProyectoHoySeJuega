@@ -300,7 +300,8 @@
                     const dayString = formatDate(day);
                     const isSelected = selectedDate && formatDate(selectedDate) === dayString;
                     const isToday = formatDate(new Date()) === dayString;
-                    const isDisabled = day < new Date(); // Fecha anterior al día actual
+                    const isDisabled = day < new Date().setHours(0, 0, 0, 0) || day > new Date().setDate(new Date().getDate() + 14);
+                    //Desactivar los dias anteriores y mayores a 14 dias
 
                     const dayElement = document.createElement('div');
                     dayElement.classList.add('calendar-day');

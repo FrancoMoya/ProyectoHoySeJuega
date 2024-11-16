@@ -2,27 +2,123 @@
 
 @{
     Layout = "~/Views/Shared/Layout_admin.cshtml";
+
     ViewData["Title"] = "Editar Configuración de Pago";
 }
 
-<h2>Editar Configuración de Pago</h2>
+<!-- Estilos personalizados -->
+<style>
+    body {
+        background-image: url('/css/img/logo fondo admin.png');
+        background-size: contain; /* Ajusta la imagen para cubrir el fondo */
+        background-repeat: no-repeat; /* Evita que la imagen se repita */
+        background-attachment: fixed; /* Mantiene la imagen fija al hacer scroll */
+        background-position: center; /* Centra la imagen de fondo */
+    }
+    .card {
+        border-radius: 20px;
+        overflow: hidden;
+    }
 
-<form asp-action="Edit">
-    <input type="hidden" asp-for="IdConfiguracion" />
+    .card-header {
+        background: linear-gradient(135deg, #89f7fe, #66a6ff);
+        text-align: center;
+        padding: 1.5rem;
+    }
 
-    <div class="form-group">
-        <label asp-for="MontoSena" class="control-label">Monto Seña</label>
-        <input asp-for="MontoSena" class="form-control" />
-        <span asp-validation-for="MontoSena" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="CelularCancelaciones" class="control-label">WhatsApp cancelaciones</label>
-        <input asp-for="CelularCancelaciones" class="form-control" />
-        <span asp-validation-for="CelularCancelaciones" class="text-danger"></span>
-    </div>
+        .card-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: white;
+            margin: 0;
+        }
 
-    <div class="form-group">
-        <input type="submit" value="Guardar Cambios" class="btn btn-primary" />
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    .card-body {
+        padding: 2rem;
+    }
+
+    label {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        border: 2px solid #e0e0e0;
+        padding: 10px;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #66a6ff;
+            box-shadow: none;
+        }
+
+    .btn-primary {
+        background-color: #66a6ff;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #5578e2;
+        }
+
+    .btn-secondary {
+        background-color: #e0e0e0;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-secondary:hover {
+            background-color: #c9c9c9;
+        }
+
+    .form-check-label {
+        color: #666;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 400;
+    }
+
+    .btn {
+        border-radius: 30px;
+        padding: 10px 20px;
+        font-family: 'Poppins', sans-serif;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header">
+                    <h2>Editar Configuración de Pago</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit">
+                        <input type="hidden" asp-for="IdConfiguracion" />
+
+                        <div class="form-group mb-3">
+                            <label asp-for="MontoSena" class="control-label">Monto Seña ($)</label>
+                            <input asp-for="MontoSena" class="form-control" />
+                            <span asp-validation-for="MontoSena" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="CelularCancelaciones" class="control-label">WhatsApp Cancelaciones</label>
+                            <input asp-for="CelularCancelaciones" class="form-control" />
+                            <span asp-validation-for="CelularCancelaciones" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-</form>
+</div>

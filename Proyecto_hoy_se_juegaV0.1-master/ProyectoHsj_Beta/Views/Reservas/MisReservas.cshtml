@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.MisReservasGetViewModel>
 @{
-    var number = ViewData["number"].ToString();  // Obtiene el número de WhatsApp desde ViewData
+    var number = ViewData["number"]?.ToString();  // Obtiene el número de WhatsApp desde ViewData
 }
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -17,61 +17,70 @@
 <h1 style="color: white">Mis reservas</h1>
 
 <div class="container mt-4">
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered table-dark">
-            <thead class="thead-light">
-                <tr>
-                    <th>Fecha de creación</th>
-                    <th>Estado</th>
-                    <th>Fecha reservada</th>
-                    <th>Hora de Inicio</th>
-                    <th>Hora de finalización</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    // Generar el mensaje dinámico en Razor
-                    var mensajeCancelacion = "Hola, quiero cancelar mi reserva con ID: " + item.IdReserva.ToString() + " y fecha " +
-                    item.FechaHorario.ToString("dd-MM-yyyy") +
-                    " de " + item.HoraInicio.ToString("hh\\:mm") +
-                    " a " + item.HoraFin.ToString("hh\\:mm") + " hs.";
-
-
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info" role="alert">
+            Aún no cuenta con reservas asociadas.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-dark">
+                <thead class="thead-light">
                     <tr>
-                        <td>@item.FechaReserva.ToString(" HH:mm - dd/MM/yyyy")</td>
-                        <td>@item.NombreEstadoReserva</td>
-                        <td>@item.FechaHorario.ToString("dd-MM-yyyy")</td>
-                        <td>@item.HoraInicio.ToString("hh\\:mm")</td>
-                        <td>@item.HoraFin.ToString("hh\\:mm")</td>
-                        <td>
-                            <!-- Botón Detalles -->
-                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDetailsModal"
-                                    data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
-                                    data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
-                                    data-fin="@item.HoraFin.ToString("hh\\:mm")">
-                                Detalles
-                            </button>
+                        <th>Fecha de creación</th>
+                        <th>Estado</th>
+                        <th>Fecha reservada</th>
+                        <th>Hora de Inicio</th>
+                        <th>Hora de finalización</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        // Generar el mensaje dinámico en Razor
+                        var mensajeCancelacion = "Hola, quiero cancelar mi reserva con ID: " + item.IdReserva.ToString() + " y fecha " +
+                        item.FechaHorario.ToString("dd-MM-yyyy") +
+                        " de " + item.HoraInicio.ToString("hh\\:mm") +
+                        " a " + item.HoraFin.ToString("hh\\:mm") + " hs.";
 
-                            <!-- Botón Cancelar (solo visible si el estado es CONFIRMADA) -->
-                            @if (item.NombreEstadoReserva == "CONFIRMADA")
-                            {
-                                <!-- Botón Cancelar -->
-                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
+
+                        <tr>
+                            <td>@item.FechaReserva.ToString(" HH:mm - dd/MM/yyyy")</td>
+                            <td>@item.NombreEstadoReserva</td>
+                            <td>@item.FechaHorario.ToString("dd-MM-yyyy")</td>
+                            <td>@item.HoraInicio.ToString("hh\\:mm")</td>
+                            <td>@item.HoraFin.ToString("hh\\:mm")</td>
+                            <td>
+                                <!-- Botón Detalles -->
+                                <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDetailsModal"
                                         data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
                                         data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
-                                        data-fin="@item.HoraFin.ToString("hh\\:mm")"
-                                        data-msg="@mensajeCancelacion">
-                                    Cancelar
+                                        data-fin="@item.HoraFin.ToString("hh\\:mm")">
+                                    Detalles
                                 </button>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+
+                                <!-- Botón Cancelar (solo visible si el estado es CONFIRMADA) -->
+                                @if (item.NombreEstadoReserva == "CONFIRMADA")
+                                {
+                                    <!-- Botón Cancelar -->
+                                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
+                                            data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                            data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
+                                            data-fin="@item.HoraFin.ToString("hh\\:mm")"
+                                            data-msg="@mensajeCancelacion">
+                                        Cancelar
+                                    </button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 </div>
 
 <!-- Modal de Detalles -->
@@ -149,6 +158,6 @@
         var number = whatsappLink.getAttribute('data-whatsapp-number');
 
         // Actualizamos el enlace de WhatsApp con el mensaje dinámico
-        whatsappLink.href = "https://wa.me/" + number + "?text=" + encodeURIComponent(mensaje);
+        whatsappLink.href = "https://wa.me/54" + number + "?text=" + encodeURIComponent(mensaje);
     });
 </script>

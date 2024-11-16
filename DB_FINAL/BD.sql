@@ -158,33 +158,44 @@ INSERT INTO REPORTE (Mes_Reporte, Anio_Reporte, Usuarios_Registrados_Reporte, Re
 (10, 2024, 100, 200, 'Informe sobre el crecimiento de usuarios y reservas en octubre de 2024.', 1),
 (9, 2024, 150, 180, 'Informe sobre el rendimiento de reservas en septiembre de 2024.', 2);
 INSERT INTO ROL (Nombre_Rol) VALUES 
-('Admin'),
-('Empleado'),
-('Cliente');
+('CLIENTE'), 
+('ADMIN'), 
+('EMPLEADO'); 
 INSERT INTO USUARIO (Nombre_Usuario, Apellido_Usuario, Correo_Usuario, Contrasenia_Usuario, Telefono_Usuario, ID_rol) VALUES 
 ('Carlos', 'Sánchez', 'franco@gmail.com', 'hola', '1234567890', 1),
 ('Laura', 'Méndez', 'laura.mendez@example.com', 'hashedpassword2', '0987654321', 3),
 ('Laura2', 'Méndez2', 'laura.mendez2@example.com', 'hashedpassword2', '0987654321', 3),
 ('Lauta', 'Méndez3', 'laura.mendez3@example.com', 'hashedpassword2', '0987654321', 2);
 INSERT INTO PERMISO (Nombre_Permiso) VALUES 
-('Crear Reserva'),
-('Cancelar Reserva'),
-('Ver Reportes'),
-('Gestionar Canchas');
+('Crear reservas'),
+('Administrar horarios'),
+('Administrar reservas'),
+('Administrar eventos'),
+('Administrar usuarios'),
+('Administrar roles'),
+('Ver estadísticas'),
+('Administrar monto de pago'),
+('Ver auditoría');
 -- Asignar permisos a Administrador
 INSERT INTO PERMISO_ROL (ID_rol, ID_permiso) VALUES 
-(1, 1), -- Administrador - Crear Reserva
-(1, 2), -- Administrador - Cancelar Reserva
-(1, 3), -- Administrador - Ver Reportes
-(1, 4); -- Administrador - Gestionar Canchas
+(2, 1), 
+(2, 2), 
+(2, 3), 
+(2, 4),
+(2, 5), 
+(2, 6), 
+(2, 7),
+(2, 8), 
+(2, 9); 
 -- Asignar permisos a Empleado
 INSERT INTO PERMISO_ROL (ID_rol, ID_permiso) VALUES 
-(2, 3), -- Empleado - Ver Reportes
-(2, 4); -- Empleado - Gestionar Canchas
+(3, 1), 
+(3, 2),
+(3, 3), 
+(3, 4); 
 -- Asignar permisos a Cliente
 INSERT INTO PERMISO_ROL (ID_rol, ID_permiso) VALUES 
-(3, 1), -- Usuario - Crear Reserva
-(3, 2); -- Usuario - Cancelar Reserva
+(1, 1);
 INSERT INTO ACCION_REALIZADA (Titulo_Accion_Realizada) VALUES 
 ('Login'),
 ('Reserva Creada'),
@@ -195,12 +206,12 @@ INSERT INTO AUDITORIA (ID_usuario, Seccion, Descripcion_De_Accion, ID_accion_rea
 INSERT INTO CANCHA (Nombre_Cancha, Ubicacion_Cancha) VALUES 
 ('Cancha A', 'Centro Deportivo Norte');
 INSERT INTO HORARIO_DISPONIBLE (ID_cancha, Fecha_Horario, Hora_Inicio, Hora_Fin) VALUES 
-(1, '2024-11-16', '08:00:00', '09:00:00'),
-(1, '2024-11-16', '09:00:00', '10:00:00'),
-(1, '2024-11-16', '10:00:00', '11:00:00'),
-(1, '2024-11-16', '11:00:00', '12:00:00'),
-(1, '2024-11-15', '12:00:00', '13:00:00'),
-(1, '2024-11-15', '13:00:00', '14:00:00');
+(1, '2024-11-30', '08:00:00', '09:00:00'),
+(1, '2024-11-30', '09:00:00', '10:00:00'),
+(1, '2024-11-30', '10:00:00', '11:00:00'),
+(1, '2024-11-30', '11:00:00', '12:00:00'),
+(1, '2024-11-30', '12:00:00', '13:00:00'),
+(1, '2024-11-30', '13:00:00', '14:00:00');
 SELECT * FROM HORARIO_DISPONIBLE
 INSERT INTO ESTADO_RESERVA (Nombre_Estado_Reserva) VALUES 
 ('PENDIENTE'),

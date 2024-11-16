@@ -1,0 +1,85 @@
+﻿@model ProyectoHsj_Beta.ViewsModels.EditMiPerfilViewModel
+
+@{
+}
+
+<h2 class="text-center mt-4">Modificar número de celular</h2>
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg">
+            <div class="card-body">
+                <form asp-action="EditMiPerfil" asp-controller="PerfilU" asp-route-id="@Model.IdUsuario" method="post">
+                    <input type="hidden" asp-for="IdUsuario" />
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="TelefonoUsuario" class="form-label">Nuevo número de celular</label>
+                        <input asp-for="TelefonoUsuario" class="form-control" placeholder="Ingrese su número de celular" />
+                        <span asp-validation-for="TelefonoUsuario" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle-fill"></i> Guardar
+                        </button>
+                        <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left-circle-fill"></i> Cancelar
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            border: none;
+            border-radius: 15px;
+        }
+        h2 {
+            color: ghostwhite;
+        }
+        .btn-primary {
+            background-color: #007BFF;
+            border-color: #007BFF;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-secondary {
+            background-color: #6C757D;
+            border-color: #6C757D;
+        }
+        .btn-secondary:hover {
+            background-color: #5A6268;
+        }
+    </style>
+}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const inputTelefono = document.querySelector('input[name="TelefonoUsuario"]');
+
+        inputTelefono.addEventListener("input", () => {
+            const telefono = inputTelefono.value;
+            const errorSpan = inputTelefono.nextElementSibling;
+
+            // Verificar que solo contiene números y que tiene 10 dígitos
+            if (!/^\d{0,10}$/.test(telefono)) {
+                errorSpan.textContent = "Solo se permiten números (máximo 10 dígitos).";
+            } else if (telefono.length > 10) {
+                errorSpan.textContent = "El número no debe exceder 10 dígitos.";
+            } else {
+                errorSpan.textContent = ""; // No hay errores
+            }
+        });
+    });
+</script>
+
+
+

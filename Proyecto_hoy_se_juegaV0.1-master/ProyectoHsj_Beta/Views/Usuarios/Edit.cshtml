@@ -2,41 +2,130 @@
 
 @{
     ViewData["Title"] = "Editar Usuario";
+
     Layout = "~/Views/Shared/Layout_admin.cshtml";
 }
-    <h1>Editar Usuario</h1>
-    <hr />
 
-    <div class="row">
-        <div class="col-md-4">
-            <form asp-action="Edit" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<!-- Estilos personalizados -->
+<style>
+    body {
+        background-image: url('/css/img/logo fondo admin.png');
+        background-size: contain; /* Ajusta la imagen para cubrir el fondo */
+        background-repeat: no-repeat; /* Evita que la imagen se repita */
+        background-attachment: fixed; /* Mantiene la imagen fija al hacer scroll */
+        background-position: center; /* Centra la imagen de fondo */
+    }
 
-                <input type="hidden" asp-for="IdUsuario" />
+    .card {
+        border-radius: 20px;
+        overflow: hidden;
+    }
 
-                <div class="form-group mb-3">
-                    <label asp-for="Activo" class="control-label">¿Activo?</label>
-                    <select asp-for="Activo" class="form-control" asp-items="Model.ActivoOptions"></select>
-                    <span asp-validation-for="Activo" class="text-danger"></span>
+    .card-header {
+        background: linear-gradient(135deg, #89f7fe, #66a6ff);
+        text-align: center;
+        padding: 1.5rem;
+    }
+
+        .card-header h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: white;
+            margin: 0;
+        }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    label {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        border: 2px solid #e0e0e0;
+        padding: 10px;
+        transition: border-color 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #66a6ff;
+            box-shadow: none;
+        }
+
+    .btn-primary {
+        background-color: #66a6ff;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #5578e2;
+        }
+
+    .btn-secondary {
+        background-color: #e0e0e0;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-secondary:hover {
+            background-color: #c9c9c9;
+        }
+
+    .form-check-label {
+        color: #666;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 400;
+    }
+
+    .btn {
+        border-radius: 30px;
+        padding: 10px 20px;
+        font-family: 'Poppins', sans-serif;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0">
+                <div class="card-header">
+                    <h2>Editar Usuario</h2>
                 </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                <div class="form-group mb-3">
-                    <label asp-for="IdRol" class="control-label">Rol</label>
-                    <select asp-for="IdRol" asp-items="Model.Roles" class="form-control">
-                        <option value="">Seleccione un rol</option> <!-- Valor vacío para "Sin rol" -->
-                    </select>
-                    <span asp-validation-for="IdRol" class="text-danger"></span>
+                        <input type="hidden" asp-for="IdUsuario" />
+
+                        <div class="form-group mb-3">
+                            <label asp-for="Activo" class="control-label">¿Activo?</label>
+                            <select asp-for="Activo" class="form-control" asp-items="Model.ActivoOptions"></select>
+                            <span asp-validation-for="Activo" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label asp-for="IdRol" class="control-label">Rol</label>
+                            <select asp-for="IdRol" asp-items="Model.Roles" class="form-control">
+                                <option value="">Seleccione un rol</option>
+                            </select>
+                            <span asp-validation-for="IdRol" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
+                        </div>
+                    </form>
                 </div>
-
-
-                <div class="form-group d-flex justify-content-between">
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                    <a asp-action="Index" class="btn btn-secondary">Volver a la lista</a>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
-
-
+</div>
 
 
