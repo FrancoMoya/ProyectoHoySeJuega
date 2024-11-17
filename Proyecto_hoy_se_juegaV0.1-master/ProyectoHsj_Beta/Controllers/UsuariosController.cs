@@ -90,11 +90,12 @@ namespace ProyectoHsj_Beta.Controllers
                     usuario.Activo = viewModel.Activo;
                     usuario.IdRol = viewModel.IdRol ?? (int?)null;  // Esta es la forma correcta de manejarlo
 
+                    var descripcionAuditoria = $"Se ha editado el rol y/o el tipo activo de un usuario. Detalles, ID del usuario: {usuario.IdUsuario}.";
                     _context.Update(usuario);
                     await _context.SaveChangesAsync();
                     await _auditoriaService.RegistrarAuditoriaAsync(
                     seccion: "Administración",
-                    descripcion: "Se ha editado el rol y/o el tipo activo de un usuario.",
+                    descripcion: descripcionAuditoria,
                     idAccion: 2);
                 }
                 catch (DbUpdateConcurrencyException)
@@ -147,14 +148,16 @@ namespace ProyectoHsj_Beta.Controllers
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario != null)
             {
+                var descripcionAuditoria = $"Se ha eliminado a un usuario. Detalles, ID del usuario: {usuario.IdUsuario}.";
                 _context.Usuarios.Remove(usuario);
+                await _context.SaveChangesAsync();
+                await _auditoriaService.RegistrarAuditoriaAsync(
+                seccion: "Administración",
+                descripcion: descripcionAuditoria,
+                idAccion: 3);
             }
 
-            await _context.SaveChangesAsync();
-            await _auditoriaService.RegistrarAuditoriaAsync(
-                    seccion: "Administración",
-                    descripcion: "Se ha eliminado a un usuario.",
-                    idAccion: 3);
+            
             return RedirectToAction(nameof(Index));
         }
 

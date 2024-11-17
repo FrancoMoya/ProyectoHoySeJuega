@@ -77,9 +77,11 @@ namespace ProyectoHsj_Beta.Controllers
             return Redirect(preferencia.InitPoint);
         }
 
+
         [HttpGet]
         public async Task<IActionResult> Exito(string external_reference, decimal montoPago)
         {
+            Console.WriteLine("Probemos que trae la referencia :" + external_reference);
             // Convertimos external_reference a entero para obtener el ID de la reserva
             if (!int.TryParse(external_reference, out int reservaId))
             {
@@ -92,7 +94,13 @@ namespace ProyectoHsj_Beta.Controllers
             {
                 return NotFound("Reserva no encontrada.");
             }
-
+            var configuracionPago = await _context.ConfiguracionPagos.FirstOrDefaultAsync();
+            if (configuracionPago == null)
+            {
+                throw new InvalidOperationException("No se encontró la configuración de pago.");
+            }
+            montoPago = configuracionPago.MontoSena;
+            Console.WriteLine("El monto es :" + montoPago);
             // Crea un nuevo registro de pago
             var pago = new Pago
             {
@@ -105,54 +113,24 @@ namespace ProyectoHsj_Beta.Controllers
             _context.Pagos.Add(pago);
 
             // Actualiza el estado de la reserva a CONFIRMADA (por ejemplo, usando un código de estado 2)
-            reserva.IdEstadoReservaNavigation.IdEstadoReserva = 2; // Asegúrate de que 2 signifique CONFIRMADA en tu lógica
-
+            reserva.IdEstadoReserva = 2; // Asegúrate de que 2 signifique CONFIRMADA en tu lógica
+            var descripcionAuditoria = $"El usuario ha concretado con éxito el pago de su reserva con los siguientes detalles, ID: {reserva.IdReserva}, Monto: ${montoPago.ToString("N0")}, Fecha: {DateTime.Now}.";
             // Guarda los cambios en la base de datos
             await _context.SaveChangesAsync();
             await _auditoriaService.RegistrarAuditoriaAsync(
-                seccion: "Pagos",
-                descripcion: "El usuario concretado con éxito el pago de una reserva.",
+                seccion: "Administración",
+                descripcion: descripcionAuditoria,
                 idAccion: 1);
 
-            return View("PagoExitoso", pago); // Redirige a una vista de confirmación
-            //RETORNAR A PAGINA DE INICIO
-        }
-        // GET: Pagoes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var pago = await _context.Pagos
-                .Include(p => p.IdReservaNavigation)
-                .FirstOrDefaultAsync(m => m.IdPago == id);
-            if (pago == null)
-            {
-                return NotFound();
-            }
-
-            return View(pago);
+            return RedirectToAction("PagoExitoso", "Pagoes", new { reservaId, montoPago }); // Redirige a una vista de confirmación
         }
 
-        // POST: Pagoes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpGet]
+        public IActionResult PagoExitoso(int reservaId, decimal montoPago)
         {
-            var pago = await _context.Pagos.FindAsync(id);
-            if (pago != null)
-            {
-                _context.Pagos.Remove(pago);
-            }
-
-            await _context.SaveChangesAsync();
-            await _auditoriaService.RegistrarAuditoriaAsync(
-                seccion: "Pagos",
-                descripcion: "El usuario ha eliminado un registro de pago", //REVISAR!!!!!!
-                idAccion: 3);
-            return RedirectToAction(nameof(Index));
+            ViewBag.ReservaId = reservaId;
+            ViewBag.MontoSena = montoPago;
+            return View();
         }
 
         private bool PagoExists(int id)

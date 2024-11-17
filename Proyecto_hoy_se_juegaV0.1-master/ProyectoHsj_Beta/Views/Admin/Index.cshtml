@@ -71,33 +71,38 @@
         #reservationDetailModal .list-group-item .btn {
             border-radius: 8px; /* Bordes redondeados en los botones */
         }
-        /* Diseño Responsivo */
-    @@media (max-width: 768px) {
-        #calendar {
-            max-width: 100%;
-            margin: 10px auto;
-        }
 
-        .fc-toolbar {
-            flex-direction: column;
-        }
-
-        .fc-toolbar-title {
-            font-size: 1.2em;
-            margin-bottom: 10px;
-        }
-
-        .modal-dialog {
-            margin: 10px;
-        }
-
-        .modal-body p {
-            font-size: 0.9em;
-        }
-    }
     .fc-toolbar-title {
         text-transform: uppercase; /* Pone en mayúsculas el nombre del mes */
     }
+        /* Diseño Responsivo */
+    @@media (max-width: 768px) {
+    #calendar {
+        max-width: 100%;
+        margin: 10px auto;
+        /* Asegura que el calendario ocupe más espacio verticalmente */
+        min-height: 80vh; /* Ajusta el valor según lo que necesites */
+        height: auto; /* Si no quieres que se ajuste a un valor fijo, puedes usar auto */
+    }
+
+    .fc-toolbar {
+        flex-direction: column;
+    }
+
+    .fc-toolbar-title {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+    }
+
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    .modal-body p {
+        font-size: 0.9em;
+    }
+}
+
     
 </style>
 
@@ -138,13 +143,28 @@
             locale: 'es',
             initialView: window.innerWidth <= 768 ? 'timeGridWeek' : 'dayGridMonth',
             buttonText: { today: 'Hoy' },
-            events: '/Admin/GetReservas',
+            events: function (fetchInfo, successCallback, failureCallback) {
+                fetch('/Admin/GetReservas')
+                    .then(response => response.json())
+                    .then(events => {
+                        console.log(events);  // Verifica los eventos en la consola
+
+                        // Filtra los eventos para mostrar solo los confirmados
+                        const confirmedEvents = events.filter(event => event.estado === 'CONFIRMADA');
+                        successCallback(confirmedEvents);
+                    })
+                    .catch(error => {
+                        console.error('Error al obtener los eventos:', error);
+                        failureCallback(error);
+                    });
+            },
+
             buttonText: {
-            today: 'Hoy',
-            month: 'Mes',
-            week: 'Semana',
-            day: 'Día',
-            list: 'Lista' // Esto es para la vista de lista si la estás utilizando
+                today: 'Hoy',
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                list: 'Lista' // Esto es para la vista de lista si la estás utilizando
             },
 
             // Configura el formato del título del mes en mayúsculas
@@ -153,14 +173,14 @@
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
-            titleFormat: { 
+            titleFormat: {
                 month: 'long', // Formato largo para el mes (ej. "enero", "febrero", etc.)
                 year: 'numeric'
             },
-            eventTimeFormat: { 
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false // Si prefieres usar el formato de 24 horas
+            eventTimeFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false // Si prefieres usar el formato de 24 horas
             },
             // Configura las horas visibles en las vistas 'timeGrid'
             slotMinTime: "08:00:00", // Hora de inicio visible (ejemplo: 08:00 AM)
@@ -172,16 +192,22 @@
             // Mostrar las horas en el lado izquierdo
             slotEventOverlap: false, // Evitar que los eventos se superpongan
 
-
             // Este evento cubre clics en toda la celda
             dateClick: function (info) {
                 const reservasEnFecha = calendar.getEvents().filter(
                     r => new Date(r.start).toDateString() === info.date.toDateString()
                 );
 
-                if (reservasEnFecha.length > 0) {
-                    let reservasHtml = '<ul class="list-group">';
+                let reservasHtml = '<ul class="list-group">';
+                // Formateamos la fecha que se tocó a un formato legible (por ejemplo: "Martes, 17 de Octubre de 2024")
+                const fechaFormateada = info.date.toLocaleDateString('es-ES', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
 
+                if (reservasEnFecha.length > 0) {
                     reservasEnFecha.forEach(reserva => {
                         const showCancelButton = reserva.extendedProps.estado === "CONFIRMADA";
                         reservasHtml += `
@@ -198,27 +224,66 @@
                                 </li>
                             `;
                     });
-
-                    reservasHtml += '</ul>';
-                    document.querySelector('#reservationDetailModal .modal-body').innerHTML = reservasHtml;
-
-                    const modal = new bootstrap.Modal(document.getElementById('reservationDetailModal'));
-                    modal.show();
-
-                    document.querySelectorAll('.cancelar-reserva-btn').forEach(button => {
-                        button.addEventListener('click', function () {
-                            cancelarReserva(this.dataset.id);
-                        });
-                    });
-
-                    document.querySelectorAll('.eliminar-reserva-btn').forEach(button => {
-                        button.addEventListener('click', function () {
-                            eliminarReserva(this.dataset.id);
-                        });
-                    });
                 } else {
-                    alert('No hay reservas para esta fecha.');
+                    reservasHtml = `<p>No hay reservas para la fecha: <strong>${fechaFormateada}</strong>.</p>`;
                 }
+
+                reservasHtml += '</ul>';
+                document.querySelector('#reservationDetailModal .modal-body').innerHTML = reservasHtml;
+
+                const modal = new bootstrap.Modal(document.getElementById('reservationDetailModal'));
+                modal.show();
+
+                // Funcionalidad para cancelar reserva
+                document.querySelectorAll('.cancelar-reserva-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        cancelarReserva(this.dataset.id);
+                    });
+                });
+
+                // Funcionalidad para eliminar reserva
+                document.querySelectorAll('.eliminar-reserva-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        eliminarReserva(this.dataset.id);
+                    });
+                });
+            },
+
+            eventClick: function (info) {
+                const reserva = info.event.extendedProps;
+                let reservasHtml = '<ul class="list-group">';
+
+                reservasHtml += `
+                        <li class="list-group-item">
+                            <p><strong>ID:</strong> ${reserva.idReserva}</p>
+                            <p><strong>Usuario:</strong> ${reserva.usuarioNombre}</p>
+                            <p><strong>Teléfono:</strong> ${reserva.usuarioTelefono}</p>
+                            <p><strong>Estado:</strong> ${reserva.estado}</p>
+                            <p><strong>Hora:</strong> ${new Date(info.event.start).toLocaleTimeString()}</p>
+                            <div class="d-flex justify-content-end">
+                                ${reserva.estado === "CONFIRMADA" ? `<button class="btn btn-warning btn-sm me-2 cancelar-reserva-btn" data-id="${reserva.idReserva}">Cancelar</button>` : ""}
+                                <button class="btn btn-danger btn-sm eliminar-reserva-btn" data-id="${reserva.idReserva}">Eliminar</button>
+                            </div>
+                        </li>
+                    `;
+
+                reservasHtml += '</ul>';
+                document.querySelector('#reservationDetailModal .modal-body').innerHTML = reservasHtml;
+
+                const modal = new bootstrap.Modal(document.getElementById('reservationDetailModal'));
+                modal.show();
+
+                document.querySelectorAll('.cancelar-reserva-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        cancelarReserva(this.dataset.id);
+                    });
+                });
+
+                document.querySelectorAll('.eliminar-reserva-btn').forEach(button => {
+                    button.addEventListener('click', function () {
+                        eliminarReserva(this.dataset.id);
+                    });
+                });
             }
         });
 
@@ -246,7 +311,7 @@
             }
         }
     });
-
 </script>
+
 
 

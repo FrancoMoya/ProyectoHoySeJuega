@@ -1,4 +1,5 @@
-﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.AuditoriaGetViewModel>
+﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.AuditoriaGetViewModel> 
+
 @{
     Layout = "~/Views/Shared/Layout_admin.cshtml";
     ViewData["Title"] = "Auditoría";
@@ -10,28 +11,20 @@
             <h3 class="text-center text-uppercase mb-4 text-white">Historial de Auditoría</h3>
             <!-- Modificación: Botones de filtro para las acciones -->
             <div class="mb-3 text-center">
-                <!-- Se usa row y col-auto para garantizar que los botones estén en una sola fila, incluso en pantallas pequeñas -->
-                <div class="row justify-content-center">
-                    <div class="col-auto">
-                        <button class="btn btn-primary" onclick="filterActions('CREACIÓN')">CREACIÓN</button>
-                    </div>
-                    <div class="col-auto">
-                        <button class="btn btn-warning" onclick="filterActions('MODIFICACIÓN')">MODIFICACIÓN</button>
-                    </div>
-                    <div class="col-auto">
-                        <button class="btn btn-danger" onclick="filterActions('ELIMINACIÓN')">ELIMINACIÓN</button>
-                    </div>
-                    <div class="col-auto">
-                        <button class="btn btn-secondary" onclick="filterActions('TODOS')">TODOS</button>
-                    </div>
+                <!-- Botones en grupo para estar pegados -->
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <button class="btn btn-primary" onclick="filterActions('TODOS')">TODOS</button>
+                    <button class="btn btn-success" onclick="filterActions('CREACIÓN')">CREACIÓN</button>
+                    <button class="btn btn-warning" onclick="filterActions('MODIFICACIÓN')">MODIFICACIÓN</button>
+                    <button class="btn btn-danger" onclick="filterActions('ELIMINACIÓN')">ELIMINACIÓN</button>
                 </div>
             </div>
 
             <!-- Estilo para mostrar en tarjetas SOLO en pantallas pequeñas -->
-            <div class="row d-block d-md-none">
+            <div class="row d-block d-md-none g-2">
                 @foreach (var item in Model)
                 {
-                    <div class="col-12 col-sm-6 col-md-4 mb-4" data-action="@item.TituloAccionRealizada">
+                    <div class="col-12 col-sm-6 col-md-4 mb-1" data-action="@item.TituloAccionRealizada">
                         <div class="card text-white bg-dark">
                             <div class="card-body">
                                 <h5 class="card-title">@item.TituloAccionRealizada</h5>
@@ -146,30 +139,38 @@
             display: block !important; /* Aseguramos que la tabla solo se muestre en pantallas grandes */
         }
     }
+
+    /* Estilos para los botones pegados */
+    .btn-group .btn {
+        margin: 0; /* Sin márgenes entre los botones */
+    }
 </style>
 
+<!-- Script para el filtrado -->
 <script>
     // Función para filtrar las tarjetas y filas de la tabla según la acción realizada
     function filterActions(action) {
-        // Obtener todas las tarjetas y filas de la tabla
-        var cardItems = document.querySelectorAll('.card-item');
-        var tableItems = document.querySelectorAll('.table-item');
+        // Obtener todas las tarjetas y filas de la tabla por el atributo data-action
+        var cardItems = document.querySelectorAll('[data-action]');
+        var tableItems = document.querySelectorAll('tr[data-action]');
 
         // Filtrar tarjetas
         cardItems.forEach(function (card) {
+            // Mostrar tarjeta si el action es 'TODOS' o si el 'data-action' de la tarjeta coincide
             if (action === 'TODOS' || card.getAttribute('data-action') === action) {
-                card.style.display = 'block'; // Mostrar la tarjeta si coincide o si es 'TODOS'
+                card.style.display = 'block'; // Mostrar la tarjeta
             } else {
-                card.style.display = 'none'; // Ocultar la tarjeta si no coincide
+                card.style.display = 'none'; // Ocultar la tarjeta
             }
         });
 
         // Filtrar filas de la tabla
         tableItems.forEach(function (row) {
+            // Mostrar fila si el action es 'TODOS' o si el 'data-action' de la fila coincide
             if (action === 'TODOS' || row.getAttribute('data-action') === action) {
-                row.style.display = ''; // Mostrar la fila si coincide o si es 'TODOS'
+                row.style.display = ''; // Mostrar la fila
             } else {
-                row.style.display = 'none'; // Ocultar la fila si no coincide
+                row.style.display = 'none'; // Ocultar la fila
             }
         });
     }

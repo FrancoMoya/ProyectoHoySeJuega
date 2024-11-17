@@ -45,12 +45,13 @@ namespace ProyectoHsj_Beta.Controllers
                 return NotFound();
             }
             Console.WriteLine("Entro a la condicional.");
+            var descripcionAuditoria = $"El usuario ha cancelado la reserva con el ID: {reserva.IdReserva}.";
             reserva.IdEstadoReserva = 3;  // Estado: Cancelada
             _context.Reservas.Update(reserva); // Cambiar el estado
             _context.SaveChanges();
             await _auditoriaService.RegistrarAuditoriaAsync(
             seccion: "Administración",
-            descripcion: "El usuario ha cancelado una reserva.",
+            descripcion: descripcionAuditoria,
             idAccion: 2);
             return Ok();
         }
@@ -61,11 +62,12 @@ namespace ProyectoHsj_Beta.Controllers
             var reserva = _context.Reservas.Find(id);
             if (reserva != null)
             {
+                var descripcionAuditoria = $"El usuario ha eliminado la reserva con el ID: {reserva.IdReserva}.";
                 _context.Reservas.Remove(reserva);
                 _context.SaveChanges();
                 await _auditoriaService.RegistrarAuditoriaAsync(
                 seccion: "Administración",
-                descripcion: "El usuario ha eliminado una reserva.",
+                descripcion: descripcionAuditoria,
                 idAccion: 3);
                 return Ok();
             }

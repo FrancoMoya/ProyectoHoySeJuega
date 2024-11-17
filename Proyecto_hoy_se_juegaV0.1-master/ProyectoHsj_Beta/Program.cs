@@ -42,7 +42,7 @@ builder.Services.AddAuthentication(options =>
   {
       options.LoginPath = "/Acces/Login"; //Ruta de la página de inicio de sesión
       options.AccessDeniedPath = "/Acces/AccessDenied"; // Ruta de la página de acceso denegado
-      options.ExpireTimeSpan = TimeSpan.FromMinutes(30);// Tiempo de expiración de la cookie
+      options.ExpireTimeSpan = TimeSpan.FromHours(24);// Tiempo de expiración de la cookie
 
   }
     )

@@ -18,6 +18,7 @@ namespace ProyectoHsj_Beta.Services
         {
             var client = new PreferenceClient();
             var request = new PreferenceRequest
+
             {
                 Items = new List<PreferenceItemRequest>
             {
@@ -31,14 +32,14 @@ namespace ProyectoHsj_Beta.Services
             },
                 BackUrls = new PreferenceBackUrlsRequest
                 {
-                    Success = "https://localhost:7081/Pagoes/Exito",
-                    Failure = "https://localhost:7081/Home/Index",
-                    Pending = "https://localhost:7081/Reservas/Index"
+                    Success = "https://hsejuega.somee.com/Pagoes/Exito",
+                    Failure = "https://hsejuega.somee.com/Reservas/Reservar",
+                    Pending = "https://hsejuega.somee.com/Home/Index"
                 },
                 AutoReturn = "approved",
                 ExternalReference = pago.IdReserva.ToString()
             };
-
+            
             return await client.CreateAsync(request);
         }
     }

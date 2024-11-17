@@ -38,20 +38,24 @@
                         <form asp-controller="Acces" asp-action="Signup" method="post">
                             <div class="row">
                                 <!-- Nombre completo -->
-                                <div class="col-md-6">
-                                    <div class="form-outline mb-4">
-                                        <input type="text" class="form-control form-control-user"
-                                               placeholder="Nombre" required asp-for="NombreUsuario" />
+                                    <div class="col-md-6">
+                                        <div class="form-outline mb-4">
+                                            <input type="text" class="form-control form-control-user"
+                                                   placeholder="Nombre" required asp-for="NombreUsuario"
+                                                   pattern="[A-Za-zÁáÉéÍíÓóÚúÑñ\s]+"
+                                                   title="El nombre solo puede contener letras y espacios" />
+                                        </div>
                                     </div>
-                                </div>
 
                                 <!-- Apellido -->
-                                <div class="col-md-6">
-                                    <div class="form-outline mb-4">
-                                        <input type="text" class="form-control form-control-user"
-                                               placeholder="Apellido" required asp-for="ApellidoUsuario" />
+                                    <div class="col-md-6">
+                                        <div class="form-outline mb-4">
+                                            <input type="text" class="form-control form-control-user"
+                                                   placeholder="Apellido" required asp-for="ApellidoUsuario"
+                                                   pattern="[A-Za-zÁáÉéÍíÓóÚúÑñ\s]+"
+                                                   title="El apellido solo puede contener letras y espacios" />
+                                        </div>
                                     </div>
-                                </div>
                             </div>
 
                             <div class="row">
@@ -63,13 +67,14 @@
                                     </div>
                                 </div>
 
-                                <!-- Número de teléfono sin controles -->
-                                <div class="col-md-6">
-                                    <div class="form-outline mb-4">
-                                        <input type="number" class="form-control form-control-user no-arrows"
-                                               placeholder="Número de celular" required asp-for="TelefonoUsuario" />
+                                <!-- Número de teléfono-->
+                                    <div class="col-md-6">
+                                        <div class="form-outline mb-4">
+                                            <input type="tel" class="form-control form-control-user no-arrows"
+                                                   placeholder="Número de celular" required asp-for="TelefonoUsuario"
+                                                   pattern="^\d{10}$" maxlength="10" title="El número debe tener 10 dígitos" />
+                                        </div>
                                     </div>
-                                </div>
                             </div>
 
                                 <div class="row">

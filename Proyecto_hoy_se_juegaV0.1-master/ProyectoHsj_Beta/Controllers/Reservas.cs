@@ -80,7 +80,7 @@ namespace ProyectoHsj_Beta.Controllers
                             var idReserva = (int)parametros[2].Value;
                             await _auditoriaService.RegistrarAuditoriaAsync(
                             seccion: "Reserva",
-                            descripcion: "El usuario ha creado una nueva reserva.",
+                            descripcion: $"El usuario ha creado una nueva reserva. Detalles, ID: {idReserva}",
                             idAccion: 1);
 
                             // Devuelve una respuesta JSON de éxito con el ID de la reserva

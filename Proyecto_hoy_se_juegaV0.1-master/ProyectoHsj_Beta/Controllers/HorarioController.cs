@@ -179,7 +179,6 @@ namespace ProyectoHsj_Beta.Controllers
                     HoraFin = model.HoraFin,
                     DisponibleHorario = model.DisponibleHorario
                 };
-
                 _context.HorarioDisponibles.Add(horario);
                 await _context.SaveChangesAsync();
                 await _auditoriaService.RegistrarAuditoriaAsync(
@@ -255,11 +254,12 @@ namespace ProyectoHsj_Beta.Controllers
             }
             if (horario != null)
             {
+                var descripcionAuditoria = $"El usuario ha eliminado un horario. Detalles, ID del horario: {horario.IdHorarioDisponible}.";
                 _context.HorarioDisponibles.Remove(horario);
                 await _context.SaveChangesAsync();
                 await _auditoriaService.RegistrarAuditoriaAsync(
                 seccion: "Administración",
-                descripcion: "El usuario ha eliminado un horario.",
+                descripcion: descripcionAuditoria,
                 idAccion: 3);
                 TempData["Message"] = "El horario fue eliminado correctamente.";
             }

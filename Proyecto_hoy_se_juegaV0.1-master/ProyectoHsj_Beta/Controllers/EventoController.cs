@@ -69,6 +69,7 @@ namespace ProyectoHsj_Beta.Controllers
                 var estado = evento.IdEstadoReserva;
                 if ((horario != null) && (estado != null))
                 {
+                    var descripcionAuditoria = $"El usuario ha cancelado un evento. Detalles, ID del evento: {evento.IdEvento}.";
                     horario.DisponibleHorario = true;
                     // Guardar los cambios en la tabla HorariosDisponibles
                     evento.IdEstadoReserva = 3;
@@ -76,7 +77,7 @@ namespace ProyectoHsj_Beta.Controllers
                     await _context.SaveChangesAsync();
                     await _auditoriaService.RegistrarAuditoriaAsync(
                     seccion: "Administración",
-                    descripcion: "El usuario ha cancelado un evento.",
+                    descripcion: descripcionAuditoria,
                     idAccion: 2);
                 }
             }
@@ -91,13 +92,15 @@ namespace ProyectoHsj_Beta.Controllers
             var evento = await _context.Eventos.FindAsync(id);
             if (evento != null)
             {
+                var descripcionAuditoria = $"El usuario ha eliminado un evento. Detalles, ID del evento: {evento.IdEvento}.";
                 _context.Eventos.Remove(evento);
+                await _context.SaveChangesAsync();
+                await _auditoriaService.RegistrarAuditoriaAsync(
+                seccion: "Administración",
+                descripcion: descripcionAuditoria,
+                idAccion: 3);
             }
-            await _context.SaveChangesAsync();
-            await _auditoriaService.RegistrarAuditoriaAsync(
-                    seccion: "Administración",
-                    descripcion: "El usuario ha eliminado un evento.",
-                    idAccion: 3);
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -126,12 +129,12 @@ namespace ProyectoHsj_Beta.Controllers
                     IdHorarioDisponible = model.IdHorarioDisponible,
                     IdEstadoReserva = 2 // CONFIRMADA
                 };
-
+                var descripcionAuditoria = $"El usuario ha creado nuevo evento. Detalles, ID del evento: {nuevoEvento.IdEvento}.";
                 _context.Eventos.Add(nuevoEvento);
                 await _context.SaveChangesAsync();
                 await _auditoriaService.RegistrarAuditoriaAsync(
                 seccion: "Administración",
-                descripcion: "El usuario ha creado un nuevo evento.",
+                descripcion: descripcionAuditoria,
                 idAccion: 1);
 
 
