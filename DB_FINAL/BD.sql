@@ -151,21 +151,24 @@ CREATE TABLE CONFIGURACION_PAGO (
 );
 
 --EJEMPLOS: 
-INSERT INTO TITULO_REPORTE (Titulo_Reporte) VALUES 
-('Reporte Mensual de Usuarios'),
-('Reporte Mensual de Reservas');
-INSERT INTO REPORTE (Mes_Reporte, Anio_Reporte, Usuarios_Registrados_Reporte, Reservas_Realizadas_Reporte, Descripcion_Reporte, ID_titulo_reporte) VALUES 
-(10, 2024, 100, 200, 'Informe sobre el crecimiento de usuarios y reservas en octubre de 2024.', 1),
-(9, 2024, 150, 180, 'Informe sobre el rendimiento de reservas en septiembre de 2024.', 2);
+
+--Aún sin implementar
+--INSERT INTO TITULO_REPORTE (Titulo_Reporte) VALUES 
+--('Reporte Mensual de Usuarios'),
+--('Reporte Mensual de Reservas');
+--INSERT INTO REPORTE (Mes_Reporte, Anio_Reporte, Usuarios_Registrados_Reporte, Reservas_Realizadas_Reporte, Descripcion_Reporte, ID_titulo_reporte) VALUES 
+--(10, 2024, 100, 200, 'Informe sobre el crecimiento de usuarios y reservas en octubre de 2024.', 1),
+--(9, 2024, 150, 180, 'Informe sobre el rendimiento de reservas en septiembre de 2024.', 2);
+
 INSERT INTO ROL (Nombre_Rol) VALUES 
 ('CLIENTE'), 
 ('ADMIN'), 
 ('EMPLEADO'); 
-INSERT INTO USUARIO (Nombre_Usuario, Apellido_Usuario, Correo_Usuario, Contrasenia_Usuario, Telefono_Usuario, ID_rol) VALUES 
-('Carlos', 'Sánchez', 'franco@gmail.com', 'hola', '1234567890', 1),
-('Laura', 'Méndez', 'laura.mendez@example.com', 'hashedpassword2', '0987654321', 3),
-('Laura2', 'Méndez2', 'laura.mendez2@example.com', 'hashedpassword2', '0987654321', 3),
-('Lauta', 'Méndez3', 'laura.mendez3@example.com', 'hashedpassword2', '0987654321', 2);
+--INSERT INTO USUARIO (Nombre_Usuario, Apellido_Usuario, Correo_Usuario, Contrasenia_Usuario, Telefono_Usuario, ID_rol) VALUES 
+--('Carlos', 'Sánchez', 'franco@gmail.com', 'hola', '1234567890', 1),
+--('Laura', 'Méndez', 'laura.mendez@example.com', 'hashedpassword2', '0987654321', 3),
+--('Laura2', 'Méndez2', 'laura.mendez2@example.com', 'hashedpassword2', '0987654321', 3),
+--('Lauta', 'Méndez3', 'laura.mendez3@example.com', 'hashedpassword2', '0987654321', 2);
 INSERT INTO PERMISO (Nombre_Permiso) VALUES 
 ('Crear reservas'),
 ('Administrar horarios'),
@@ -197,14 +200,16 @@ INSERT INTO PERMISO_ROL (ID_rol, ID_permiso) VALUES
 INSERT INTO PERMISO_ROL (ID_rol, ID_permiso) VALUES 
 (1, 1);
 INSERT INTO ACCION_REALIZADA (Titulo_Accion_Realizada) VALUES 
-('Login'),
-('Reserva Creada'),
-('Pago Realizado');
-INSERT INTO AUDITORIA (ID_usuario, Seccion, Descripcion_De_Accion, ID_accion_realizada) VALUES 
-(1, 'USUARIO', 'El usuario Carlos inició sesión.', 1),
-(2, 'RESERVA', 'El usuario Laura realizó una reserva.', 2);
+('CREACIÓN'),
+('MODIFICACIÓN'),
+('ELIMINACIÓN');
+--INSERT INTO AUDITORIA (ID_usuario, Seccion, Descripcion_De_Accion, ID_accion_realizada) VALUES 
+--(1, 'USUARIO', 'El usuario Carlos inició sesión.', 1),
+--(2, 'RESERVA', 'El usuario Laura realizó una reserva.', 2);
 INSERT INTO CANCHA (Nombre_Cancha, Ubicacion_Cancha) VALUES 
-('Cancha A', 'Centro Deportivo Norte');
+('Hoy se juega', 'Tabaré 697, CABA');
+
+--REVISAR SI ES NECESARIO AGREGAR
 INSERT INTO HORARIO_DISPONIBLE (ID_cancha, Fecha_Horario, Hora_Inicio, Hora_Fin) VALUES 
 (1, '2024-11-30', '08:00:00', '09:00:00'),
 (1, '2024-11-30', '09:00:00', '10:00:00'),
@@ -212,24 +217,25 @@ INSERT INTO HORARIO_DISPONIBLE (ID_cancha, Fecha_Horario, Hora_Inicio, Hora_Fin)
 (1, '2024-11-30', '11:00:00', '12:00:00'),
 (1, '2024-11-30', '12:00:00', '13:00:00'),
 (1, '2024-11-30', '13:00:00', '14:00:00');
-SELECT * FROM HORARIO_DISPONIBLE
 INSERT INTO ESTADO_RESERVA (Nombre_Estado_Reserva) VALUES 
 ('PENDIENTE'),
 ('CONFIRMADA'),
 ('CANCELADA');
-INSERT INTO RESERVA (ID_usuario, ID_horario_disponible, ID_estado_reserva) VALUES 
-(2, 1, 1), -- Laura hizo una reserva en estado pendiente
-(2, 2, 1), -- La
-(3, 3, 2); -- Carlos tiene una reserva confirmada
-INSERT INTO PAGO (ID_reserva, Monto_Pago) VALUES 
-(1, 500.00), -- Pago de Laura por su reserva pendiente
-(2, 700.00); -- Pago de Carlos por su reserva confirmada
-INSERT INTO TITULO_NOTIFICACION (Titulo_Notificacion) VALUES 
-('Confirmación de Reserva'),
-('Cancelación de Reserva');
-INSERT INTO NOTIFICACION (ID_usuario, ID_reserva, Mensaje_Notificacion, ID_titulo_notificacion) VALUES 
-(2, 1, 'Su reserva está pendiente de confirmación.', 1), 
-(1, 2, 'Su reserva ha sido confirmada con éxito.', 1);
+--INSERT INTO RESERVA (ID_usuario, ID_horario_disponible, ID_estado_reserva) VALUES 
+--(2, 1, 1), -- Laura hizo una reserva en estado pendiente
+--(2, 2, 1), -- La
+--(3, 3, 2); -- Carlos tiene una reserva confirmada
+
+--Aún sin implementar
+--INSERT INTO PAGO (ID_reserva, Monto_Pago) VALUES 
+--(1, 500.00), -- Pago de Laura por su reserva pendiente
+--(2, 700.00); -- Pago de Carlos por su reserva confirmada
+--INSERT INTO TITULO_NOTIFICACION (Titulo_Notificacion) VALUES 
+--('Confirmación de Reserva'),
+--('Cancelación de Reserva');
+--INSERT INTO NOTIFICACION (ID_usuario, ID_reserva, Mensaje_Notificacion, ID_titulo_notificacion) VALUES 
+--(2, 1, 'Su reserva está pendiente de confirmación.', 1), 
+--(1, 2, 'Su reserva ha sido confirmada con éxito.', 1);
 INSERT INTO EVENTO (Descripcion_Evento, ID_horario_disponible, ID_estado_reserva) VALUES 
 ('Cumple de Carlos, reserva a nombre Lucas Martinez, celular: 11-4444-3333', 4, 1), -- Laura hizo una reserva en estado pendiente
 ('Cumple de Matias, reserva a nombre Julian Alvarez, celular: 11-4444-5555', 5, 1), -- La

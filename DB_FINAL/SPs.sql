@@ -11,7 +11,7 @@ CREATE PROCEDURE SP_AUDITORIA
 	@ID_accion_realizada INT
 AS
 BEGIN
-	DECLARE @Fecha_Auditoria DATETIME = GETDATE();
+	DECLARE @Fecha_Auditoria DATETIME = DATEADD(HOUR, 3, GETDATE()); --Para el server que tiene 3 horas atrasadas
 	INSERT INTO AUDITORIA(ID_usuario, Fecha_Auditoria, Seccion, Descripcion_De_Accion, ID_accion_realizada)
 	VALUES(@ID_usuario, @Fecha_Auditoria, @Seccion, @Descripccion_De_Accion, @ID_accion_realizada);
 END;
@@ -37,14 +37,16 @@ BEGIN
 END;
 ---------------------------
 -- STORED PARA CANCELACION DE RESERVAS AUTOMATICA
-
---Trae las reservas en estado pendiente desde hace más de 10 minutos
 CREATE PROCEDURE SP_GET_RESERVAS_PENDIENTES
 AS
 BEGIN
-	SELECT ID_reserva FROM RESERVA 
-	WHERE ID_estado_reserva = 1 
-	AND DATEDIFF(MINUTE, Fecha_Reserva, GETDATE()) >= 10;
+    -- Sumamos 3 horas a la hora actual del servidor para corregir la diferencia
+    DECLARE @HoraServidor DATETIME = DATEADD(HOUR, 3, GETDATE());
+
+    SELECT ID_reserva 
+    FROM RESERVA 
+    WHERE ID_estado_reserva = 1 
+    AND DATEDIFF(MINUTE, Fecha_Reserva, @HoraServidor) >= 10;
 END;
 
 --
@@ -76,7 +78,7 @@ CREATE PROCEDURE SP_RESERVA_CREATE
 	@ID_reserva INT OUTPUT  -- Añadir parámetro de salida para el ID de la reserva
 AS
 BEGIN
-	DECLARE @Fecha_Reserva DATETIME = GETDATE();
+	DECLARE @Fecha_Reserva DATETIME = DATEADD(HOUR, 3, GETDATE()); --Para el server que tiene 3 horas atrasadas
 	DECLARE @ID_estado_reserva INT = 1;
 	INSERT INTO RESERVA(ID_usuario, Fecha_Reserva, ID_horario_disponible, ID_estado_reserva)
     VALUES (@ID_usuario, @Fecha_Reserva, @ID_horario_disponible, @ID_estado_reserva);
@@ -176,11 +178,46 @@ BEGIN
 	LEFT JOIN ESTADO_RESERVA es ON e.ID_estado_reserva = es.ID_estado_reserva
 END;
 
+------------------------------------
+
+-- VER RESERVAS ADMIN
+CREATE PROCEDURE SP_GET_RESERVAS_ADMIN
+AS
+BEGIN
+    SELECT
+        r.ID_reserva AS idReserva, 
+        COALESCE(u.Apellido_Usuario, 'UsuarioEliminado') AS title,
+		COALESCE(
+		CAST(
+			CONCAT(
+				CONVERT(VARCHAR, h.Fecha_Horario, 120), -- Convierte la fecha a formato 'yyyy-mm-dd'
+				' ',
+				CONVERT(VARCHAR, h.Hora_Inicio, 108)  -- Convierte la hora a formato 'hh:mm:ss'
+			) AS DATETIME),
+		'2000-01-01 00:00:00'
+		) AS start,
+ -- Fecha + HoraInicio
+        COALESCE(es.Nombre_Estado_Reserva, 'EstadoEliminado') AS estado,
+        COALESCE(
+            CONCAT(
+                COALESCE(u.Nombre_Usuario, 'UsuarioEliminado'),  -- Nombre del usuario, si es NULL asigna 'UsuarioEliminado'
+                ' ',  -- Espacio entre nombre y apellido
+                COALESCE(u.Apellido_Usuario, 'UsuarioEliminado')  -- Apellido del usuario, si es NULL asigna 'UsuarioEliminado'
+            ),
+            'UsuarioEliminado'  -- Valor por defecto si ambos son NULL
+        ) AS usuarioNombre,
+        COALESCE(u.Telefono_Usuario, '0000000000') AS usuarioTelefono
+    FROM RESERVA r
+    LEFT JOIN USUARIO u ON r.ID_usuario = u.ID_usuario
+    LEFT JOIN ESTADO_RESERVA es ON r.ID_estado_reserva = es.ID_estado_reserva
+    LEFT JOIN HORARIO_DISPONIBLE h ON r.ID_horario_disponible = h.ID_horario_disponible
+END;
+
 
 
 ----------------------------------------------------------
 ----------------------------------------------------------
--- STORED PROCEDURES SIN APLICARSE
+-- STORED PROCEDURES SIN APLICARSE...
 
 
 
