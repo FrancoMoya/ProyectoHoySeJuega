@@ -14,9 +14,12 @@ namespace ProyectoHsj_Beta.Controllers
     public class EventoController : Controller
     {
         private readonly HoySeJuegaContext _context;
-        public EventoController(HoySeJuegaContext context)
+        private readonly AuditoriaService _auditoriaService;
+
+        public EventoController(HoySeJuegaContext context, AuditoriaService auditoriaService)
         {
             _context = context;
+            _auditoriaService = auditoriaService;
         }
 
         // GET: EventoController
@@ -71,6 +74,10 @@ namespace ProyectoHsj_Beta.Controllers
                     evento.IdEstadoReserva = 3;
                     // Cambiar a estado cancelado
                     await _context.SaveChangesAsync();
+                    await _auditoriaService.RegistrarAuditoriaAsync(
+                    seccion: "Administración",
+                    descripcion: "El usuario ha cancelado un evento.",
+                    idAccion: 2);
                 }
             }
             return RedirectToAction(nameof(Index));
@@ -86,8 +93,11 @@ namespace ProyectoHsj_Beta.Controllers
             {
                 _context.Eventos.Remove(evento);
             }
-
             await _context.SaveChangesAsync();
+            await _auditoriaService.RegistrarAuditoriaAsync(
+                    seccion: "Administración",
+                    descripcion: "El usuario ha eliminado un evento.",
+                    idAccion: 3);
             return RedirectToAction(nameof(Index));
         }
 
@@ -118,7 +128,12 @@ namespace ProyectoHsj_Beta.Controllers
                 };
 
                 _context.Eventos.Add(nuevoEvento);
-                await _context.SaveChangesAsync(); // Guarda el rol y genera su ID
+                await _context.SaveChangesAsync();
+                await _auditoriaService.RegistrarAuditoriaAsync(
+                seccion: "Administración",
+                descripcion: "El usuario ha creado un nuevo evento.",
+                idAccion: 1);
+
 
                 // Obtener el ID del horario seleccionado y actualizar el estado en HorariosDisponibles
                 var horario = await _context.HorarioDisponibles

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProyectoHsj_Beta.Models;
+using ProyectoHsj_Beta.Services;
 using ProyectoHsj_Beta.ViewsModels;
 
 namespace ProyectoHsj_Beta.Controllers
@@ -13,10 +14,12 @@ namespace ProyectoHsj_Beta.Controllers
     public class UsuariosController : Controller
     {
         private readonly HoySeJuegaContext _context;
+        private readonly AuditoriaService _auditoriaService;
 
-        public UsuariosController(HoySeJuegaContext context)
+        public UsuariosController(HoySeJuegaContext context, AuditoriaService auditoriaService)
         {
             _context = context;
+            _auditoriaService = auditoriaService;
         }
 
         // Metodo Get
@@ -89,6 +92,10 @@ namespace ProyectoHsj_Beta.Controllers
 
                     _context.Update(usuario);
                     await _context.SaveChangesAsync();
+                    await _auditoriaService.RegistrarAuditoriaAsync(
+                    seccion: "Administración",
+                    descripcion: "Se ha editado el rol y/o el tipo activo de un usuario.",
+                    idAccion: 2);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -144,6 +151,10 @@ namespace ProyectoHsj_Beta.Controllers
             }
 
             await _context.SaveChangesAsync();
+            await _auditoriaService.RegistrarAuditoriaAsync(
+                    seccion: "Administración",
+                    descripcion: "Se ha eliminado a un usuario.",
+                    idAccion: 3);
             return RedirectToAction(nameof(Index));
         }
 

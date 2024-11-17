@@ -5,16 +5,19 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoHsj_Beta.ViewsModels;
+using ProyectoHsj_Beta.Services;
 
 namespace ProyectoHsj_Beta.Controllers
 {
     public class PerfilUController : Controller
     {
         private readonly HoySeJuegaContext _context;
+        private readonly AuditoriaService _auditoriaService;
 
-        public PerfilUController(HoySeJuegaContext Context)
+        public PerfilUController(HoySeJuegaContext Context, AuditoriaService auditoriaService)
         {
             _context = Context;
+            _auditoriaService = auditoriaService;
         }
         
         public async Task <IActionResult> Perfil()
@@ -86,6 +89,10 @@ namespace ProyectoHsj_Beta.Controllers
                     usuario.TelefonoUsuario = Convert.ToInt32(viewModel.TelefonoUsuario);
                     _context.Update(usuario);
                     await _context.SaveChangesAsync();
+                    await _auditoriaService.RegistrarAuditoriaAsync(
+                    seccion: "Perfil",
+                    descripcion: "El usuario ha actualizado su número de celular.",
+                    idAccion: 2);
                 }
                 catch (DbUpdateConcurrencyException)
                 {

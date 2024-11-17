@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddHttpContextAccessor(); // Para acceder al contexto HTTP en el servicio
 builder.Services.AddScoped<AuditoriaService>(); // Registrar el servicio de auditoria
+builder.Services.AddHostedService<ReservaCancellationService>(); // // Registrar el Background Service
 builder.Services.AddScoped<IPermisoRepository, PermisoRepository>();
 builder.Services.AddControllersWithViews();
 //Servicio de conexion con la database
@@ -27,7 +28,7 @@ builder.Services.AddFluentEmail(builder.Configuration["Smtp:Username"], "HoySeJu
         Port = int.Parse(builder.Configuration["Smtp:Port"]),
         Credentials = new NetworkCredential(
             builder.Configuration["Smtp:Username"],
-            builder.Configuration["smtp:Password"] // seteada en dotnet user-secrets
+            builder.Configuration["Smtp:Password"] // seteada en dotnet user-secrets
         ),
         EnableSsl = true
     });

@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Index";
-
     Layout = "~/Views/Shared/Layout_admin.cshtml";
 }
 
@@ -17,106 +16,181 @@
         background-position: center;
         background-repeat: no-repeat;
         height: 100vh;
-        background-color: #000; /* Color de fondo negro */
+        background-color: #000;
     }
 
     .list-group-item {
-        padding: 20px 30px; /* Aumenta el espaciado interno para hacer los botones más grandes */
-        border: none; /* Elimina el borde de los elementos de lista */
-        background-color: #343a40; /* Color de fondo gris para los botones */
-        transition: background 0.2s; /* Transición suave para el color de fondo al pasar el mouse */
-        font-size: 1.2rem; /* Aumenta el tamaño de la fuente para mayor legibilidad */
-        border-radius: 8px; /* Bordes redondeados para un aspecto más moderno */
+        padding: 20px 30px;
+        border: none;
+        background-color: #343a40;
+        transition: background 0.2s;
+        font-size: 1.2rem;
+        border-radius: 8px;
     }
 
     .table-container {
         background-color: #ffffff;
-        color: #000000;
+        color: #000;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .table thead th {
-        color: #333333;
+    h2 {
+        text-align: center;
+        color: #333;
+        font-weight: bold;
     }
 
+    .search-bar {
+        margin-bottom: 15px;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .btn-group .btn.active {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+    }
+
+    /* Estilos para los botones */
     .btn {
         border-radius: 5px;
         transition: background-color 0.3s, color 0.3s;
     }
 
     .btn-edit {
-        background-color: #4CAF50; /* Verde */
+        background-color: #4CAF50;
         color: white;
     }
 
-        .btn-edit:hover {
-            background-color: #45a049;
-        }
+    .btn-edit:hover {
+        background-color: #45a049;
+    }
 
     .btn-detail {
-        background-color: #2196F3; /* Azul */
+        background-color: #2196F3;
         color: white;
     }
 
-        .btn-detail:hover {
-            background-color: #1e88e5;
-        }
+    .btn-detail:hover {
+        background-color: #1e88e5;
+    }
 
     .btn-delete {
-        background-color: #f44336; /* Rojo */
+        background-color: #f44336;
         color: white;
     }
 
-        .btn-delete:hover {
-            background-color: #e53935;
+    .btn-delete:hover {
+        background-color: #e53935;
+    }
+
+    /* Tabla responsiva */
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    /* Convertir la tabla en tarjetas en pantallas pequeñas */
+    @@media (max-width: 768px) {
+        .table-responsive {
+            display: none;
         }
 
-    .btn-primary, .btn-warning, .btn-info, .btn-danger, .btn-secondary {
-        border-radius: 5px;
-    }
-
-        .btn-primary i, .btn-warning i, .btn-info i, .btn-danger i {
-            margin-right: 5px;
+        .user-card {
+            background-color: #f8f9fa;
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-    h1 {
-        text-align: center;
-        color: #333333;
-        font-weight: bold;
+        .user-card .card-header {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .user-card .card-body {
+            font-size: 0.9rem;
+        }
+
+        .search-bar,
+        .btn-group {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn-group {
+            justify-content: flex-start;
+        }
     }
 
-    .search-bar {
-        margin-bottom: 15px;
-        width: 300px; /* Ajusta el tamaño de la barra de búsqueda */
-    }
-
-    .btn-group .btn.active {
-        background-color: #007bff; /* Resaltar el botón activo con un color de fondo */
-        color: white;
-    }
-
-    /* Asegura que los botones de acción estén alineados en una fila */
-    .action-buttons {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 10px; /* Espacio entre los botones */
-    }
 </style>
 
 <div class="container mt-4">
-    <div class="table-responsive table-container" style="background-color: #d7d7d7;">
-        <h2>Usuarios</h2>
+    <!-- Barra de búsqueda y botones de filtrado (visibles en todas las pantallas) -->
+    <div class="search-filter-container">
         <input type="text" id="searchApellido" class="form-control search-bar" placeholder="Buscar por apellido..." />
-
         <div class="btn-group mb-3" role="group" aria-label="Filtrar usuarios">
-            <button id="btnTodos" type="button" class="btn btn-info">Todos</button>
+            <button id="btnTodos" type="button" class="btn btn-outline-info">Todos</button>
             <button id="btnActivos" type="button" class="btn btn-outline-success">Activos</button>
             <button id="btnInactivos" type="button" class="btn btn-outline-danger">Inactivos</button>
         </div>
+    </div>
 
+    <!-- Card View for Mobile -->
+    <div class="row d-block d-md-none" id="userCards">
+        @foreach (var item in Model)
+        {
+            <div class="col-12 mb-4 user-card" data-nombre="@item.NombreUsuario" data-apellido="@item.ApellidoUsuario" data-estado="@item.Activo.ToString().ToLower()">
+                <div class="card-header">
+                    @item.NombreUsuario @item.ApellidoUsuario
+                </div>
+                <div class="card-body">
+                    <p><strong>Correo:</strong> @item.CorreoUsuario</p>
+                    <p><strong>Celular:</strong> @item.TelefonoUsuario</p>
+                    <p><strong>Rol:</strong> @item.RolUsuario</p>
+                    <p><strong>Estado:</strong>
+                        @if (item.Activo)
+                        {
+                            <span style="color: green;">Activo <i class="fas fa-check"></i></span>
+                        }
+                        else
+                        {
+                            <span style="color: red;">Inactivo <i class="fas fa-times"></i></span>
+                        }
+                    </p>
+                    <p><strong>Última sesión:</strong> @item.UltimaSesion.ToString("dd-MM-yyyy")</p>
+                </div>
+                <div class="action-buttons">
+                    <a asp-action="Edit" asp-route-id="@item.IdUsuario" class="btn btn-edit btn-sm">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    @if (!@item.Activo)
+                    {
+                        <button type="button" class="btn btn-delete btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+                                data-id="@item.IdUsuario" data-nombre="@item.NombreUsuario">
+                            <i class="fas fa-trash-alt"></i> Eliminar
+                        </button>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Table View for Desktop -->
+    <div class="table-responsive table-container d-none d-md-block" id="userTable">
+        <h2>Usuarios</h2>
         <table class="table table-striped table-bordered table-dark">
             <thead class="thead-light">
                 <tr>
@@ -132,7 +206,6 @@
             </thead>
             <tbody>
                 @foreach (var item in Model)
-
                 {
                     <tr>
                         <td>@item.NombreUsuario</td>
@@ -142,15 +215,12 @@
                         <td>@item.RolUsuario</td>
                         <td class="text-center user-status @((item.Activo) ? "active" : "inactive")">
                             @if (item.Activo)
-
                             {
-                                <i class="fas fa-check" style="color: green;"></i> <!-- Tilde verde si es activo -->
+                                <i class="fas fa-check" style="color: green;"></i>
                             }
-
                             else
-
                             {
-                                <i class="fas fa-times" style="color: red;"></i> <!-- Cruz roja si no está activo -->
+                                <i class="fas fa-times" style="color: red;"></i>
                             }
                         </td>
                         <td>@item.UltimaSesion.ToString("dd-MM-yyyy")</td>
@@ -159,7 +229,6 @@
                                 <a asp-action="Edit" asp-route-id="@item.IdUsuario" class="btn btn-edit btn-sm">
                                     <i class="fas fa-edit"></i> Editar
                                 </a>
-
                                 @if (!@item.Activo)
                                 {
                                     <button type="button" class="btn btn-delete btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
@@ -173,108 +242,135 @@
                 }
             </tbody>
         </table>
+    </div>
+</div>
 
-        <!-- Modal de confirmación para eliminar -->
-        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" style="color: black" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                    </div>
-                    <div class="modal-body" style="color: black;">
-                        ¿Estás seguro de que deseas eliminar a <span id="deleteObjectName"></span>?<br>(No se puede deshacer esta acción una vez realizada)
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <form id="deleteForm" method="post" asp-action="Delete">
-                            <input type="hidden" name="id" id="deleteId" />
-                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                        </form>
-                    </div>
-                </div>
+<!-- Modal de confirmación para eliminar -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar a <span id="deleteObjectName"></span>?<br>(No se puede deshacer esta acción una vez realizada)
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteForm" method="post" asp-action="Delete">
+                    <input type="hidden" name="id" id="deleteId"/>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Script para capturar el ID y nombre del objeto a eliminar y mostrarlo en el modal
-    var confirmDeleteModal = document.getElementById('confirmDeleteModal');
-    confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
-        var objectId = button.getAttribute('data-id');
-        var objectName = button.getAttribute('data-nombre');
-        var inputId = document.getElementById('deleteId');
-        var objectNameSpan = document.getElementById('deleteObjectName');
+    document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("searchApellido");
+        // Script para capturar el ID y nombre del objeto a eliminar y mostrarlo en el modal
+        var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // El botón que activó el modal
+            var objectId = button.getAttribute('data-id'); // Obtener el ID del usuario
+            var objectName = button.getAttribute('data-nombre'); // Obtener el nombre del usuario
+            var inputId = document.getElementById('deleteId'); // Campo oculto donde se almacenará el ID
+            var objectNameSpan = document.getElementById('deleteObjectName'); // Donde se mostrará el nombre
 
-        inputId.value = objectId;
-        objectNameSpan.textContent = objectName;
-    });
-
-    // Filtrar usuarios por apellido
-    document.getElementById('searchApellido').addEventListener('input', function () {
-        const searchValue = this.value.toLowerCase();
-        const rows = document.querySelectorAll('tbody tr');
-
-        rows.forEach(row => {
-            const apellido = row.cells[1].textContent.toLowerCase(); // Columna Apellido
-            row.style.display = apellido.includes(searchValue) ? '' : 'none';
+            // Actualizar el valor del campo oculto y el nombre en el modal
+            inputId.value = objectId;
+            objectNameSpan.textContent = objectName;
         });
-    });
 
-    // Mostrar todos los usuarios (activos + inactivos)
-    document.getElementById('btnTodos').addEventListener('click', function () {
-        filterUsers(null); // Mostrar todos los usuarios
-        // Cambiar el estilo de los botones
-        setActiveButton('btnTodos');
-    });
+        
+        // Función para filtrar por apellido
+        function filterByApellido() {
+            const query = searchInput.value.toLowerCase();
+            const userCards = document.querySelectorAll('.user-card');
+            const userRows = document.querySelectorAll('tbody tr');
+            
+            // Filtrar en vista móvil (tarjetas)
+            userCards.forEach(card => {
+                const apellido = card.dataset.apellido.toLowerCase();
+                if (apellido.includes(query)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
 
-    // Mostrar solo usuarios activos
-    document.getElementById('btnActivos').addEventListener('click', function () {
-        filterUsers(true); // Filtrar usuarios activos
-        setActiveButton('btnActivos');
-    });
+            // Filtrar en vista de escritorio (tabla)
+            userRows.forEach(row => {
+                const apellido = row.cells[1].innerText.toLowerCase();
+                if (apellido.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
 
-    // Mostrar solo usuarios inactivos
-    document.getElementById('btnInactivos').addEventListener('click', function () {
-        filterUsers(false); // Filtrar usuarios inactivos
-        setActiveButton('btnInactivos');
-    });
+        // Agregar evento de búsqueda
+        searchInput.addEventListener('input', filterByApellido);
 
-    // Función para filtrar los usuarios según su estado
-    function filterUsers(isActive) {
-        const rows = document.querySelectorAll('tbody tr');
-        rows.forEach(row => {
-            const isUserActive = row.querySelector('.user-status').classList.contains('active');
-            // Mostrar todos los usuarios si 'isActive' es null
-            if (isActive === null || isUserActive === isActive) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+        // Función para mostrar u ocultar elementos de acuerdo con el estado
+        function filterUsers(estado) {
+            let userCards = document.querySelectorAll('.user-card');
+            let userRows = document.querySelectorAll('tbody tr');
+            userCards.forEach(card => {
+                const estadoCard = card.dataset.estado === 'true';
+                if (estado === null || estado === estadoCard) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            userRows.forEach(row => {
+                const estadoRow = row.querySelector('.user-status').classList.contains('active');
+                if (estado === null || estado === estadoRow) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Filtrado por estado de usuario
+        document.getElementById('btnTodos').addEventListener('click', function () {
+            filterUsers(null);
+            setActiveButton('btnTodos');
         });
-    }
 
-    // Función para marcar el botón activo
-    function setActiveButton(activeButtonId) {
-        const buttons = ['btnTodos', 'btnActivos', 'btnInactivos'];
-        buttons.forEach(id => {
-            const button = document.getElementById(id);
-            if (id === activeButtonId) {
-                button.classList.add('active'); // Resaltar el botón activo
-            } else {
+        document.getElementById('btnActivos').addEventListener('click', function () {
+            filterUsers(true); // Solo activos
+            setActiveButton('btnActivos');
+        });
+
+        document.getElementById('btnInactivos').addEventListener('click', function () {
+            filterUsers(false); // Solo inactivos
+            setActiveButton('btnInactivos');
+        });
+
+        // Función para resaltar el botón activo
+        function setActiveButton(activeButtonId) {
+            const buttons = document.querySelectorAll('.btn-group .btn');
+            buttons.forEach(button => {
                 button.classList.remove('active');
-            }
-        });
-    }
+            });
+            document.getElementById(activeButtonId).classList.add('active');
+        }
 
-    // Inicialmente mostrar todos los usuarios y resaltar el botón "Todos"
-    window.onload = function () {
-        filterUsers(null); // Mostrar todos los usuarios al cargar
-        setActiveButton('btnTodos'); // Resaltar el botón "Todos"
-    };
+        // Ejecutar al cargar la página
+        filterUsers(null);
+
+        // Ajustar el filtro cuando se cambia el tamaño de la ventana
+        window.addEventListener('resize', function () {
+            filterUsers(null);
+        });
+    });
 </script>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
+

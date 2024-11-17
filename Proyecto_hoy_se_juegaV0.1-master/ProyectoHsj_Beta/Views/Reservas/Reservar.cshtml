@@ -165,12 +165,15 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <!-- Botón "Home" (izquierda) -->
             <a href="/" class="btn btn-secondary">
-                <i class="bi bi-house-door"></i> Volver al home
+                <i class="bi bi-house-door"></i> Volver a inicio
             </a>
             <div class="info-container d-flex flex-column align-items-center justify-content-center ml-4">
 
                 <img src="~/css/img/mercadopago.png" alt="Logo Mercado Pago" class="img-fluid mb-1" style="max-width: 150px;">
-                <p class="text-center" id="text-mp" style="font-size: 1.1em; font-weight: bold; margin-bottom: 0rem;">¡Se puede pagar con Mercado Pago!<br>(Monto del valor de reserva: $5.000)</p>
+                <p class="text-center" id="text-mp" style="font-size: 1.1em; font-weight: bold; margin-bottom: 0rem;">
+                    ¡Se puede pagar con Mercado Pago!<br>
+                    (Monto del valor de reserva: $@ViewData["monto"])
+                </p>
 
             </div>
             <!-- Botón "Mis Reservas" (derecha) -->

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoHsj_Beta.Models;
+using ProyectoHsj_Beta.Services;
 using System.Security.Claims;
 
 namespace ProyectoHsj_Beta.Controllers
@@ -8,9 +9,12 @@ namespace ProyectoHsj_Beta.Controllers
     public class ConfiguracionPagoController : Controller
     {
         private readonly HoySeJuegaContext _context;
-        public ConfiguracionPagoController(HoySeJuegaContext context)
+        private readonly AuditoriaService _auditoriaService;
+
+        public ConfiguracionPagoController(HoySeJuegaContext context, AuditoriaService auditoriaService)
         {
             _context = context;
+            _auditoriaService = auditoriaService;
         }
         public async Task<IActionResult> Index()
         {
@@ -41,6 +45,10 @@ namespace ProyectoHsj_Beta.Controllers
                 configuracionPago.FechaModificacion = DateTime.Now;
                 _context.Update(configuracionPago);
                 await _context.SaveChangesAsync();
+                await _auditoriaService.RegistrarAuditoriaAsync(
+                seccion: "Administración",
+                descripcion: "El usuario ha actualizado los valores en Monto pago.",
+                idAccion: 2);
                 return RedirectToAction(nameof(Index));
             }
             return View(configuracionPago);

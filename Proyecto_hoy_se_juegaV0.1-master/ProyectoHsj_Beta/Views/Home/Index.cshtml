@@ -30,22 +30,14 @@
             <img src="~/css/img/cancha y pelota.jpeg" class="d-block w-100" alt="...">
         </div>
         <!-- Botón centrado personalizado -->
-        @if (User.Identity.IsAuthenticated)
-
-        {
-            <div class="carousel-caption d-flex justify-content-center align-items-center h-100">
-                <a asp-controller="Reservas" asp-action="Reservar" class="btn btn-custom">Reserva Acá</a>
-            </div>
-
-        }
-
-        else
+        @if (!User.Identity.IsAuthenticated)
 
         {
             <div class="alert alert-warning" role="alert">
                 Debes estar autenticado para crear una reserva.
                 <a href="/Acces/Login">Inicia sesión</a> para continuar.
             </div>
+
         }
 
     </div>

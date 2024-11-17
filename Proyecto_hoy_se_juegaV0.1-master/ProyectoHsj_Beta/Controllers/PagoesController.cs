@@ -16,11 +16,13 @@ namespace ProyectoHsj_Beta.Controllers
     {
         private readonly HoySeJuegaContext _context;
         private readonly MercadoPagoService _mercadoPagoService;
+        private readonly AuditoriaService _auditoriaService;
 
-        public PagoesController(HoySeJuegaContext context, MercadoPagoService mercadoPagoService)
+        public PagoesController(HoySeJuegaContext context, MercadoPagoService mercadoPagoService, AuditoriaService auditoriaService)
         {
             _context = context;
             _mercadoPagoService = mercadoPagoService;
+            _auditoriaService = auditoriaService;
         }
 
         // GET: Pagoes
@@ -107,6 +109,10 @@ namespace ProyectoHsj_Beta.Controllers
 
             // Guarda los cambios en la base de datos
             await _context.SaveChangesAsync();
+            await _auditoriaService.RegistrarAuditoriaAsync(
+                seccion: "Pagos",
+                descripcion: "El usuario concretado con éxito el pago de una reserva.",
+                idAccion: 1);
 
             return View("PagoExitoso", pago); // Redirige a una vista de confirmación
             //RETORNAR A PAGINA DE INICIO
@@ -142,6 +148,10 @@ namespace ProyectoHsj_Beta.Controllers
             }
 
             await _context.SaveChangesAsync();
+            await _auditoriaService.RegistrarAuditoriaAsync(
+                seccion: "Pagos",
+                descripcion: "El usuario ha eliminado un registro de pago", //REVISAR!!!!!!
+                idAccion: 3);
             return RedirectToAction(nameof(Index));
         }
 

@@ -2,139 +2,95 @@
 
 @{
     ViewData["Title"] = "Horarios Disponibles";
-
-
-
     Layout = "~/Views/Shared/Layout_admin.cshtml";
 }
 
 <style>
-
-    body {
-        background-image: url('/css/img/logo fondo admin.png');
-        background-size: contain; /* Ajusta la imagen para cubrir el fondo */
-        background-repeat: no-repeat; /* Evita que la imagen se repita */
-        background-attachment: fixed; /* Mantiene la imagen fija al hacer scroll */
-        background-position: center; /* Centra la imagen de fondo */
-    }
-
     h1 {
-        color: #f8f9fa; /* Color blanco para el encabezado */
+        color: bisque;
         text-align: center;
         margin-top: 20px;
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 2px;
     }
 
     .card {
         border-radius: 15px;
-        max-width: 900px;
         margin: 20px auto;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
-        background-color: #fff; /* Fondo blanco para la tarjeta */
-    }
-
-    .card-header {
-        background-color: #007bff; /* Azul intenso para el encabezado */
-        color: #fff; /* Texto blanco */
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
+        max-width: 100%;
     }
 
     .btn-danger, .btn-warning, .btn-primary {
-        border-radius: 5px; /* Bordes redondeados */
-        padding: 10px 20px; /* Relleno en los botones */
-        font-size: 14px; /* Tamaño de fuente */
-        transition: background-color 0.3s ease; /* Transición para el color */
+        border-radius: 5px;
     }
-
-        .btn-danger:hover, .btn-warning:hover, .btn-primary:hover {
-            background-color: #0056b3; /* Efecto hover para botones */
-            border-color: #0056b3;
-        }
 
     .table {
         margin-top: 20px;
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    .thead-dark {
-        background-color: #343a40;
-        color: white;
-    }
-
-    .table th, .table td {
-        padding: 12px; /* Espacio en las celdas */
-        text-align: center;
-        border: 1px solid #dee2e6; /* Borde de las celdas */
     }
 
     .alert {
         border-radius: 5px;
     }
 
+    .form-group {
+        margin-bottom: 15px;
+    }
+
     .action-buttons {
         display: flex;
         justify-content: space-between;
-        align-items: center;
         margin-bottom: 20px;
+        flex-wrap: wrap;
     }
 
     .search-container {
         margin-bottom: 20px;
     }
 
-    .form-group label {
-        font-weight: bold;
-        color: #343a40; /* Color oscuro para las etiquetas */
-    }
-
-    .form-control {
-        border-radius: 5px; /* Bordes redondeados en inputs */
-        border: 1px solid #ced4da;
-        padding: 10px; /* Padding en los inputs */
-    }
-
-    .badge {
-        padding: 5px 10px;
-        font-size: 14px;
-        border-radius: 12px;
-    }
-
-        .badge.bg-success {
-            background-color: #28a745;
+    /* Estilo para pantallas pequeñas */
+    @@media (max-width: 768px) {
+        .form-group {
+            margin-bottom: 10px;
         }
 
-        .badge.bg-danger {
-            background-color: #dc3545;
+        .action-buttons {
+            flex-direction: column;
+            align-items: flex-start;
         }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .table {
+            font-size: 12px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .btn-block {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
 </style>
 
-<h1></h1>
+<h1>Gestión de Horarios</h1>
 
+<!-- Cuadro (card) para contener los horarios -->
 <div class="card shadow-lg">
-    <div class="card-header">
-        <h5 class="mb-0">Horarios Disponibles</h5>
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Gestión de Horarios</h5>
     </div>
 
+    <!-- Mensaje de éxito o error -->
     @if (TempData["Message"] != null)
-
-
-
     {
         <div class="alert alert-success" role="alert">
             @TempData["Message"]
         </div>
     }
-
-
-
     else if (TempData["ErrorMessage"] != null)
-
-
-
     {
         <div class="alert alert-danger" role="alert">
             @TempData["ErrorMessage"]
@@ -146,16 +102,16 @@
         <div class="search-container">
             <form asp-action="Search" method="get" class="mb-4">
                 <div class="row">
-                    <div class="col-md-5 form-group">
+                    <div class="col-md-5 col-12 form-group">
                         <label for="fecha">Fecha:</label>
                         <input type="date" id="fecha" name="fecha" class="form-control" />
                     </div>
-                    <div class="col-md-5 form-group">
+                    <div class="col-md-5 col-12 form-group">
                         <label for="horaInicio">Hora Inicio:</label>
                         <input type="time" id="horaInicio" name="horaInicio" class="form-control" />
                     </div>
-                    <div class="col-md-2 form-group align-self-end">
-                        <button type="submit" class="btn btn-primary">Buscar</button>
+                    <div class="col-md-2 col-12 form-group align-self-end">
+                        <button type="submit" class="btn btn-primary btn-block">Buscar</button>
                     </div>
                 </div>
             </form>
@@ -163,84 +119,66 @@
 
         <!-- Botones para generar y eliminar horarios -->
         <div class="action-buttons">
-            <form asp-action="EliminarTodosLosHorarios" method="post">
-                <button type="submit" class="btn btn-danger">Eliminar Todos los Horarios</button>
+            <form asp-action="EliminarHorariosDeLaSemana" method="post">
+                <button type="submit" class="btn btn-danger btn-block btn-sm">Eliminar Todos los Horarios</button>
             </form>
-            <button type="button" class="btn btn-primary" onclick="location.href='@Url.Action("GenerarFechasYHorariosSemana", "Horario")'">
+            <button type="button" class="btn btn-primary btn-block btn-sm" onclick="location.href='@Url.Action("GenerarFechasYHorariosSemana", "Horario")'">
                 Generar Horarios de la Semana
             </button>
         </div>
 
+        <!-- Boton para crear horarios -->
         <div class="mb-3">
-            <a asp-action="CreateHorario" class="btn btn-primary">Crear Nuevo Horario</a>
+            <a asp-action="CreateHorario" class="btn btn-primary btn-block">Crear Nuevo Horario</a>
         </div>
 
         @if (!Model.Any())
-
-
-
         {
             <div class="alert alert-warning" role="alert">
                 No hay horarios disponibles.
             </div>
         }
-
-
-
         else
-
-
-
         {
-            <table class="table table-bordered table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Fecha</th>
-                        <th>Hora Inicio</th>
-                        <th>Hora Fin</th>
-                        <th>Disponibilidad</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var horario in Model)
-                    {
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="thead-dark">
                         <tr>
-                            <td>@horario.FechaHorario.ToShortDateString()</td>
-                            <td>@horario.HoraInicio</td>
-                            <td>@horario.HoraFin</td>
-                            <td>
-                                @if (horario.DisponibleHorario == true)
-
-
-
-                                {
-                                    <span class="badge bg-success">Disponible</span>
-                                }
-
-
-
-                                else
-
-
-
-                                {
-                                    <span class="badge bg-danger">No Disponible</span>
-                                }
-                            </td>
-                            <td>
-                                <form asp-action="EliminarHorario" method="post" style="display:inline;">
-                                    <input type="hidden" name="id" value="@horario.IdHorarioDisponible" />
-                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                                </form>
-                                <a asp-action="EditarHorario" asp-route-id="@horario.IdHorarioDisponible" class="btn btn-warning btn-sm">
-                                    Editar
-                                </a>
-                            </td>
+                            <th>Fecha</th>
+                            <th>Hora Inicio</th>
+                            <th>Hora Fin</th>
+                            <th>Disponibilidad</th>
+                            <th>Acciones</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var horario in Model)
+                        {
+                            <tr>
+                                <td>@horario.FechaHorario.ToShortDateString()</td>
+                                <td>@horario.HoraInicio</td>
+                                <td>@horario.HoraFin</td>
+                                <td>
+                                    @if (horario.DisponibleHorario == true)
+                                    {
+                                        <span class="badge bg-success">Disponible</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">No Disponible</span>
+                                    }
+                                </td>
+                                <td>
+                                    <form asp-action="EliminarHorario" method="post" style="display:inline;">
+                                        <input type="hidden" name="id" value="@horario.IdHorarioDisponible" />
+                                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         }
     </div>
 </div>

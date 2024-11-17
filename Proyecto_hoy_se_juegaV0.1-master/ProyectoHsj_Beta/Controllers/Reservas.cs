@@ -17,16 +17,30 @@ namespace ProyectoHsj_Beta.Controllers
     {
         private readonly HoySeJuegaContext _context;
         private readonly MercadoPagoService _MercadoPagoService;
-        public Reservas(HoySeJuegaContext context, MercadoPagoService mercadoPagoService)
+        private readonly AuditoriaService _auditoriaService;
+        public Reservas(HoySeJuegaContext context, MercadoPagoService mercadoPagoService, AuditoriaService auditoriaService)
         {
             _context = context;
             _MercadoPagoService = mercadoPagoService;
+            _auditoriaService = auditoriaService;
         }
 
         
 
-        public IActionResult Reservar()
+        public async Task<IActionResult> Reservar()
         {
+            var configPago = await _context.ConfiguracionPagos
+                        .Select(c => c.MontoSena)
+                        .FirstOrDefaultAsync();  // Toma el primer (y único) resultado que cumple la condición
+
+            if (configPago == null)
+            {
+                configPago = 0; // Valor predeterminado o lanzar un error si prefieres
+            }
+
+            string monto = configPago.ToString("N0");
+            ViewData["monto"] = monto;
+
             return View();
         }
 
@@ -64,6 +78,10 @@ namespace ProyectoHsj_Beta.Controllers
 
                             // Captura el ID de la reserva creada
                             var idReserva = (int)parametros[2].Value;
+                            await _auditoriaService.RegistrarAuditoriaAsync(
+                            seccion: "Reserva",
+                            descripcion: "El usuario ha creado una nueva reserva.",
+                            idAccion: 1);
 
                             // Devuelve una respuesta JSON de éxito con el ID de la reserva
                             return Json(new { success = true, message = "Reserva confirmada correctamente", idReserva });
@@ -140,127 +158,7 @@ namespace ProyectoHsj_Beta.Controllers
             }
         }
 
-        // GET: Reservas/Create
-
-        // POST: Reservas/Create
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ReservaViewModel reserva)
-        {
-            if (reserva.Fecha == null || reserva.Fecha == DateTime.MinValue)
-            {
-                return BadRequest("Fecha no válida.");
-            }
-
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdClaim))
-            {
-                return Unauthorized("Usuario no autenticado.");
-            }
-            int idUsuario = int.Parse(userIdClaim);
-
-            // Buscar el horario específico seleccionado por el usuario
-            var horario = await _context.HorarioDisponibles
-                .FirstOrDefaultAsync(h => h.IdHorarioDisponible == reserva.IdHorarioDisponible && h.DisponibleHorario == true);
-
-            if (horario == null)
-            {
-                Console.WriteLine("Paso por el null de horario");
-                return BadRequest("No hay horario disponible para esa fecha.");
-            }
-
-            var nuevaReserva = new Reserva
-            {
-                FechaReserva = reserva.Fecha,
-                IdHorarioDisponible = horario.IdHorarioDisponible,
-                IdEstadoReserva = 1, // Activa
-                IdUsuario = idUsuario
-            };
-
-            // Marcar el horario como no disponible
-            horario.DisponibleHorario = false;
-            Console.WriteLine($"este es el id de fecha: {horario.IdHorarioDisponible} ");
-            _context.HorarioDisponibles.Update(horario);
-
-            _context.Reservas.Add(nuevaReserva);
-            await _context.SaveChangesAsync();
-            return Json(new { success = true, idReserva = nuevaReserva.IdReserva });
-        }
-        public async Task<IActionResult> Index()
-        {
-            ViewData["ID_horario_disponible"] = new SelectList(await _context.HorarioDisponibles.ToListAsync(), "Id", "HoraInicio");
-            return View();
-        }
-
-        /*public async Task<IActionResult> GetReservas()
-        {
-            var currentUserId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)); // Asegúrate de obtener el ID correctamente
-            var isAdmin = User.IsInRole("admin");
-
-            // Cargamos las reservas desde la base de datos
-            var reservasDb = await _context.Reservas
-                .Where(r => r.FechaReserva.HasValue)
-                .ToListAsync();
-            var reservas = reservasDb.Select(r => new Evento
-            {
-                id = r.IdReserva,
-                title = "Reserva " + r.IdReserva,
-                start = r.FechaReserva.Value.ToString("yyyy-MM-ddTHH:mm"),
-                end = r.FechaReserva.Value.AddHours(1).ToString("yyyy-MM-ddTHH:mm"),
-                creadorId = r.IdUsuario,
-                color = ObtenerColorEstado((int)r.IdEstadoReserva),
-                estado = ObtenerEstado((int)r.IdEstadoReserva)
-            })
-            .Where(e => e.estado != "CANCELADA" || e.creadorId == currentUserId || isAdmin) // Filtra según visibilidad
-            .ToList();
-
-            var horariosDisponibles = await _context.HorarioDisponibles
-                .Where(h => h.DisponibleHorario == true)
-                .Select(h => new Evento
-                {
-                    id = h.IdHorarioDisponible,
-                    title = "Disponible",
-                    start = new DateTime(
-                        h.FechaHorario.Year,
-                        h.FechaHorario.Month,
-                        h.FechaHorario.Day,
-                        h.HoraInicio.Hour,
-                        h.HoraInicio.Minute,
-                        0).ToString("yyyy-MM-ddTHH:mm"),
-                    end = new DateTime(
-                        h.FechaHorario.Year,
-                        h.FechaHorario.Month,
-                        h.FechaHorario.Day,
-                        h.HoraFin.Hour,
-                        h.HoraFin.Minute,
-                        0).ToString("yyyy-MM-ddTHH:mm"),
-                    color = "green",
-                    estado = "Disponible"
-                })
-                .ToListAsync();
-
-            // Ahora puedes concatenar ambas listas sin problemas
-            var eventos = reservas.Concat(horariosDisponibles).ToList();
-
-            return Json(eventos);
-        }*/
-
-        private string ObtenerEstado(int estadoId) =>
-            estadoId switch
-            {
-                1 => "PENDIENTE",
-                2 => "CONFIRMADA",
-                3 => "CANCELADA",
-                _ => "DESCONOCIDO"
-            };
-
-        private string ObtenerColorEstado(int estadoId) =>
-            estadoId switch
-            {
-                1 => "yellow",
-                2 => "green",
-                3 => "gray",
-                _ => "black"
-            };
+       
         //Obtener y renderizar los horarios
         [HttpGet]
         public async Task<IActionResult> GetAvailableTimeSlots(DateTime fecha) //Modificado para incluir solo los horarios dentro de 2 semanas
@@ -285,6 +183,7 @@ namespace ProyectoHsj_Beta.Controllers
             // Cambiar el return para incluir ID y las horas
             return Json(horarios);
         }
+
         [HttpPost]
         public async Task<IActionResult> PagarReserva(int reservaId, decimal monto)
         {
@@ -298,65 +197,10 @@ namespace ProyectoHsj_Beta.Controllers
 
             var preferencia = await _MercadoPagoService.CrearPreferenciaDePago(pago);
 
+            // REVISAR SI PAGO SE DEBE AGREGAR UN AUDITORIAAAAAA!
+
             // Redirige al usuario al URL de Mercado Pago
             return Redirect(preferencia.InitPoint);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Cancel(int id)
-        {
-            var reserva = await _context.Reservas.FindAsync(id);
-
-            if (reserva == null)
-            {
-                return NotFound("Reserva no encontrada.");
-            }
-
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userIdClaim == null || int.Parse(userIdClaim) != reserva.IdUsuario)
-            {
-                return Forbid("No tienes permiso para cancelar esta reserva.");
-            }
-
-            // Marcar la reserva como cancelada
-            reserva.IdEstadoReserva = 3;  // Estado: Cancelada
-            _context.Reservas.Update(reserva);
-
-            // Liberar el horario asociado
-            var horario = await _context.HorarioDisponibles
-                .FirstOrDefaultAsync(h => h.IdHorarioDisponible == reserva.IdHorarioDisponible);
-            if (horario != null)
-            {
-                horario.DisponibleHorario = true;
-                _context.HorarioDisponibles.Update(horario);
-            }
-
-            await _context.SaveChangesAsync();
-            return Ok("Reserva cancelada exitosamente.");
-        }
-
-       
-       
-
-
-        [HttpDelete]
-        public async Task<IActionResult> DeleteReserva(int id)
-        {
-            var reserva = await _context.Reservas.FindAsync(id);
-
-            if (reserva == null)
-            {
-                return NotFound("No se encontró la reserva.");
-            }
-
-            if (reserva.IdEstadoReserva != 3) // Estado 2 = CANCELADA
-            {
-                return BadRequest("Solo se pueden eliminar reservas canceladas.");
-            }
-            _context.Reservas.Remove(reserva);
-            await _context.SaveChangesAsync();
-
-            return Ok("Reserva eliminada correctamente.");
         }
 
     }

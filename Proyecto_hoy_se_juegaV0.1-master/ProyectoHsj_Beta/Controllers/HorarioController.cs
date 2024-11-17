@@ -9,14 +9,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProyectoHsj_Beta.ViewsModels;
+using ProyectoHsj_Beta.Services;
 namespace ProyectoHsj_Beta.Controllers
 {
     public class HorarioController : Controller
     {
         private readonly HoySeJuegaContext _context;
-        public HorarioController(HoySeJuegaContext context)
+        private readonly AuditoriaService _auditoriaService;
+        public HorarioController(HoySeJuegaContext context, AuditoriaService auditoriaService)
         {
             _context = context;
+            _auditoriaService = auditoriaService;
         }
 
         // GET: HorarioController
@@ -35,7 +38,7 @@ namespace ProyectoHsj_Beta.Controllers
             }
 
             DateTime fechaActual = DateTime.Now.Date;
-            DateTime finDeSemana = fechaActual.AddDays(6);
+            DateTime finDeSemana = fechaActual.AddDays(13);
 
             var horariosAGuardar = new List<HorarioDisponible>();
             for (DateTime fecha = fechaActual; fecha <= finDeSemana; fecha = fecha.AddDays(1))
@@ -67,6 +70,10 @@ namespace ProyectoHsj_Beta.Controllers
             {
                 _context.HorarioDisponibles.AddRange(horariosAGuardar);
                 await _context.SaveChangesAsync();
+                await _auditoriaService.RegistrarAuditoriaAsync(
+                seccion: "Administración",
+                descripcion: "El usuario ha generado nuevos horarios semanales.",
+                idAccion: 1);
                 TempData["Message"] = "Horarios generados exitosamente para la semana.";
             }
             else
@@ -126,6 +133,10 @@ namespace ProyectoHsj_Beta.Controllers
             {
                 _context.HorarioDisponibles.AddRange(horariosAGuardar);
                 await _context.SaveChangesAsync();
+                await _auditoriaService.RegistrarAuditoriaAsync(
+                seccion: "Administración",
+                descripcion: "El usuario ha generado nuevos horarios mensuales.",
+                idAccion: 1);
                 TempData["Message"] = "Horarios generados exitosamente.";
             }
             else
@@ -138,10 +149,15 @@ namespace ProyectoHsj_Beta.Controllers
 
         public async Task<IActionResult> ManageView()
         {
-            var horarios = await _context.HorarioDisponibles.ToListAsync();
+            // Ordena los horarios por FechaHorario DESC y luego por HoraInicio DESC
+            var horarios = await _context.HorarioDisponibles
+                .OrderByDescending(h => h.FechaHorario)
+                .ThenByDescending(h => h.HoraInicio)
+                .ToListAsync();
+
             return View(horarios);
-            
         }
+
 
         [HttpGet]
         public IActionResult CreateHorario()
@@ -166,47 +182,11 @@ namespace ProyectoHsj_Beta.Controllers
 
                 _context.HorarioDisponibles.Add(horario);
                 await _context.SaveChangesAsync();
-
+                await _auditoriaService.RegistrarAuditoriaAsync(
+                seccion: "Administración",
+                descripcion: "El usuario ha generado un nuevo horario.",
+                idAccion: 1);
                 TempData["Message"] = "Horario creado exitosamente.";
-                return RedirectToAction("ManageView");
-            }
-
-            return View(model);
-        }
-
-        public async Task<IActionResult> EditarHorario(int id)
-        {
-            var horarioDb = await _context.HorarioDisponibles.FindAsync(id);
-            if (horarioDb == null) return NotFound();
-
-            // Mapear el modelo de la base de datos al ViewModel
-            var viewModel = new HorarioViewModel
-            {
-                IdHorarioDisponible = horarioDb.IdHorarioDisponible,
-                FechaHorario = horarioDb.FechaHorario,
-                HoraInicio = horarioDb.HoraInicio,
-                HoraFin = horarioDb.HoraFin,
-                DisponibleHorario = horarioDb.DisponibleHorario ?? false // Valor por defecto si es null
-            };
-
-            return View(viewModel);
-        }
-        [HttpPost]
-        public async Task<IActionResult> EditarHorario(HorarioViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var horarioDb = await _context.HorarioDisponibles.FindAsync(model.IdHorarioDisponible);
-                if (horarioDb == null) return NotFound();
-
-                // Mapear del ViewModel al modelo de la base de datos
-                horarioDb.FechaHorario = model.FechaHorario;
-                horarioDb.HoraInicio = model.HoraInicio;
-                horarioDb.HoraFin = model.HoraFin;
-                horarioDb.DisponibleHorario = model.DisponibleHorario;
-
-                await _context.SaveChangesAsync();
-                TempData["Message"] = "Horario actualizado exitosamente.";
                 return RedirectToAction("ManageView");
             }
 
@@ -231,28 +211,33 @@ namespace ProyectoHsj_Beta.Controllers
             return View("ManageView", resultado); // Reutilizamos la vista 'ManageView' para mostrar los resultados de búsqueda
         }
 
-        public async Task<IActionResult> EliminarTodosLosHorarios()
+        public async Task<IActionResult> EliminarHorariosDeLaSemana()
         {
-            var horarios = _context.HorarioDisponibles.ToList();
-            var reservasAsociadas = await _context.Reservas
-            .ToListAsync();
-            if (reservasAsociadas.Any())
+            // Obtener la fecha actual y el rango de dos semanas (fecha actual hasta 13 días después)
+            DateTime fechaActual = DateTime.Now.Date;
+            DateTime finDeSemana = fechaActual.AddDays(13); // Rango de dos semanas
+
+            // Eliminar los horarios dentro de este rango de fechas
+            var horariosAEliminar = await _context.HorarioDisponibles
+                .Where(h => h.FechaHorario >= DateOnly.FromDateTime(fechaActual) && h.FechaHorario <= DateOnly.FromDateTime(finDeSemana))
+                .ToListAsync();
+
+            if (horariosAEliminar.Any())
             {
-                // Aquí puedes decidir qué hacer: mostrar un mensaje, eliminar las reservas, etc.
-                TempData["ErrorMessage"] = "No se puede eliminar los horarios porque hay reservas asociadas.";
-                return RedirectToAction("ManageView");
-            }
-            if (horarios.Any())
-            {
-                _context.HorarioDisponibles.RemoveRange(horarios);
+                _context.HorarioDisponibles.RemoveRange(horariosAEliminar);
                 await _context.SaveChangesAsync();
-                TempData["Message"] = "Todos los horarios han sido eliminados.";
+                await _auditoriaService.RegistrarAuditoriaAsync(
+                seccion: "Administración",
+                descripcion: "El usuario ha eliminado los horarios de la semana.",
+                idAccion: 3);
+                TempData["Message"] = "Horarios de la semana eliminados exitosamente.";
             }
             else
             {
-                TempData["Message"] = "No hay horarios para eliminar.";
+                TempData["Message"] = "No se encontraron horarios para eliminar en el rango de las dos semanas.";
             }
-            return RedirectToAction("ManageView");
+
+            return RedirectToAction("ManageView", "Horario");
         }
 
         public async Task<IActionResult> EliminarHorario(int id)
@@ -272,6 +257,10 @@ namespace ProyectoHsj_Beta.Controllers
             {
                 _context.HorarioDisponibles.Remove(horario);
                 await _context.SaveChangesAsync();
+                await _auditoriaService.RegistrarAuditoriaAsync(
+                seccion: "Administración",
+                descripcion: "El usuario ha eliminado un horario.",
+                idAccion: 3);
                 TempData["Message"] = "El horario fue eliminado correctamente.";
             }
             else

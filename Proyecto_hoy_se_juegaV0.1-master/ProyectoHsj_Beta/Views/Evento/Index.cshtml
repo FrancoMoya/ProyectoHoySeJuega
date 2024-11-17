@@ -7,8 +7,12 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
     body {
-        background-color: #333333 !important;
-        color: #ffffff;
+        background-image: url('/css/img/logo fondo admin.png');
+        background-size: contain; /* Ajusta la imagen para que se vea completa */
+        background-repeat: no-repeat; /* Evita que la imagen se repita */
+        background-attachment: fixed; /* Mantiene la imagen fija al hacer scroll */
+        background-position: center; /* Centra la imagen */
+        background-color: #000; /* Usa un color de fondo negro o el que prefieras */
     }
 
     h1 {
@@ -78,7 +82,7 @@
 </style>
 
 <div class="container mt-4">
-    <h1>Eventos</h1>
+    <h1 style="color:white">Eventos</h1>
     <p>
         <a asp-action="Create" class="btn btn-primary">Nuevo EVENTO</a>
     </p>

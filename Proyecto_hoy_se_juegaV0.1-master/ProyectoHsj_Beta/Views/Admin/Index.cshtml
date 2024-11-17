@@ -1,11 +1,18 @@
 ﻿@{
     Layout = "~/Views/Shared/Layout_admin.cshtml";
+
     ViewData["Title"] = "Panel de Administración - Reservas";
 }
 
 <style>
+    /* General */
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Roboto', sans-serif;
+    }
+
     h2 {
-        color: white; /* Color del título en blanco */
+        color: #343a40;
         text-align: center;
         margin-top: 20px;
         margin-bottom: 30px;
@@ -14,65 +21,84 @@
     #calendar {
         max-width: 90%;
         margin: 0 auto;
-        border: 1px solid black; /* Bordes del calendario */
-        border-radius: 10px; /* Bordes redondeados */
-        overflow: hidden; /* Para el desbordamiento */
-        background-color: white; /* Fondo blanco para el calendario */
-        z-index: 1; /* Asegurar que el calendario esté por delante */
-        position: relative; /* Posición relativa para el z-index */
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        overflow: hidden;
+        background-color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-
-    .fc-daygrid-day {
-        border: 1px solid #e0e0e0; /* Bordes de los días */
-    }
-
-        .fc-daygrid-day.fc-day {
-            color: black !important; /* Aseguramos que el texto de los días sea negro */
+        /* Cambia el cursor a una mano (puntero de enlace) sobre las fechas del calendario */
+        #calendar .fc-day {
+            cursor: pointer;
         }
 
-    .fc-toolbar-title {
-        text-transform: capitalize; /* Capitalizar la primera letra de cada mes */
-        color: black; /* Color del texto del título del calendario en negro */
-    }
 
-    .fc-toolbar h2 {
-        color: black; /* Asegura que el mes y año también estén en negro */
-    }
-
-    .fc-col-header-cell {
-        text-transform: capitalize; /* Capitalizar la primera letra de los días de la semana */
-        color: black; /* Color del texto de los días de la semana en negro */
-    }
-
+    /* Modal */
     .modal-content {
-        border-radius: 10px; /* Bordes redondeados para el modal */
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
     .modal-header {
-        background-color: black; /* Color de fondo del encabezado del modal */
-        color: white; /* Color del texto del encabezado */
+        background-color: #343a40;
+        color: white;
     }
 
-    .modal-footer {
-        border-top: none; /* Quitar borde superior */
+    .modal-body {
+        color: #495057;
     }
 
-    .modal-body p {
-        margin: 0; /* Sin margen en los párrafos del modal */
+    /* Estilos específicos para la vista de reservas dentro del modal */
+    #reservationDetailModal .list-group-item {
+        background-color: #ffffff; /* Color de fondo blanco */
+        padding: 20px; /* Aumenta el padding para dar más espacio a los contenidos */
+        border: 1px solid #dee2e6; /* Borde gris claro */
+        border-radius: 8px; /* Bordes redondeados */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil para dar profundidad */
+        margin-bottom: 10px; /* Espacio entre elementos */
     }
 
-    .btn {
-        border-radius: 5px; /* Bordes redondeados para botones */
-    }
-
-    .btn-secondary {
-        background-color: #6c757d; /* Color personalizado para el botón secundario */
-        border: none; /* Sin borde */
-    }
-
-        .btn-secondary:hover {
-            background-color: #5a6268; /* Color al pasar el mouse */
+        #reservationDetailModal .list-group-item p {
+            margin: 0; /* Asegura que no haya márgenes adicionales dentro de los párrafos */
         }
+
+        /* Hover sobre los elementos de la lista */
+        #reservationDetailModal .list-group-item:hover {
+            background-color: #f8f9fa; /* Resalta el fondo cuando el cursor pasa por encima */
+        }
+
+        /* Estilo para los botones dentro de cada item */
+        #reservationDetailModal .list-group-item .btn {
+            border-radius: 8px; /* Bordes redondeados en los botones */
+        }
+        /* Diseño Responsivo */
+    @@media (max-width: 768px) {
+        #calendar {
+            max-width: 100%;
+            margin: 10px auto;
+        }
+
+        .fc-toolbar {
+            flex-direction: column;
+        }
+
+        .fc-toolbar-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .modal-dialog {
+            margin: 10px;
+        }
+
+        .modal-body p {
+            font-size: 0.9em;
+        }
+    }
+    .fc-toolbar-title {
+        text-transform: uppercase; /* Pone en mayúsculas el nombre del mes */
+    }
+    
 </style>
 
 <h2>@ViewData["Title"]</h2>
@@ -88,12 +114,8 @@
                 <h5 class="modal-title" id="reservationDetailModalLabel">Detalles de la Reserva</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" style="color: black">
-                <p><strong>Reserva ID:</strong> <span id="modalReservaId"></span></p>
-                <p><strong>Estado:</strong> <span id="modalEstado"></span></p>
-                <p><strong>Nombre Usuario:</strong> <span id="modalNombreUsuario"></span></p>
-                <p><strong>Teléfono Usuario:</strong> <span id="modalTelefonoUsuario"></span></p>
-                <p><strong>Fecha Reserva:</strong> <span id="modalFechaReserva"></span></p>
+            <div class="modal-body">
+                <!-- Contenido del modal generado dinámicamente -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -108,44 +130,92 @@
 <script src="https://cdn.jsdelivr.net/npm/popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- Scripts -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         let calendarEl = document.getElementById('calendar');
         let calendar = new FullCalendar.Calendar(calendarEl, {
-            locale: 'es', // Cambiar idioma a español
-            initialView: 'dayGridMonth',
+            locale: 'es',
+            initialView: window.innerWidth <= 768 ? 'timeGridWeek' : 'dayGridMonth',
+            buttonText: { today: 'Hoy' },
+            events: '/Admin/GetReservas',
             buttonText: {
-                today: 'Hoy' // Cambiar el texto del botón "Today" a "Hoy"
+            today: 'Hoy',
+            month: 'Mes',
+            week: 'Semana',
+            day: 'Día',
+            list: 'Lista' // Esto es para la vista de lista si la estás utilizando
             },
-            events: '/Admin/GetReservas', // Cargar eventos desde el backend
 
-            // Al hacer clic en una fecha, mostrar el modal con todas las reservas de esa fecha
+            // Configura el formato del título del mes en mayúsculas
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            titleFormat: { 
+                month: 'long', // Formato largo para el mes (ej. "enero", "febrero", etc.)
+                year: 'numeric'
+            },
+            eventTimeFormat: { 
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false // Si prefieres usar el formato de 24 horas
+            },
+            // Configura las horas visibles en las vistas 'timeGrid'
+            slotMinTime: "08:00:00", // Hora de inicio visible (ejemplo: 08:00 AM)
+            slotMaxTime: "20:00:00", // Hora de fin visible (ejemplo: 08:00 PM)
+            slotLabelInterval: '01:00', // Intervalo de las horas (cada 1 hora)
+            slotDuration: '00:30:00', // Duración de cada franja horaria (30 minutos)
+            allDaySlot: false, // Ocultar el slot de "Todo el día"
+
+            // Mostrar las horas en el lado izquierdo
+            slotEventOverlap: false, // Evitar que los eventos se superpongan
+
+
+            // Este evento cubre clics en toda la celda
             dateClick: function (info) {
-                // Filtrar las reservas para la fecha seleccionada
                 const reservasEnFecha = calendar.getEvents().filter(
                     r => new Date(r.start).toDateString() === info.date.toDateString()
                 );
 
                 if (reservasEnFecha.length > 0) {
-                    let reservasHtml = ''; // Inicializamos el HTML
+                    let reservasHtml = '<ul class="list-group">';
 
                     reservasEnFecha.forEach(reserva => {
+                        const showCancelButton = reserva.extendedProps.estado === "CONFIRMADA";
                         reservasHtml += `
-                                        <p><strong>Reserva ID:</strong> ${reserva.extendedProps.idReserva}</p>
-                                        <p><strong>Estado:</strong> ${reserva.extendedProps.estado}</p>
-                                        <p><strong>Nombre Usuario:</strong> ${reserva.extendedProps.usuarioNombre}</p>
-                                        <p><strong>Teléfono Usuario:</strong> ${reserva.extendedProps.usuarioTelefono}</p>
-                                        <p><strong>Fecha Reserva:</strong> ${new Date(reserva.start).toLocaleString()}</p>
-                                        <hr />
-                                    `;
+                                <li class="list-group-item">
+                                    <p><strong>ID:</strong> ${reserva.extendedProps.idReserva}</p>
+                                    <p><strong>Usuario:</strong> ${reserva.extendedProps.usuarioNombre}</p>
+                                    <p><strong>Teléfono:</strong> ${reserva.extendedProps.usuarioTelefono}</p>
+                                    <p><strong>Estado:</strong> ${reserva.extendedProps.estado}</p>
+                                    <p><strong>Hora:</strong> ${new Date(reserva.start).toLocaleTimeString()}</p>
+                                    <div class="d-flex justify-content-end">
+                                        ${showCancelButton ? `<button class="btn btn-warning btn-sm me-2 cancelar-reserva-btn" data-id="${reserva.extendedProps.idReserva}">Cancelar</button>` : ""}
+                                        <button class="btn btn-danger btn-sm eliminar-reserva-btn" data-id="${reserva.extendedProps.idReserva}">Eliminar</button>
+                                    </div>
+                                </li>
+                            `;
                     });
 
-                    // Insertamos el contenido en el modal
+                    reservasHtml += '</ul>';
                     document.querySelector('#reservationDetailModal .modal-body').innerHTML = reservasHtml;
 
-                    // Mostramos el modal
                     const modal = new bootstrap.Modal(document.getElementById('reservationDetailModal'));
                     modal.show();
+
+                    document.querySelectorAll('.cancelar-reserva-btn').forEach(button => {
+                        button.addEventListener('click', function () {
+                            cancelarReserva(this.dataset.id);
+                        });
+                    });
+
+                    document.querySelectorAll('.eliminar-reserva-btn').forEach(button => {
+                        button.addEventListener('click', function () {
+                            eliminarReserva(this.dataset.id);
+                        });
+                    });
                 } else {
                     alert('No hay reservas para esta fecha.');
                 }
@@ -153,5 +223,30 @@
         });
 
         calendar.render();
+
+        function cancelarReserva(reservaId) {
+            if (confirm('¿Estás seguro de cancelar esta reserva?')) {
+                fetch(`/Admin/CancelarReserva/${reservaId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                    .then(response => response.ok ? location.reload() : alert('Error al cancelar reserva'))
+                    .catch(console.error);
+            }
+        }
+
+        function eliminarReserva(reservaId) {
+            if (confirm('¿Estás seguro de eliminar esta reserva?')) {
+                fetch(`/Admin/EliminarReserva/${reservaId}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                    .then(response => response.ok ? location.reload() : alert('Error al eliminar reserva'))
+                    .catch(console.error);
+            }
+        }
     });
+
 </script>
+
+

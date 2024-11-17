@@ -3,7 +3,6 @@
     var number = ViewData["number"]?.ToString();  // Obtiene el número de WhatsApp desde ViewData
 }
 
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
     .table-responsive {
         overflow-x: auto;
@@ -11,12 +10,36 @@
     body {
         background-color: #333333 !important;
     }
-
+    /* Estilos para las tarjetas en dispositivos móviles */
+    @@media (max-width: 767px) {
+        .reservation-card {
+            margin-bottom: 15px;
+        }
+        .card-header {
+            background-color: #343a40;
+            color: white;
+        }
+        .card-body {
+            background-color: #f8f9fa;
+            color: black;
+        }
+        .card-footer {
+            background-color: #f8f9fa;
+        }
+    }
 </style>
 
 <h1 style="color: white">Mis reservas</h1>
 
 <div class="container mt-4">
+    <!-- Botones de filtro por estado -->
+    <div class="btn-group mb-4" role="group" aria-label="Filtros">
+        <button type="button" class="btn btn-primary filter-btn" data-filter="all">Todas</button>
+        <button type="button" class="btn btn-success filter-btn" data-filter="CONFIRMADA">Confirmadas</button>
+        <button type="button" class="btn btn-warning filter-btn" data-filter="PENDIENTE">Pendientes</button>
+        <button type="button" class="btn btn-danger filter-btn" data-filter="CANCELADA">Canceladas</button>
+    </div>
+
     @if (Model == null || !Model.Any())
     {
         <div class="alert alert-info" role="alert">
@@ -25,7 +48,50 @@
     }
     else
     {
-        <div class="table-responsive">
+        <!-- Vista de reservas como tarjetas en móvil (se muestra solo en pantallas pequeñas) -->
+        <div class="row d-block d-lg-none" id="reservations">
+            @foreach (var item in Model)
+            {
+                var mensajeCancelacion = "Hola, quiero cancelar mi reserva con ID: " + item.IdReserva.ToString() + " y fecha " +
+                    item.FechaHorario.ToString("dd-MM-yyyy") +
+                    " de " + item.HoraInicio.ToString("hh\\:mm") +
+                    " a " + item.HoraFin.ToString("hh\\:mm") + " hs.";
+                <div class="col-md-4 col-sm-6 col-xs-12 reservation-card" data-status="@item.NombreEstadoReserva">
+                    <div class="card">
+                        <div class="card-header">
+                            Creación: @item.FechaReserva.ToString("HH:mm - dd/MM/yyyy")
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@item.NombreEstadoReserva</h5>
+                            <p><strong>Fecha reservada:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
+                            <p><strong>Horario:</strong> @item.HoraInicio.ToString("hh\\:mm") - @item.HoraFin.ToString("hh\\:mm")</p>
+                        </div>
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDetailsModal"
+                                    data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                    data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
+                                    data-fin="@item.HoraFin.ToString("hh\\:mm")">
+                                Detalles
+                            </button>
+
+                            @if (item.NombreEstadoReserva == "CONFIRMADA")
+                            {
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
+                                        data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                        data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
+                                        data-fin="@item.HoraFin.ToString("hh\\:mm")"
+                                        data-msg="@mensajeCancelacion">
+                                    Cancelar
+                                </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Vista de reservas como tabla (se muestra solo en pantallas grandes) -->
+        <div class="table-responsive d-none d-lg-block">
             <table class="table table-striped table-bordered table-dark">
                 <thead class="thead-light">
                     <tr>
@@ -40,21 +106,18 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        // Generar el mensaje dinámico en Razor
                         var mensajeCancelacion = "Hola, quiero cancelar mi reserva con ID: " + item.IdReserva.ToString() + " y fecha " +
                         item.FechaHorario.ToString("dd-MM-yyyy") +
                         " de " + item.HoraInicio.ToString("hh\\:mm") +
                         " a " + item.HoraFin.ToString("hh\\:mm") + " hs.";
 
-
-                        <tr>
+                        <tr data-status="@item.NombreEstadoReserva">
                             <td>@item.FechaReserva.ToString(" HH:mm - dd/MM/yyyy")</td>
                             <td>@item.NombreEstadoReserva</td>
                             <td>@item.FechaHorario.ToString("dd-MM-yyyy")</td>
                             <td>@item.HoraInicio.ToString("hh\\:mm")</td>
                             <td>@item.HoraFin.ToString("hh\\:mm")</td>
                             <td>
-                                <!-- Botón Detalles -->
                                 <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDetailsModal"
                                         data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
                                         data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
@@ -62,10 +125,8 @@
                                     Detalles
                                 </button>
 
-                                <!-- Botón Cancelar (solo visible si el estado es CONFIRMADA) -->
                                 @if (item.NombreEstadoReserva == "CONFIRMADA")
                                 {
-                                    <!-- Botón Cancelar -->
                                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
                                             data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
                                             data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
@@ -114,33 +175,32 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <!-- Enlace de WhatsApp con el mensaje dinámico -->
                 <a id="whatsappLink" class="btn btn-danger" target="_blank" data-whatsapp-number="@number">Cancelar</a>
             </div>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
     var confirmDetailsModal = document.getElementById('confirmDetailsModal');
     var confirmCancelModal = document.getElementById('confirmCancelModal');
     var whatsappLink = document.getElementById('whatsappLink');
 
+    // Al mostrar el modal de detalles
     confirmDetailsModal.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget;
         var objectFecha = button.getAttribute('data-fecha');
         var objectHoraInicio = button.getAttribute('data-inicio');
         var objectHoraFin = button.getAttribute('data-fin');
 
-        // Actualizamos los detalles en el modal de detalles
         var objectFechaSpan = document.getElementById('ObjectFecha');
         var objectHoraSpan = document.getElementById('ObjectHora');
         objectFechaSpan.textContent = objectFecha;
         objectHoraSpan.textContent = objectHoraInicio + ' a ' + objectHoraFin + 'hs';
     });
 
+    // Al mostrar el modal de cancelación
     confirmCancelModal.addEventListener('show.bs.modal', function (event) {
         var button = event.relatedTarget;
         var objectFecha = button.getAttribute('data-fecha');
@@ -148,16 +208,43 @@
         var objectHoraFin = button.getAttribute('data-fin');
         var mensaje = button.getAttribute('data-msg');
 
-        // Actualizamos los detalles en el modal de cancelación
         var objectFechaSpan = document.getElementById('ObjectFechaCancel');
         var objectHoraSpan = document.getElementById('ObjectHoraCancel');
         objectFechaSpan.textContent = objectFecha;
         objectHoraSpan.textContent = objectHoraInicio + ' a ' + objectHoraFin + 'hs';
 
-        // Obtener el número de WhatsApp del atributo data-whatsapp-number
         var number = whatsappLink.getAttribute('data-whatsapp-number');
-
-        // Actualizamos el enlace de WhatsApp con el mensaje dinámico
         whatsappLink.href = "https://wa.me/54" + number + "?text=" + encodeURIComponent(mensaje);
     });
+
+    // Filtrar reservas por estado
+    document.querySelectorAll('.filter-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        var filter = this.getAttribute('data-filter');
+        var cards = document.querySelectorAll('.reservation-card');
+        var rows = document.querySelectorAll('tbody tr');  // Seleccionamos solo las filas del cuerpo de la tabla
+
+        if (filter === 'all') {
+            cards.forEach(card => card.style.display = 'block');
+            rows.forEach(row => row.style.display = '');  // Mantenemos todas las filas visibles
+        } else {
+            cards.forEach(card => {
+                if (card.getAttribute('data-status') !== filter) {
+                    card.style.display = 'none';
+                } else {
+                    card.style.display = 'block';
+                }
+            });
+
+            rows.forEach(row => {
+                if (row.getAttribute('data-status') !== filter) {
+                    row.style.display = 'none';  // Ocultamos las filas que no coinciden con el filtro
+                } else {
+                    row.style.display = '';  // Mostramos las filas que coinciden con el filtro
+                }
+            });
+        }
+    });
+});
+
 </script>

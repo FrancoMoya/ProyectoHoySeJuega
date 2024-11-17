@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using ProyectoHsj_Beta.DTO;
 using ProyectoHsj_Beta.ViewsModels;
 
 namespace ProyectoHsj_Beta.Models;
@@ -48,7 +49,8 @@ public partial class HoySeJuegaContext : DbContext
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
-    
+    public DbSet<ReservasPendientesDTO> ReservasPendientes { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -421,7 +423,9 @@ public partial class HoySeJuegaContext : DbContext
         modelBuilder.Entity<UsuariosGetViewModel>().HasNoKey().ToView(null);
         modelBuilder.Entity<RolesPermisosGetViewModel>().HasNoKey().ToView(null);
         modelBuilder.Entity<EventosAdminGetViewModel>().HasNoKey().ToView(null);
-        
+        modelBuilder.Entity<ReservasAdminGetViewModel>().HasNoKey().ToView(null);
+        modelBuilder.Entity<ReservasPendientesDTO>().HasNoKey();
+
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

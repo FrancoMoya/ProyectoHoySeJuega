@@ -20,12 +20,14 @@ namespace ProyectoHsj_Beta.Controllers
         private readonly HoySeJuegaContext _hoysejuegacontext;
         private readonly IFluentEmail _fluentEmail;
         private readonly IPermisoRepository _permisoRepository;
+        private readonly HoySeJuegaContext _context;
 
-        public AccesController(HoySeJuegaContext seJuegaContext, IFluentEmail fluentEmail, IPermisoRepository permisoRepository)
+        public AccesController(HoySeJuegaContext seJuegaContext, IFluentEmail fluentEmail, IPermisoRepository permisoRepository, HoySeJuegaContext context)
         {
             _hoysejuegacontext = seJuegaContext;
             _fluentEmail = fluentEmail;
             _permisoRepository = permisoRepository;
+            _context = context;
         }
         public IActionResult AccessDenied()
         {
@@ -176,7 +178,7 @@ namespace ProyectoHsj_Beta.Controllers
                 // Modificar el valor a (2/3) si es la primera vez ->
                 //  para poder tener acceso al panel de administracion
                 //  2 = admin / 3 = Empleado
-                IdRol = (2),
+                IdRol = (1),
             };
             await _hoysejuegacontext.Usuarios.AddAsync(usuario);
             await _hoysejuegacontext.SaveChangesAsync();
@@ -297,6 +299,23 @@ namespace ProyectoHsj_Beta.Controllers
             {
                 Console.WriteLine($"Claim: {claim.Type}, Value: {claim.Value}");
             }
+
+            //Guardar ultima sesion (NO FUNCIONAAAA)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!string.IsNullOrEmpty(userId))
+            {
+                // Buscar al usuario en la base de datos
+                var usuario = await _context.Usuarios.FindAsync(userId);
+
+                if (usuario != null)
+                {
+                    // Actualizar el campo UltimaSesion con la fecha actual
+                    usuario.UltimaSesion = DateOnly.FromDateTime(DateTime.Now);
+                    // Guardar los cambios en la base de datos
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             return RedirectToAction("Index", "Home");
         }
 

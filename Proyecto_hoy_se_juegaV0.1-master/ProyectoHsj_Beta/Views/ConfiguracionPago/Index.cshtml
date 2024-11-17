@@ -12,7 +12,7 @@
     <table class="table table-dark table-hover table-bordered">
         <thead class="thead-light">
             <tr>
-                <th class="text-black">Monto seña</th>
+                <th class="text-black">Monto seña ($)</th>
                 <th class="text-black">WhatsApp cancelaciones</th>
                 <th class="text-black">Fecha de Modificación</th>
                 <th class="text-black">Acciones</th>
@@ -22,7 +22,7 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@item.MontoSena</td>
+                    <td>$@item.MontoSena.ToString("N0")</td>
                     <td>@item.CelularCancelaciones</td>
                     <td>@item.FechaModificacion</td>
                     <td>
