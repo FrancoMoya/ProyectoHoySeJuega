@@ -119,6 +119,7 @@ namespace ProyectoHsj_Beta.Controllers
         {
             if (ModelState.IsValid)
             {
+                var fechaActual = DateTime.Now.AddHours(3); // Aumenta 3 horas
                 // Crear el nuevo evento
                 var nuevoEvento = new Evento 
                 { 
@@ -126,12 +127,14 @@ namespace ProyectoHsj_Beta.Controllers
                     DescripcionEvento = model.DescripcionEvento,
                     CorreoClienteEvento = model.CorreoClienteEvento,
                     TelefonoClienteEvento = model.TelefonoClienteEvento,
+                    FechaEvento = fechaActual,
                     IdHorarioDisponible = model.IdHorarioDisponible,
                     IdEstadoReserva = 2 // CONFIRMADA
                 };
-                var descripcionAuditoria = $"El usuario ha creado nuevo evento. Detalles, ID del evento: {nuevoEvento.IdEvento}.";
+                
                 _context.Eventos.Add(nuevoEvento);
                 await _context.SaveChangesAsync();
+                var descripcionAuditoria = $"El usuario ha creado nuevo evento. Detalles, ID del evento: {nuevoEvento.IdEvento}.";
                 await _auditoriaService.RegistrarAuditoriaAsync(
                 seccion: "Administración",
                 descripcion: descripcionAuditoria,

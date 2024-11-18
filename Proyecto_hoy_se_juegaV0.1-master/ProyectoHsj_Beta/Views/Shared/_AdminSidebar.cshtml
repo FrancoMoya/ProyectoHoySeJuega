@@ -15,6 +15,7 @@
             </a>
         </li>
         -->
+        
         <li class="list-group-item">
             <a class="link-no-style" asp-controller="Horario" asp-action="ManageView">
                 <i class="fas fa-users"></i> Horarios
@@ -22,12 +23,22 @@
         </li>
         <li class="list-group-item">
             <a class="link-no-style" asp-controller="Admin" asp-action="Index">
-                <i class="fas fa-users"></i> Reservas
+                <i class="fas fa-users"></i> Reservas clientes
             </a>
         </li>
         <li class="list-group-item">
             <a class="link-no-style" asp-controller="Evento" asp-action="Index">
-                <i class="fas fa-users"></i> Eventos
+                <i class="fas fa-users"></i> Reservas admin
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a class="link-no-style" asp-controller="Reservas" asp-action="Index">
+                <i class="fas fa-users"></i> Todas las reservas
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a class="link-no-style" asp-controller="EventosFijos" asp-action="Index">
+                <i class="fas fa-users"></i> Crear FIJOS
             </a>
         </li>
         
@@ -51,7 +62,7 @@
         </li>
         <li class="list-group-item">
             <a class="link-no-style" asp-controller="ConfiguracionPago" asp-action="Index">
-                <i class="fas fa-lock"></i> Monto pago
+                <i class="fas fa-lock"></i> Monto de pago
             </a>
         </li>
         <li class="list-group-item">
@@ -78,7 +89,7 @@
         color: white; /* Color del texto */
         height: 100vh; /* Altura de la barra lateral para ocupar toda la pantalla */
         position: fixed; /* Fija la barra lateral a la izquierda */
-        padding: 20px; /* Espaciado interno */
+        padding: 17px; /* Espaciado interno */
         transition: width 0.3s; /* Transición suave al cambiar el ancho */
     }
 
@@ -86,7 +97,7 @@
         display: flex; /* Utiliza flexbox para alinear el logo y el título */
         align-items: center; /* Centra verticalmente los elementos dentro de la barra lateral */
         justify-content: center; /* Centra horizontalmente el contenido */
-        margin-bottom: 20px; /* Espacio inferior para separar el encabezado de la lista */
+        margin-bottom: 15px; /* Espacio inferior para separar el encabezado de la lista */
         background-color: #6c757d; /* Cambia el color de fondo a gris */
         padding: 10px 15px; /* Agrega padding para mayor espacio interno */
         border-radius: 8px; /* Bordes redondeados para un aspecto más moderno */
@@ -111,7 +122,7 @@
     }
 
     .list-group-item {
-        padding: 20px 30px; /* Aumenta el espaciado interno para hacer los botones más grandes */
+        padding: 13px 13px; /* Aumenta el espaciado interno para hacer los botones más grandes */
         border: none; /* Elimina el borde de los elementos de lista */
         background-color: #343a40; /* Color de fondo gris para los botones */
         transition: background 0.2s; /* Transición suave para el color de fondo al pasar el mouse */

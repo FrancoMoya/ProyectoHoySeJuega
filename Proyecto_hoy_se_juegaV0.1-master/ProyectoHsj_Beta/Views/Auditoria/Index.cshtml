@@ -57,7 +57,7 @@
                         @foreach (var item in Model)
                         {
                             <tr class="text-center align-middle" data-action="@item.TituloAccionRealizada">
-                                <td>@Html.DisplayFor(modelItem => item.FechaAuditoria)</td>
+                                <td>@item.FechaAuditoria.ToString("HH:mm:ss - dd/MM/yyyy")</td>
                                 <td>@Html.DisplayFor(modelItem => item.TituloAccionRealizada)</td>
                                 <td>@Html.DisplayFor(modelItem => item.NombreUsuario)</td>
                                 <td>@Html.DisplayFor(modelItem => item.ApellidoUsuario)</td>

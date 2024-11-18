@@ -38,7 +38,7 @@ namespace ProyectoHsj_Beta.Controllers
             }
 
             DateTime fechaActual = DateTime.Now.Date;
-            DateTime finDeSemana = fechaActual.AddDays(13);
+            DateTime finDeSemana = fechaActual.AddDays(14);
 
             var horariosAGuardar = new List<HorarioDisponible>();
             for (DateTime fecha = fechaActual; fecha <= finDeSemana; fecha = fecha.AddDays(1))
@@ -60,7 +60,7 @@ namespace ProyectoHsj_Beta.Controllers
                             FechaHorario = DateOnly.FromDateTime(fecha),
                             HoraInicio = horario.Inicio,
                             HoraFin = horario.Fin,
-                            DisponibleHorario = disponible
+                            DisponibleHorario = true // lo cambie a true y evite el bool arriba
                         });
                     }
                 }
@@ -214,7 +214,7 @@ namespace ProyectoHsj_Beta.Controllers
         {
             // Obtener la fecha actual y el rango de dos semanas (fecha actual hasta 13 días después)
             DateTime fechaActual = DateTime.Now.Date;
-            DateTime finDeSemana = fechaActual.AddDays(13); // Rango de dos semanas
+            DateTime finDeSemana = fechaActual.AddDays(14); // Rango de dos semanas
 
             // Eliminar los horarios dentro de este rango de fechas
             var horariosAEliminar = await _context.HorarioDisponibles

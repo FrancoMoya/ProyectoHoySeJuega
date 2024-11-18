@@ -46,7 +46,7 @@ BEGIN
     SELECT ID_reserva 
     FROM RESERVA 
     WHERE ID_estado_reserva = 1 
-    AND DATEDIFF(MINUTE, Fecha_Reserva, @HoraServidor) >= 10;
+    AND DATEDIFF(MINUTE, Fecha_Reserva, @HoraServidor) >= 6;
 END;
 
 --
@@ -162,6 +162,8 @@ END;
 CREATE PROCEDURE SP_GET_EVENTOS_ADMIN
 AS
 BEGIN
+-- Fecha y hora actual del servidor ajustada con +3 horas
+    DECLARE @FechaHoraActual DATETIME = DATEADD(HOUR, 3, GETDATE());
 	SELECT
 	e.ID_evento AS IdEvento,
 	e.Fecha_Evento AS FechaEvento,
@@ -176,14 +178,19 @@ BEGIN
 	FROM EVENTO e
 	LEFT JOIN HORARIO_DISPONIBLE h ON e.ID_horario_disponible = h.ID_horario_disponible
 	LEFT JOIN ESTADO_RESERVA es ON e.ID_estado_reserva = es.ID_estado_reserva
+	WHERE es.ID_estado_reserva = 2
+	AND CAST(h.Fecha_Horario AS DATE) >= CAST(@FechaHoraActual AS DATE)
+ -- Filtra eventos a partir de la fecha y hora actual ajustada
+	ORDER BY h.Fecha_Horario, h.Hora_Inicio
 END;
 
 ------------------------------------
 
--- VER RESERVAS ADMIN
+-- VER RESERVAS ADMIN (CALENDARIO AEBL)
 CREATE PROCEDURE SP_GET_RESERVAS_ADMIN
 AS
 BEGIN
+	DECLARE @FechaHoraActual DATETIME = DATEADD(HOUR, 3, GETDATE());
     SELECT
         r.ID_reserva AS idReserva, 
         COALESCE(u.Apellido_Usuario, 'UsuarioEliminado') AS title,
@@ -211,6 +218,114 @@ BEGIN
     LEFT JOIN USUARIO u ON r.ID_usuario = u.ID_usuario
     LEFT JOIN ESTADO_RESERVA es ON r.ID_estado_reserva = es.ID_estado_reserva
     LEFT JOIN HORARIO_DISPONIBLE h ON r.ID_horario_disponible = h.ID_horario_disponible
+	WHERE es.ID_estado_reserva = 2
+	AND CAST(h.Fecha_Horario AS DATE) >= CAST(@FechaHoraActual AS DATE) -- Filtra eventos a partir de la fecha y hora actual ajustada
+	ORDER BY h.Fecha_Horario, h.Hora_Inicio
+END;
+
+--------------------------------------
+
+-- LISTAR FIJOS CREADOS ADMIN
+CREATE PROCEDURE SP_GET_FIJOS_CREADOS_ADMIN
+AS
+BEGIN
+    SELECT
+        Nombre AS Nombre,
+        COALESCE(Descripcion, 'Sin descripción') AS Descripcion,
+        COALESCE(CorreoCliente, 'Sin correo') AS CorreoCliente,
+        COALESCE(TelefonoCliente, '0000000000') AS TelefonoCliente,
+        HoraInicio AS HoraInicio,
+        CASE DiaSemana
+            WHEN 1 THEN 'Lunes'
+            WHEN 2 THEN 'Martes'
+            WHEN 3 THEN 'Miércoles'
+            WHEN 4 THEN 'Jueves'
+            WHEN 5 THEN 'Viernes'
+            WHEN 6 THEN 'Sábado'
+            WHEN 7 THEN 'Domingo'
+            ELSE 'Desconocido'
+        END AS DiaSemana,
+        FechaInicio AS FechaInicio,
+        FechaFin AS FechaFin
+    FROM EVENTO_RECURRENTE
+	ORDER BY ID_evento_recurrente DESC
+END;
+
+-----------------------------------------------------------------------------------------------
+
+--LISTAR TODAS LAS RESERVAS ADMIN
+CREATE PROCEDURE SP_GET_ALL_RESERVAS_ADMIN
+AS
+BEGIN
+    -- Variable para la fecha actual ajustada
+    DECLARE @FechaHoraActual DATETIME = DATEADD(HOUR, 3, GETDATE());
+
+    -- Consultar Reservas y Eventos combinados
+    SELECT 
+        Id,
+        FechaCreacion,
+        Titulo,
+        Descripcion,
+        Celular,
+        FechaHorario, 
+        HoraInicio, 
+        HoraFin,
+        Estado
+    FROM (
+        -- Consultar Reservas
+        SELECT 
+            r.ID_reserva AS Id,
+            r.Fecha_Reserva AS FechaCreacion,
+            'RESERVA CLIENTE' AS Titulo,
+            COALESCE(
+                CONCAT(
+                    COALESCE(u.Nombre_Usuario, 'UsuarioEliminado'),  
+                    ' ',  -- Espacio entre nombre y apellido
+                    COALESCE(u.Apellido_Usuario, 'UsuarioEliminado')  
+                ),
+                'UsuarioEliminado'  -- Valor por defecto si ambos son NULL
+            ) AS Descripcion,
+            COALESCE(u.Telefono_Usuario, '0000000000') AS Celular,
+            COALESCE(h.Fecha_Horario, '2000-01-01') AS FechaHorario, 
+            COALESCE(h.Hora_Inicio, '00:00:00') AS HoraInicio, 
+            COALESCE(h.Hora_Fin, '00:00:00') AS HoraFin,
+            COALESCE(es.ID_estado_reserva, '0') AS Estado
+        FROM 
+            RESERVA r
+        LEFT JOIN 
+            HORARIO_DISPONIBLE h ON r.ID_horario_disponible = h.ID_horario_disponible  
+        LEFT JOIN
+            USUARIO u ON r.ID_usuario = u.ID_usuario
+        LEFT JOIN 
+            ESTADO_RESERVA es ON r.ID_estado_reserva = es.ID_estado_reserva
+        WHERE 
+            es.ID_estado_reserva = 2
+            AND CAST(h.Fecha_Horario AS DATE) >= CAST(@FechaHoraActual AS DATE)
+
+        UNION ALL
+
+        -- Consultar Eventos
+        SELECT
+            e.ID_evento AS Id,
+            e.Fecha_Evento AS FechaCreacion,
+            e.Nombre_Evento AS Titulo,
+            COALESCE(e.Descripcion_Evento, 'Sin descripción') AS Descripcion,
+            COALESCE(e.Telefono_Cliente_Evento, '0000000000') AS Celular,
+            COALESCE(h.Fecha_Horario, '2000-01-01') AS FechaHorario,
+            COALESCE(h.Hora_Inicio, '00:00:00') AS HoraInicio,
+            COALESCE(h.Hora_Fin, '00:00:00') AS HoraFin,
+            COALESCE(es.ID_estado_reserva, '0') AS Estado
+        FROM 
+            EVENTO e
+        LEFT JOIN 
+            HORARIO_DISPONIBLE h ON e.ID_horario_disponible = h.ID_horario_disponible
+        LEFT JOIN 
+            ESTADO_RESERVA es ON e.ID_estado_reserva = es.ID_estado_reserva
+        WHERE 
+            es.ID_estado_reserva = 2
+            AND CAST(h.Fecha_Horario AS DATE) >= CAST(@FechaHoraActual AS DATE)
+    ) AS CombinedResults
+    ORDER BY FechaHorario, HoraInicio;
 END;
 
 
@@ -218,6 +333,5 @@ END;
 ----------------------------------------------------------
 ----------------------------------------------------------
 -- STORED PROCEDURES SIN APLICARSE...
-
 
 

@@ -24,7 +24,7 @@
                 <tr>
                     <td>$@item.MontoSena.ToString("N0")</td>
                     <td>@item.CelularCancelaciones</td>
-                    <td>@item.FechaModificacion</td>
+                    <td>@item.FechaModificacion.ToString("HH:mm - dd/MM/yyyy")</td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@item.IdConfiguracion" class="btn btn-warning btn-sm">Editar</a>
                     </td>

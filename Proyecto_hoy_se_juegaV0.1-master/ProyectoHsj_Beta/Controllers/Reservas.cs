@@ -80,7 +80,7 @@ namespace ProyectoHsj_Beta.Controllers
                             var idReserva = (int)parametros[2].Value;
                             await _auditoriaService.RegistrarAuditoriaAsync(
                             seccion: "Reserva",
-                            descripcion: $"El usuario ha creado una nueva reserva. Detalles, ID: {idReserva}",
+                            descripcion: $"El usuario ha creado una nueva reserva. Detalles, ID: {idReserva}.",
                             idAccion: 1);
 
                             // Devuelve una respuesta JSON de éxito con el ID de la reserva
@@ -201,6 +201,15 @@ namespace ProyectoHsj_Beta.Controllers
 
             // Redirige al usuario al URL de Mercado Pago
             return Redirect(preferencia.InitPoint);
+        }
+
+        // TODAS LAS RESERVAS ADMIN
+        public async Task<IActionResult> Index()
+        {
+            var reservas = await _context.Set<ReservasAdminGetAllViewModel>()
+                .FromSqlRaw("EXEC SP_GET_ALL_RESERVAS_ADMIN")
+                .ToListAsync();
+            return View(reservas);
         }
 
     }

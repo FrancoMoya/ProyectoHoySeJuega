@@ -131,8 +131,8 @@ CREATE TABLE NOTIFICACION (
 --NUEVA TABLA
 CREATE TABLE EVENTO (
     ID_evento INT IDENTITY(1,1) PRIMARY KEY,
-    Nombre_Evento VARCHAR(80) NOT NULL DEFAULT 'CUMPLEAÑOS', -- Nombre o título del evento
-    Descripcion_Evento VARCHAR(1000) NULL, -- Detalles o notas adicionales sobre el evento y la persona que reserva
+    Nombre_Evento NVARCHAR(80) NOT NULL DEFAULT 'CUMPLEAÑOS', -- Nombre o título del evento
+    Descripcion_Evento NVARCHAR(1000) NULL, -- Detalles o notas adicionales sobre el evento y la persona que reserva
 	Correo_Cliente_Evento VARCHAR(100) NULL,  -- Correo para luego hacer una busqueda y conectarlo a su usuario si existe
 	Telefono_Cliente_Evento INT NULL,  -- Telefono para luego hacer una busqueda y conectarlo a su usuario si existe
 	Fecha_Evento DATETIME NULL DEFAULT GETDATE(),
@@ -149,6 +149,33 @@ CREATE TABLE CONFIGURACION_PAGO (
     Fecha_Modificacion DATETIME NOT NULL DEFAULT GETDATE(),
 	CelularCancelaciones INT NULL -- NUEVO CAMPO
 );
+
+--NUEVAS TABLAS PRUEBAS(en BD en nube)
+CREATE TABLE EVENTO_RECURRENTE (
+    ID_evento_recurrente INT IDENTITY(1,1) PRIMARY KEY,
+    Nombre NVARCHAR(80) NOT NULL,
+    Descripcion NVARCHAR(1000) NULL,
+	CorreoCliente VARCHAR(100) NULL,
+	TelefonoCliente VARCHAR(15) NULL,
+    HoraInicio TIME NOT NULL, -- La hora en que comienza el evento
+    DiaSemana INT NOT NULL,  -- El día de la semana (1 = lunes, 7 = domingo)
+    FechaInicio DATE NOT NULL, -- Fecha de inicio (puede ser el primer jueves del mes)
+    FechaFin DATE NOT NULL, -- Fecha de fin (por ejemplo, último jueves del mes)
+);
+
+
+--CREATE TABLE EXCEPCION_EVENTO (
+--    ID_excepcion_evento INT IDENTITY(1,1) PRIMARY KEY,
+--    ID_evento_recurrente INT NOT NULL,
+--    FechaCancelacion DATE NOT NULL, -- La fecha que se canceló el evento
+--    ID_estado_reserva INT NOT NULL, -- Estado de la reserva (por ejemplo, "Cancelado")
+--    FOREIGN KEY (ID_evento_recurrente) REFERENCES EVENTO_RECURRENTE(ID_evento_recurrente) ON DELETE CASCADE,
+--    FOREIGN KEY (ID_estado_reserva) REFERENCES ESTADO_RESERVA(ID_estado_reserva) ON DELETE CASCADE
+--);
+
+
+
+
 
 --EJEMPLOS: 
 
@@ -236,10 +263,10 @@ INSERT INTO ESTADO_RESERVA (Nombre_Estado_Reserva) VALUES
 --INSERT INTO NOTIFICACION (ID_usuario, ID_reserva, Mensaje_Notificacion, ID_titulo_notificacion) VALUES 
 --(2, 1, 'Su reserva está pendiente de confirmación.', 1), 
 --(1, 2, 'Su reserva ha sido confirmada con éxito.', 1);
-INSERT INTO EVENTO (Descripcion_Evento, ID_horario_disponible, ID_estado_reserva) VALUES 
-('Cumple de Carlos, reserva a nombre Lucas Martinez, celular: 11-4444-3333', 4, 1), -- Laura hizo una reserva en estado pendiente
-('Cumple de Matias, reserva a nombre Julian Alvarez, celular: 11-4444-5555', 5, 1), -- La
-('Cumple de Gonzalo, reserva a nombre Tomas Ojeda, celular: 11-6666-5555', 6, 2); -- Carlos tiene una reserva confirmada
+--INSERT INTO EVENTO (Descripcion_Evento, ID_horario_disponible, ID_estado_reserva) VALUES 
+--('Cumple de Carlos, reserva a nombre Lucas Martinez, celular: 11-4444-3333', 4, 1), -- Laura hizo una reserva en estado pendiente
+--('Cumple de Matias, reserva a nombre Julian Alvarez, celular: 11-4444-5555', 5, 1), -- La
+--('Cumple de Gonzalo, reserva a nombre Tomas Ojeda, celular: 11-6666-5555', 6, 2); -- Carlos tiene una reserva confirmada
 INSERT INTO CONFIGURACION_PAGO(Monto_Sena) VALUES
 (500);
 

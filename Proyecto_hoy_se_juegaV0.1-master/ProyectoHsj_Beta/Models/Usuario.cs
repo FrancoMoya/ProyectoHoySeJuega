@@ -31,8 +31,9 @@ public partial class Usuario
 
     public int? IdRol { get; set; }
 
-    public virtual Rol? IdRolNavigation { get; set; }
     public DateOnly? FechaRegistro { get; set; }
+
+    public virtual Rol? IdRolNavigation { get; set; }
 
     public virtual ICollection<Notificacion> Notificacions { get; set; } = new List<Notificacion>();
 

@@ -7,13 +7,13 @@
 <!-- Estilos personalizados -->
 <style>
     body {
-        background-color: #f8f9fa;
+        background-color: #202021;
     }
 
     h2 {
         text-align: center;
         margin-top: 40px;
-        color: #343a40;
+        color: white;
     }
 
     .card {
@@ -67,7 +67,7 @@
         }
 </style>
 
-<h2>Detalle de Pago</h2>
+<h2>Detalle del Pago</h2>
 
 <div class="card">
     <div class="card-body">
@@ -80,6 +80,9 @@
         </p>
         <p class="card-text">
             <strong>Método de Pago:</strong> Mercado Pago
+        </p>
+        <p class="card-text">
+            <strong>(Recuerda que solo dispones de 5 minutos para concretar tu pago)</strong>
         </p>
 
         <form asp-controller="Reservas" asp-action="PagarReserva" method="post">

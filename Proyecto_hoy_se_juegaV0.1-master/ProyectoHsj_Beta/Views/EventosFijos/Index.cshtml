@@ -1,0 +1,205 @@
+﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.FijosAdminGetViewModel>
+
+@{
+    Layout = "~/Views/Shared/Layout_admin.cshtml";
+    ViewData["Title"] = "Crear FIJOS";
+}
+
+
+<!-- Botones para crear eventos -->
+<div class="mb-2">
+    <a href="@Url.Action("CrearFijos", "EventosFijos")" class="btn btn-primary custom-btn">Crear una RESERVA FIJA</a>
+</div>
+
+<!-- Contenedor para la tabla y tarjetas -->
+<div class="container custom-container">
+
+    <!-- Tabla responsiva en pantallas grandes -->
+    <div class="table-responsive d-none d-md-block">
+        <table class="table custom-table">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Correo del cliente</th>
+                    <th>Celular del cliente</th>
+                    <th>Día seleccionado</th>
+                    <th>Hora seleccionada</th>
+                    <th>Fecha de inicio</th>
+                    <th>Fecha de finalización</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var evento in Model)
+                {
+                    <tr>
+                        <td>@evento.Nombre</td>
+                        <td>@evento.Descripcion</td>
+                        <td>@evento.CorreoCliente</td>
+                        <td>@evento.TelefonoCliente</td>
+                        <td>@evento.DiaSemana</td>
+                        <td>@evento.HoraInicio</td>
+                        <td>@evento.FechaInicio</td>
+                        <td>@evento.FechaFin</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Vista de tarjetas para pantallas pequeñas -->
+    <div class="row d-block d-md-none">
+        @foreach (var evento in Model)
+        {
+            <div class="col-12 col-sm-6 col-lg-4 mb-2">
+                <div class="card custom-card">
+                    <div class="card-body">
+                        <h5 class="card-title">@evento.Nombre</h5>
+                        <p class="card-text"><strong>Descripción:</strong> @evento.Descripcion</p>
+                        <p class="card-text"><strong>Correo:</strong> @evento.CorreoCliente</p>
+                        <p class="card-text"><strong>Celular:</strong> @evento.TelefonoCliente</p>
+                        <p class="card-text"><strong>Día:</strong> @evento.DiaSemana</p>
+                        <p class="card-text"><strong>Hora:</strong> @evento.HoraInicio</p>
+                        <p class="card-text"><strong>Fecha de inicio:</strong> @evento.FechaInicio.ToShortDateString()</p>
+                        <p class="card-text"><strong>Fecha de finalización:</strong> @evento.FechaFin.ToShortDateString()</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Agregar estilos CSS personalizados -->
+<style>
+    /* Estilos generales del tema oscuro */
+    body {
+        background-color: #121212;
+        color: #f1f1f1;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .custom-container {
+        margin-top: 0px;
+        padding: 18px;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 600;
+        color: #e1e1e1;
+        margin-bottom: 5px;
+        text-align: center;
+    }
+
+    /* Estilos del botón */
+    .custom-btn {
+        font-size: 1rem;
+        padding: 10px 20px;
+        border-radius: 5px;
+        background-color: #6200ea;
+        color: white;
+        border: none;
+        transition: background-color 0.3s, transform 0.3s;
+        margin-top: 12px;
+    }
+
+    .custom-btn:hover {
+        background-color: #3700b3;
+        transform: scale(1.05);
+        text-decoration: none;
+    }
+
+    /* Estilos de la tabla */
+    .custom-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 0px;
+        background-color: #1e1e1e;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .custom-table th,
+    .custom-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #333;
+    }
+
+    .custom-table th {
+        background-color: #333;
+        color: #fff;
+        font-weight: 500;
+    }
+
+    .custom-table td {
+        background-color: #232323;
+        color: #e1e1e1;
+    }
+
+    .custom-table tr:hover {
+        background-color: #444;
+    }
+
+    /* Estilos de las tarjetas */
+    .custom-card {
+        border: 1px solid #333;
+        border-radius: 8px;
+        background-color: #1e1e1e;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .custom-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-body {
+        padding: 13px;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #fff;
+    }
+
+    .card-text {
+        font-size: 1rem;
+        color: #ccc;
+        margin-bottom: 8px;
+    }
+
+    .list-group-item {
+        font-size: 1.17rem;
+    }
+
+    /* Responsividad */
+    @@media (max-width: 768px) {
+        .page-title {
+            font-size: 1.5rem;
+        }
+
+        .custom-btn {
+            font-size: 0.9rem;
+            padding: 8px 15px;
+            margin-top: 12px;
+        }
+
+        .custom-table {
+            font-size: 0.9rem;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .custom-table {
+            font-size: 0.85rem;
+        }
+
+        .custom-btn {
+            margin-top: 12px;
+        }
+    }
+</style>
+

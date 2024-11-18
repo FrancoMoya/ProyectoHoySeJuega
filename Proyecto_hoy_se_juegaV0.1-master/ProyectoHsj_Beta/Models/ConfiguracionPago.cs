@@ -10,5 +10,6 @@ public partial class ConfiguracionPago
     public decimal MontoSena { get; set; }
 
     public DateTime FechaModificacion { get; set; }
+
     public int? CelularCancelaciones { get; set; }
 }

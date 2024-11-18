@@ -2,133 +2,189 @@
 @{
     Layout = "~/Views/Shared/Layout_admin.cshtml";
     ViewData["Title"] = "Eventos";
+
+    // Fecha de hoy y mañana para el agrupamiento, usando DateOnly
+    var today = DateOnly.FromDateTime(DateTime.Today); // Obtiene la fecha de hoy como DateOnly
+    var tomorrow = today.AddDays(1); // Mañana
+    var futureDate = tomorrow.AddDays(1); // Día después de mañana
 }
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <style>
-    body {
-        background-image: url('/css/img/logo fondo admin.png');
-        background-size: contain; /* Ajusta la imagen para que se vea completa */
-        background-repeat: no-repeat; /* Evita que la imagen se repita */
-        background-attachment: fixed; /* Mantiene la imagen fija al hacer scroll */
-        background-position: center; /* Centra la imagen */
-        background-color: #000; /* Usa un color de fondo negro o el que prefieras */
+    /* Tu estilo personalizado ya existente... */
+
+    .event-group {
+        margin-bottom: 30px;
     }
 
-    h1 {
-        margin-bottom: 20px;
+    .event-group h3 {
+        color: #fff;
+        background-color: #333;
+        padding: 10px;
+        border-radius: 5px;
     }
 
     .card {
         background-color: #444444;
         border: none;
         border-radius: 10px;
-        margin-bottom: 5px; /* Reducir margen inferior */
+        margin-bottom: 10px; /* Separación de eventos */
         color: #ffffff;
         max-width: 100%;
     }
-
-    .card-header {
-        background-color: #555555;
-        border-bottom: 2px solid #777777;
-        font-size: 1rem;
-        font-weight: bold;
-        text-align: center;
+    body {
+        background-color: gray;
     }
-
-    .btn {
-        border-radius: 5px;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        border: none;
-    }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-
-    .btn-warning {
-        color: #000;
-        background-color: #ffc107;
-        border: none;
-    }
-
-    .btn-danger {
-        background-color: #dc3545;
-        border: none;
-    }
-
-    .grid-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 5px;
-    }
-
-    .card-body p {
-        font-size: 0.9rem;
-        margin-bottom: 5px;
-    }
-
     .list-group-item {
-        padding: 20px 30px; /* Aumenta el espaciado interno para hacer los botones más grandes */
+        padding: 13px 13px; /* Aumenta el espaciado interno para hacer los botones más grandes */
         border: none; /* Elimina el borde de los elementos de lista */
         background-color: #343a40; /* Color de fondo gris para los botones */
         transition: background 0.2s; /* Transición suave para el color de fondo al pasar el mouse */
         font-size: 1.2rem; /* Aumenta el tamaño de la fuente para mayor legibilidad */
         border-radius: 8px; /* Bordes redondeados para un aspecto más moderno */
     }
+
+    .card-body {
+        padding: 7px 1.15rem 13px 1.15rem;
+    }
+    p {
+        margin-bottom: 0.75rem;
+    }
+    /* Aseguramos que la vista en pantallas grandes se vea bien */
+    @@media (min-width: 768px) {
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 10px;
+        }
+    }
+
+    /* Ajustes para pantallas pequeñas */
+    @@media (max-width: 767px) {
+        .d-flex {
+            flex-direction: column;
+        }
+
+        /* Asegurar que el título esté sobre el botón */
+        .d-flex h2 {
+            order: -1;
+        }
+
+        .mb-sm-0 {
+            margin-bottom: 0 !important;
+            margin-bottom: 10px !important;
+            width: 100%;
+        }
+    }
 </style>
 
 <div class="container mt-4">
-    <h1 style="color:white">Eventos</h1>
-    <p>
-        <a asp-action="Create" class="btn btn-primary">Nuevo EVENTO</a>
-    </p>
+    <!-- Contenedor para el título y el botón -->
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
+        <a asp-action="Create" class="btn btn-primary mb-2 mb-sm-0">Nueva RESERVA</a>
+        <h2 style="color:white">Reservas creadas por Administración</h2>
+    </div>
 
     <div class="grid-container">
-        @foreach (var item in Model)
-        {
-            <div class="card">
-                <div class="card-header">
-                    @item.NombreEvento
-                </div>
-                <div class="card-body">
-                    <p><strong>Creación:</strong> @item.FechaEvento.ToString("HH:mm - dd/MM/yyyy")</p>
-                    <p><strong>Descripción:</strong> @item.DescripcionEvento</p>
-                    <p><strong>Correo:</strong> @item.CorreoClienteEvento</p>
-                    <p><strong>Celular:</strong> @item.TelefonoClienteEvento</p>
-                    <p><strong>Fecha:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
-                    <p><strong>Hora de Inicio:</strong> @item.HoraInicio.ToString("HH:mm")</p>
-                    <p><strong>Hora de finalización:</strong> @item.HoraFin.ToString("HH:mm")</p>
-                    <p><strong>Estado:</strong> @item.NombreEstadoReserva</p>
 
-                    <div class="d-flex justify-content-end">
-                        @if (item.NombreEstadoReserva == "CONFIRMADA")
-                        {
-                            <button type="button" class="btn btn-warning btn-sm me-2" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
-                                    data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
-                                    data-inicio="@item.HoraInicio.ToString("HH:mm")"
-                                    data-fin="@item.HoraFin.ToString("HH:mm")"
-                                    data-id="@item.IdEvento">
-                                Cancelar
-                            </button>
-                        }
-                        @if (item.NombreEstadoReserva != "CONFIRMADA")
-                        {
-                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
-                                    data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
-                                    data-inicio="@item.HoraInicio.ToString("HH:mm")"
-                                    data-fin="@item.HoraFin.ToString("HH:mm")"
-                                    data-id="@item.IdEvento">
-                                Eliminar
-                            </button>
-                        }
+        <!-- Categoría: Hoy -->
+        <div class="event-group" id="today-events">
+            <h3>Eventos de Hoy</h3>
+            @foreach (var item in Model.Where(e => e.FechaHorario == today))
+            {
+                <div class="card">
+                    <div class="card-header">
+                        @item.NombreEvento
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Creación:</strong> @item.FechaEvento.ToString("HH:mm - dd/MM/yyyy")</p>
+                        <p><strong>Descripción:</strong> @item.DescripcionEvento</p>
+                        <p><strong>Correo:</strong> @item.CorreoClienteEvento</p>
+                        <p><strong>Celular:</strong> @item.TelefonoClienteEvento</p>
+                        <p><strong>Fecha:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
+                        <p><strong>Hora de Inicio:</strong> @item.HoraInicio.ToString("HH:mm")</p>
+                        <p><strong>Hora de finalización:</strong> @item.HoraFin.ToString("HH:mm")</p>
+                        <p><strong>Estado:</strong> @item.NombreEstadoReserva</p>
+
+                        <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-warning btn-sm me-2" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
+                                        data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                        data-inicio="@item.HoraInicio.ToString("HH:mm")"
+                                        data-fin="@item.HoraFin.ToString("HH:mm")"
+                                        data-id="@item.IdEvento">
+                                    Cancelar
+                                </button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
+
+        <!-- Categoría: Mañana -->
+        <div class="event-group" id="tomorrow-events">
+            <h3>Eventos de Mañana</h3>
+            @foreach (var item in Model.Where(e => e.FechaHorario == tomorrow))
+            {
+                <div class="card">
+                    <div class="card-header">
+                        @item.NombreEvento
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Creación:</strong> @item.FechaEvento.ToString("HH:mm - dd/MM/yyyy")</p>
+                        <p><strong>Descripción:</strong> @item.DescripcionEvento</p>
+                        <p><strong>Correo:</strong> @item.CorreoClienteEvento</p>
+                        <p><strong>Celular:</strong> @item.TelefonoClienteEvento</p>
+                        <p><strong>Fecha:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
+                        <p><strong>Hora de Inicio:</strong> @item.HoraInicio.ToString("HH:mm")</p>
+                        <p><strong>Hora de finalización:</strong> @item.HoraFin.ToString("HH:mm")</p>
+                        <p><strong>Estado:</strong> @item.NombreEstadoReserva</p>
+
+                        <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-warning btn-sm me-2" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
+                                        data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                        data-inicio="@item.HoraInicio.ToString("HH:mm")"
+                                        data-fin="@item.HoraFin.ToString("HH:mm")"
+                                        data-id="@item.IdEvento">
+                                    Cancelar
+                                </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Categoría: Futuros -->
+        <div class="event-group" id="future-events">
+            <h3>Eventos Futuros</h3>
+            @foreach (var item in Model.Where(e => e.FechaHorario > tomorrow))
+            {
+                <div class="card">
+                    <div class="card-header">
+                        @item.NombreEvento
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Creación:</strong> @item.FechaEvento.ToString("HH:mm - dd/MM/yyyy")</p>
+                        <p><strong>Descripción:</strong> @item.DescripcionEvento</p>
+                        <p><strong>Correo:</strong> @item.CorreoClienteEvento</p>
+                        <p><strong>Celular:</strong> @item.TelefonoClienteEvento</p>
+                        <p><strong>Fecha:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
+                        <p><strong>Hora de Inicio:</strong> @item.HoraInicio.ToString("HH:mm")</p>
+                        <p><strong>Hora de finalización:</strong> @item.HoraFin.ToString("HH:mm")</p>
+                        <p><strong>Estado:</strong> @item.NombreEstadoReserva</p>
+
+                        <div class="d-flex justify-content-end">
+                                <button type="button" class="btn btn-warning btn-sm me-2" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
+                                        data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                        data-inicio="@item.HoraInicio.ToString("HH:mm")"
+                                        data-fin="@item.HoraFin.ToString("HH:mm")"
+                                        data-id="@item.IdEvento">
+                                    Cancelar
+                                </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
     </div>
 </div>
 
@@ -148,27 +204,6 @@
                 <form id="cancelForm" method="post" asp-action="Cancel">
                     <input type="hidden" name="id" id="cancelId" />
                     <button type="submit" class="btn btn-danger">Cancelar</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal de Eliminación -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmCancelModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" style="color: black" id="confirmCancelModalLabel">Detalles</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-            </div>
-            <div class="modal-body" style="color: black;">
-                <strong>Detalles del evento:</strong><br><strong>Fecha:</strong> <span id="ObjectFechaDelete"></span><br><strong>Horario:</strong> <span id="ObjectHoraDelete"></span><br><strong>¿Seguro que deseas eliminar este evento?</strong>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <form id="deleteForm" method="post" asp-action="Delete">
-                    <input type="hidden" name="id" id="deleteId" />
-                    <button type="submit" class="btn btn-danger">Eliminar</button>
                 </form>
             </div>
         </div>
@@ -198,24 +233,5 @@
 
     });
 
-    // Modal de Eliminación
-    var confirmDeleteModal = document.getElementById('confirmDeleteModal');
-    confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
-        var objectId = button.getAttribute('data-id');  // Obtener el ID del evento
-        var objectFecha = button.getAttribute('data-fecha');
-        var objectHoraInicio = button.getAttribute('data-inicio');
-        var objectHoraFin = button.getAttribute('data-fin');
-        var inputId = document.getElementById('deleteId');  // El input oculto en el formulario de eliminación
-
-        // Actualizamos los detalles en el modal de eliminación
-        var objectFechaSpan = document.getElementById('ObjectFechaDelete');
-        var objectHoraSpan = document.getElementById('ObjectHoraDelete');
-        objectFechaSpan.textContent = objectFecha;
-        objectHoraSpan.textContent = objectHoraInicio + ' a ' + objectHoraFin + 'hs';
-
-        // Establecer el ID en el campo oculto
-        inputId.value = objectId;
-    });
 
 </script>

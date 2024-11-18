@@ -114,7 +114,7 @@ namespace ProyectoHsj_Beta.Controllers
 
             // Actualiza el estado de la reserva a CONFIRMADA (por ejemplo, usando un código de estado 2)
             reserva.IdEstadoReserva = 2; // Asegúrate de que 2 signifique CONFIRMADA en tu lógica
-            var descripcionAuditoria = $"El usuario ha concretado con éxito el pago de su reserva con los siguientes detalles, ID: {reserva.IdReserva}, Monto: ${montoPago.ToString("N0")}, Fecha: {DateTime.Now}.";
+            var descripcionAuditoria = $"El usuario ha concretado con éxito el pago de su reserva con los siguientes detalles, ID: {reserva.IdReserva}, Monto: ${montoPago.ToString("N0")}.";
             // Guarda los cambios en la base de datos
             await _context.SaveChangesAsync();
             await _auditoriaService.RegistrarAuditoriaAsync(

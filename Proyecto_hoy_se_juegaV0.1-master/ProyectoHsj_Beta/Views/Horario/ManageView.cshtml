@@ -75,8 +75,6 @@
     }
 </style>
 
-<h1>Gestión de Horarios</h1>
-
 <!-- Cuadro (card) para contener los horarios -->
 <div class="card shadow-lg">
     <div class="card-header bg-primary text-white">
@@ -118,7 +116,7 @@
         </div>
 
         <!-- Botones para generar y eliminar horarios -->
-        <div class="action-buttons">
+        <div class="action-buttons mb-2">
             <form asp-action="EliminarHorariosDeLaSemana" method="post">
                 <button type="submit" class="btn btn-danger btn-block btn-sm">Eliminar Todos los Horarios</button>
             </form>
@@ -127,10 +125,6 @@
             </button>
         </div>
 
-        <!-- Boton para crear horarios -->
-        <div class="mb-3">
-            <a asp-action="CreateHorario" class="btn btn-primary btn-block">Crear Nuevo Horario</a>
-        </div>
 
         @if (!Model.Any())
         {

@@ -1,0 +1,137 @@
+﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.ReservasAdminGetAllViewModel>
+
+@{
+    Layout = "~/Views/Shared/Layout_admin.cshtml";
+    ViewData["Title"] = "Reservas";
+
+    // Fecha de hoy y mañana para el agrupamiento, usando DateOnly
+    var today = DateOnly.FromDateTime(DateTime.Today); // Obtiene la fecha de hoy como DateOnly
+    var tomorrow = today.AddDays(1); // Mañana
+    var futureDate = tomorrow.AddDays(1); // Día después de mañana
+}
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<style>
+    /* Tu estilo personalizado ya existente... */
+
+    .event-group {
+        margin-bottom: 30px;
+    }
+
+    .event-group h3 {
+        color: #fff;
+        background-color: #333;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .card {
+        background-color: #444444;
+        border: none;
+        border-radius: 10px;
+        margin-bottom: 10px; /* Separación de eventos */
+        color: #ffffff;
+        max-width: 100%;
+    }
+
+    body {
+        background-color: gray;
+    }
+
+    .list-group-item {
+        padding: 13px 13px; /* Aumenta el espaciado interno para hacer los botones más grandes */
+        border: none; /* Elimina el borde de los elementos de lista */
+        background-color: #343a40; /* Color de fondo gris para los botones */
+        transition: background 0.2s; /* Transición suave para el color de fondo al pasar el mouse */
+        font-size: 1.2rem; /* Aumenta el tamaño de la fuente para mayor legibilidad */
+        border-radius: 8px; /* Bordes redondeados para un aspecto más moderno */
+    }
+
+    .card-body {
+        padding: 7px 1.15rem 8px 1.15rem;
+    }
+
+    p {
+        margin-bottom: 0.75rem;
+    }
+    /* Aseguramos que la vista en pantallas grandes se vea bien */
+    @@media (min-width: 768px) {
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 10px;
+        }
+    }
+
+</style>
+
+<div class="container mt-4">
+    <h3 style="color:white; text-align: right" >TODAS las reservas (Clientes-Administración)</h3>
+
+    <div class="grid-container">
+
+        <!-- Categoría: Hoy -->
+        <div class="event-group" id="today-events">
+            <h3>Reservas de Hoy</h3>
+            @foreach (var item in Model.Where(e => e.FechaHorario == today))
+            {
+                <div class="card">
+                    <div class="card-header">
+                        @item.Titulo
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Creación:</strong> @item.FechaCreacion.ToString("HH:mm - dd/MM/yyyy")</p>
+                        <p><strong>Descripción:</strong> @item.Descripcion</p>
+                        <p><strong>Celular:</strong> @item.Celular</p>
+                        <p><strong>Fecha:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
+                        <p><strong>Hora de Inicio:</strong> @item.HoraInicio.ToString("HH:mm")</p>
+                        <p><strong>Hora de finalización:</strong> @item.HoraFin.ToString("HH:mm")</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Categoría: Mañana -->
+        <div class="event-group" id="tomorrow-events">
+            <h3>Reservas de Mañana</h3>
+            @foreach (var item in Model.Where(e => e.FechaHorario == tomorrow))
+            {
+                <div class="card">
+                    <div class="card-header">
+                        @item.Titulo
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Creación:</strong> @item.FechaCreacion.ToString("HH:mm - dd/MM/yyyy")</p>
+                        <p><strong>Descripción:</strong> @item.Descripcion</p>
+                        <p><strong>Celular:</strong> @item.Celular</p>
+                        <p><strong>Fecha:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
+                        <p><strong>Hora de Inicio:</strong> @item.HoraInicio.ToString("HH:mm")</p>
+                        <p><strong>Hora de finalización:</strong> @item.HoraFin.ToString("HH:mm")</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Categoría: Futuros -->
+        <div class="event-group" id="future-events">
+            <h3>Reservas Futuras</h3>
+            @foreach (var item in Model.Where(e => e.FechaHorario > tomorrow))
+            {
+                <div class="card">
+                    <div class="card-header">
+                        @item.Titulo
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Creación:</strong> @item.FechaCreacion.ToString("HH:mm - dd/MM/yyyy")</p>
+                        <p><strong>Descripción:</strong> @item.Descripcion</p>
+                        <p><strong>Celular:</strong> @item.Celular</p>
+                        <p><strong>Fecha:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
+                        <p><strong>Hora de Inicio:</strong> @item.HoraInicio.ToString("HH:mm")</p>
+                        <p><strong>Hora de finalización:</strong> @item.HoraFin.ToString("HH:mm")</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
