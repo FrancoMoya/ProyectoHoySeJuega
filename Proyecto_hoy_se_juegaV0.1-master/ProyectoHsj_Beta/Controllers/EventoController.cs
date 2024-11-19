@@ -33,16 +33,16 @@ namespace ProyectoHsj_Beta.Controllers
 
         //Obtener y renderizar los horarios PARA EVENTOS ADMIN
         [HttpGet]
-        public async Task<IActionResult> GetAvailableTimeSlotsAdmin(DateTime fecha) //Modificado para incluir solo los horarios dentro de 2 semanas
+        public async Task<IActionResult> GetAvailableTimeSlotsAdmin(DateTime fecha)
         {
-            TimeOnly horaLimite = TimeOnly.FromDateTime(DateTime.Now);
+            TimeOnly horaLimite = TimeOnly.FromDateTime(DateTime.Now.AddHours(3));
             var horarios = await _context.HorarioDisponibles
                 .Where(h => (h.DisponibleHorario ?? false) && h.FechaHorario == DateOnly.FromDateTime(fecha) && (
                     // Si es hoy, la hora de inicio debe ser mayor o igual a la hora actual
-                    (h.FechaHorario == DateOnly.FromDateTime(DateTime.Now) && h.HoraInicio >= horaLimite) ||
+                    (h.FechaHorario == DateOnly.FromDateTime(DateTime.Now.AddHours(3)) && h.HoraInicio >= horaLimite) ||
                     // Si no es hoy, cualquier horario de inicio futuro es válido
-                    h.FechaHorario > DateOnly.FromDateTime(DateTime.Now)
-                    )) // Hasta 2 semanas después)
+                    h.FechaHorario > DateOnly.FromDateTime(DateTime.Now.AddHours(3))
+                    ))
                 .Select(h => new
                 {
                     IdHorarioDisponible = h.IdHorarioDisponible, // Agrega el ID
@@ -123,7 +123,7 @@ namespace ProyectoHsj_Beta.Controllers
                 // Crear el nuevo evento
                 var nuevoEvento = new Evento 
                 { 
-                    NombreEvento = model.NombreEvento,
+                    NombreEvento = model.NombreEvento.ToUpper(),
                     DescripcionEvento = model.DescripcionEvento,
                     CorreoClienteEvento = model.CorreoClienteEvento,
                     TelefonoClienteEvento = model.TelefonoClienteEvento,
@@ -134,7 +134,7 @@ namespace ProyectoHsj_Beta.Controllers
                 
                 _context.Eventos.Add(nuevoEvento);
                 await _context.SaveChangesAsync();
-                var descripcionAuditoria = $"El usuario ha creado nuevo evento. Detalles, ID del evento: {nuevoEvento.IdEvento}.";
+                var descripcionAuditoria = $"El usuario ha creado un nuevo evento. Detalles, ID del evento: {nuevoEvento.IdEvento}.";
                 await _auditoriaService.RegistrarAuditoriaAsync(
                 seccion: "Administración",
                 descripcion: descripcionAuditoria,

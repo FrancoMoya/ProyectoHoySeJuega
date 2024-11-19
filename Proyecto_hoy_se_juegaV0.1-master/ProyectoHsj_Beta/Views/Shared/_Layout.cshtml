@@ -3,110 +3,95 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Hoy se juega </title>
+    <title>Inicio - Hoy se juega </title>
+    <link rel="icon" href="~/css/img/hoysejuegaa.png" type="image/png" /> <!-- Aquí pones la ruta al icono -->
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-    @* <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script> *@
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-mr0sEQx0ugYb43aCvEd24S/IqrBKTFFmwSDQHl3j06YlXIQo6RuCZ1w5o9sMR4bo" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- cdn para foto de pestaña -->
-    <link rel="icon" type="image/png" href="~/css/img/hoysejuegaa.png" />
-    <!-- cdn para full calendar -->
-    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
-
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Font Awesome (Para los iconos) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <!-- Custom Styles -->
     <link href="~/css/Style_navbar.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ProyectoHsj_alpha.styles.css" asp-append-version="true" />
-
     <style>
+        .navbar {
+            background-color: #000000 !important; /* Color oscuro personalizado */
+        }
+        /* Estilo para el desplegable del perfil */
+        .dropdown-menu {
+            background-color: #343a40 !important; /* Color oscuro para el fondo */
+            border-radius: 0.375rem; /* Bordes redondeados */
+        }
+
+        .dropdown-item {
+            color: #fff !important; /* Color blanco para las letras */
+        }
+        /* Cambiar color cuando se pasa el mouse sobre un elemento en el menú */
+        .navbar-nav .nav-item .nav-link:hover {
+            background-color: #42d7fc !important; /* Fondo más oscuro al pasar el mouse */
+            color: #fff !important; /* Asegurar que el texto sea blanco */
+        }
+
+            /* Cambiar color cuando se pasa el mouse sobre un elemento */
+            .dropdown-item:hover,
+            .dropdown-item:focus {
+                background-color: #007bff !important; /* Azul al pasar el mouse */
+                color: #fff !important; /* Asegurar que el texto sea blanco */
+            }
+
+        /* Centrar el mapa */
         .maps {
-            background-color: black;
-            padding: 40px 0;
-            position: relative;
-            width: 100%; /* Ocupa el 100% del ancho disponible */
-            max-width: 100%; /* Asegura que no se desborde */
-            margin: 0 10px; /* Pequeño margen a los lados */
-            box-sizing: border-box; /* Incluye el padding en el cálculo del ancho */
             display: flex;
-            justify-content: center; /* Centra el mapa horizontalmente */
-            align-items: center; /* Centra el mapa verticalmente */
+            justify-content: center;
+            align-items: center;
+            width: 100%;
         }
 
-        iframe {
-            width: 100%; /* Hace que el iframe ocupe todo el ancho disponible */
-            max-width: 900px; /* Puedes ajustar el tamaño máximo a tu preferencia */
-            height: 300px; /* Altura del mapa */
-            border: 0; /* Quita el borde */
-        }
-        /* Cambia el fondo del dropdown y el color del texto */
-        .nav-item.dropdown .dropdown-menu {
-            background-color: #343a40; /* Color oscuro para el fondo del menú */
-            color: #fff; /* Asegura que el texto sea blanco */
-        }
-
-        /* Cambia el color del texto de "Hola, usuario" para hacerlo más visible */
-        .nav-item.dropdown .nav-link {
-            color: #ffffff; /* Blanco para el texto */
-        }
-
-        /* Asegúrate de que el texto del dropdown también sea legible */
-        .nav-item.dropdown .dropdown-item {
-            color: #ffffff; /* Blanco para los ítems del menú */
-        }
-
-            /* Cambia el color al pasar el mouse por encima de un item del dropdown */
-            .nav-item.dropdown .dropdown-item:hover {
-                background-color: #007bff; /* Color azul para el hover */
+            /* Responsivo para el iframe del mapa */
+            .maps iframe {
+                max-width: 100%;
+                width: 90%; /* Ajuste para que ocupe el 90% del contenedor */
+                height: 300px; /* Altura fija */
+                border: none;
             }
-        /* Asegura que las imágenes del carrusel siempre cubren el espacio del contenedor */
-        .carousel-inner img {
-            width: 100%; /* Asegura que la imagen ocupe todo el ancho del contenedor */
-            height: 100%; /* Asegura que la imagen ocupe todo el alto del contenedor */
-            object-fit: cover; /* Hace que la imagen se ajuste, recortando si es necesario */
+
+        /* Estilo para los íconos de las redes sociales */
+        footer a {
+            font-size: 24px;
+            margin-right: 15px;
         }
 
-        /* Para asegurar que el contenedor del carrusel tenga la altura correcta */
-        .carousel-item {
-            height: 400px; /* Ajusta esta altura según el tamaño que prefieras */
-        }
-        /* Para pantallas grandes, puedes dejar el tamaño como está */
-        /* Para pantallas grandes, el carrusel tendrá una altura de 400px */
-        @@media (min-width: 992px) {
-            .carousel-item {
-                height: 500px; /* Mayor altura en pantallas grandes */
+            footer a i {
+                color: inherit; /* Asegura que los íconos tengan el color del enlace */
             }
-        }
 
-        /* Para pantallas medianas y pequeñas, ajusta la altura del carrusel */
-        @@media (max-width: 991px) {
-            .carousel-item {
-                height: 300px; /* Ajusta la altura para pantallas más pequeñas */
+            footer a:hover i {
+                color: #007bff; /* Cambiar color al pasar el mouse */
             }
-        }
     </style>
-
     @RenderSection("Styles", required: false)
-
-
 </head>
 <body>
+
     <header>
         <div class="container-center">
-            <nav class="navbar navbar-expand-sm shadow mb-3">
-                <a class="lg" asp-area="" asp-controller="Home" asp-action="Index">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow mb-3">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="~/css/img/hoysejuegaa.png" alt="Hoy se juega" class="img-fluid" />
                 </a>
 
+                <!-- Toggler para el menú en móviles -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
+                <!-- Menú de navegación -->
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Inicio</a>
                         </li>
@@ -125,24 +110,22 @@
                                     <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Admin_home">Panel Administrador</a>
                                 </li>
                             }
-                            else if (User.IsInRole("3")) // Employed
+                            else if (User.IsInRole("3")) // Empleado
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Admin_home">Panel Operador</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Admin_home">Panel Administrador</a>
                                 </li>
                             }
                             <!-- Desplegar el nombre del usuario -->
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="perfilDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Hola, @User.Identity.Name! <!-- Nombre del usuario logueado -->
+                                    Hola, @User.Identity.Name!
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="perfilDropdown">
                                     <li><a class="dropdown-item" asp-controller="PerfilU" asp-action="Perfil">Ver Perfil</a></li>
-                                    <li class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" asp-controller="Acces" asp-action="Cerrar">Cerrar sesión</a></li>
                                 </ul>
                             </li>
-
                         }
                         @if (!User.Identity!.IsAuthenticated)
                         {
@@ -155,20 +138,19 @@
             </nav>
         </div>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
+
     <footer class="pb-3">
         <div class="maps">
             <div class="container">
-                <div class="align-items-center">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3280.430435698638!2d-58.478831225594874!3d-34.69432181307689!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bccf548d3bf9c3%3A0x3356bcb2fd8a5151!2sHoy%20se%20juega%20f%C3%BAtbol%205!5e0!3m2!1ses-419!2sar!4v1725323915380!5m2!1ses-419!2sar"
-                                width="900" height="300" style="border:0;" allowfullscreen=""
-                                loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                </div>
-            </div> 
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3280.430435698638!2d-58.478831225594874!3d-34.69432181307689!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bccf548d3bf9c3%3A0x3356bcb2fd8a5151!2sHoy%20se%20juega%20f%C3%BAtbol%205!5e0!3m2!1ses-419!2sar!4v1725323915380!5m2!1ses-419!2sar"
+                        allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
         </div>
         <p>
             <a href="https://www.instagram.com/hoy_se_juega/" style="color: #E1306C;">
@@ -186,22 +168,7 @@
         </p>
         <p>© 2024 G.O.S.F.P.S. Todos los derechos reservados.</p>
     </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
 
-
-    <!-- jQuery -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap JS (Incluye Popper) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Script para Full Calendar -->
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.js"></script>
-
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- scripts customs -->
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- scripts render -->
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

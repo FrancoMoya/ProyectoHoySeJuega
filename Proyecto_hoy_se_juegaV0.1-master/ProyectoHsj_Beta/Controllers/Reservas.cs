@@ -163,14 +163,14 @@ namespace ProyectoHsj_Beta.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAvailableTimeSlots(DateTime fecha) //Modificado para incluir solo los horarios dentro de 2 semanas
         {
-            DateOnly fechaLimite = DateOnly.FromDateTime(DateTime.Now.AddDays(14));
-            TimeOnly horaLimite = TimeOnly.FromDateTime(DateTime.Now);
+            DateOnly fechaLimite = DateOnly.FromDateTime(DateTime.Now.AddDays(14).AddHours(3));
+            TimeOnly horaLimite = TimeOnly.FromDateTime(DateTime.Now.AddHours(3));
             var horarios = await _context.HorarioDisponibles
                 .Where(h => (h.DisponibleHorario ?? false) && h.FechaHorario == DateOnly.FromDateTime(fecha) && h.FechaHorario <= fechaLimite && (
                     // Si es hoy, la hora de inicio debe ser mayor o igual a la hora actual
-                    (h.FechaHorario == DateOnly.FromDateTime(DateTime.Now) && h.HoraInicio >= horaLimite) ||
+                    (h.FechaHorario == DateOnly.FromDateTime(DateTime.Now.AddHours(3)) && h.HoraInicio >= horaLimite) ||
                     // Si no es hoy, cualquier horario de inicio futuro es válido
-                    h.FechaHorario > DateOnly.FromDateTime(DateTime.Now)
+                    h.FechaHorario > DateOnly.FromDateTime(DateTime.Now.AddHours(3))
                     )) // Hasta 2 semanas después)
                 .Select(h => new
                 {
@@ -212,5 +212,40 @@ namespace ProyectoHsj_Beta.Controllers
             return View(reservas);
         }
 
+        public async Task<IActionResult> ReservasClientes()
+        {
+            var eventos = await _context.Set<ReservasClientesAdminGetViewModel>()
+                .FromSqlRaw("EXEC SP_GET_RESERVAS_CLIENTES_ADMIN")
+                .ToListAsync();
+            return View(eventos);
+        }
+
+        // CANCELAR RESERVAS DESDE LA VISTA DE ADMIN RESERVAS CLIENTES(Tarjetas)
+        [HttpPost, ActionName("CancelReserva")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelConfirmed(int id)
+        {
+            var reserva = await _context.Reservas.FindAsync(id);
+            if (reserva != null)
+            {
+                var horario = await _context.HorarioDisponibles
+                                             .FirstOrDefaultAsync(h => h.IdHorarioDisponible == reserva.IdHorarioDisponible);
+                var estado = reserva.IdEstadoReserva;
+                if ((horario != null) && (estado != null))
+                {
+                    var descripcionAuditoria = $"El usuario ha cancelado la reserva de un cliente. Detalles, ID de la reserva: {reserva.IdReserva}.";
+                    horario.DisponibleHorario = true;
+                    // Guardar los cambios en la tabla HorariosDisponibles
+                    reserva.IdEstadoReserva = 3;
+                    // Cambiar a estado cancelado
+                    await _context.SaveChangesAsync();
+                    await _auditoriaService.RegistrarAuditoriaAsync(
+                    seccion: "Administración",
+                    descripcion: descripcionAuditoria,
+                    idAccion: 2);
+                }
+            }
+            return RedirectToAction(nameof(ReservasClientes));
+        }
     }
 }

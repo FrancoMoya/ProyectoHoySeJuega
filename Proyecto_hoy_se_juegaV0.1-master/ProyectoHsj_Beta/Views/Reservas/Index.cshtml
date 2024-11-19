@@ -39,7 +39,7 @@
     }
 
     .list-group-item {
-        padding: 13px 13px; /* Aumenta el espaciado interno para hacer los botones más grandes */
+        padding: 12px 13px; /* Aumenta el espaciado interno para hacer los botones más grandes */
         border: none; /* Elimina el borde de los elementos de lista */
         background-color: #343a40; /* Color de fondo gris para los botones */
         transition: background 0.2s; /* Transición suave para el color de fondo al pasar el mouse */
@@ -66,7 +66,7 @@
 </style>
 
 <div class="container mt-4">
-    <h3 style="color:white; text-align: right" >TODAS las reservas (Clientes-Administración)</h3>
+    <h3 style="color:white; text-align: right" >TODAS las reservas</h3>
 
     <div class="grid-container">
 
@@ -114,7 +114,7 @@
 
         <!-- Categoría: Futuros -->
         <div class="event-group" id="future-events">
-            <h3>Reservas Futuras</h3>
+            <h3>Reservas próximas</h3>
             @foreach (var item in Model.Where(e => e.FechaHorario > tomorrow))
             {
                 <div class="card">

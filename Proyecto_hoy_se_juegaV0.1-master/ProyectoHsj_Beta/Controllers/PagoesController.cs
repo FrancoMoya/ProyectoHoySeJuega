@@ -106,7 +106,7 @@ namespace ProyectoHsj_Beta.Controllers
             {
                 IdReserva = reservaId,
                 MontoPago = montoPago,
-                FechaPago = DateTime.Now
+                FechaPago = DateTime.Now.AddHours(3)
             };
 
             // Agrega el pago a la base de datos
@@ -136,6 +136,14 @@ namespace ProyectoHsj_Beta.Controllers
         private bool PagoExists(int id)
         {
             return _context.Pagos.Any(e => e.IdPago == id);
+        }
+
+        public async Task<IActionResult> ListPagos()
+        {
+            var pagos = await _context.Set<ListPagosAdminViewModel>()
+                .FromSqlRaw("EXEC SP_GET_PAGOS_ADMIN")
+                .ToListAsync();
+            return View(pagos);
         }
     }
 }

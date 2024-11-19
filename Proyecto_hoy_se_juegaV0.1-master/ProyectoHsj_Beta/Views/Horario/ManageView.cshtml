@@ -1,13 +1,14 @@
-﻿@model IEnumerable<ProyectoHsj_Beta.Models.HorarioDisponible>
-
+﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.MonthAvailability>
+@using System.Globalization
 @{
     ViewData["Title"] = "Horarios Disponibles";
     Layout = "~/Views/Shared/Layout_admin.cshtml";
 }
 
 <style>
+    /* Estilo general */
     h1 {
-        color: bisque;
+        color: #343a40;
         text-align: center;
         margin-top: 20px;
     }
@@ -16,6 +17,7 @@
         border-radius: 15px;
         margin: 20px auto;
         max-width: 100%;
+        background-color: #f8f9fa; /* Gris suave */
     }
 
     .btn-danger, .btn-warning, .btn-primary {
@@ -34,18 +36,65 @@
         margin-bottom: 15px;
     }
 
-    .action-buttons {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-    }
-
     .search-container {
         margin-bottom: 20px;
     }
 
-    /* Estilo para pantallas pequeñas */
+    .card-header {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    /* Estilo de los meses */
+    .form-control {
+        text-transform: uppercase; /* Meses en mayúsculas */
+    }
+
+    /* Estilo personalizado para la tabla */
+    .table th {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .badge {
+        padding: 5px 10px;
+        font-size: 0.9rem;
+        border-radius: 5px;
+    }
+
+    .badge.bg-success {
+        background-color: #28a745;
+    }
+
+    .badge.bg-danger {
+        background-color: #dc3545;
+    }
+
+    .table td {
+        background-color: #f1f1f1; /* Gris suave en las celdas */
+    }
+
+    /* Botón y campos alineados en la misma altura */
+    .action-buttons {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: flex-end;
+    }
+
+    /* Spinner (efecto de carga) */
+    .spinner-border {
+        width: 1.5rem;
+        height: 1.5rem;
+        border-width: 0.2em;
+    }
+
+    /* Mejoras para pantallas pequeñas */
     @@media (max-width: 768px) {
         .form-group {
             margin-bottom: 10px;
@@ -75,11 +124,17 @@
     }
 </style>
 
-<!-- Cuadro (card) para contener los horarios -->
 <div class="card shadow-lg">
-    <div class="card-header bg-primary text-white">
+    <div class="card-header">
         <h5 class="mb-0">Gestión de Horarios</h5>
     </div>
+
+    @if (TempData["ProcessingMessage"] != null)
+    {
+        <div class="alert alert-info" role="alert">
+            @TempData["ProcessingMessage"]
+        </div>
+    }
 
     <!-- Mensaje de éxito o error -->
     @if (TempData["Message"] != null)
@@ -96,64 +151,75 @@
     }
 
     <div class="card-body">
-        <!-- Formulario de búsqueda -->
+        <!-- Formulario para seleccionar mes y año -->
         <div class="search-container">
-            <form asp-action="Search" method="get" class="mb-4">
-                <div class="row">
-                    <div class="col-md-5 col-12 form-group">
-                        <label for="fecha">Fecha:</label>
-                        <input type="date" id="fecha" name="fecha" class="form-control" />
+            <form asp-action="GenerarFechasYHorariosMes" method="post" class="mb-4" id="horariosForm">
+                <div class="row action-buttons">
+                    <!-- Selección de Mes -->
+                    <div class="col-md-3 col-12 form-group">
+                        <label for="mes" class="form-label">Mes</label>
+                        <select id="mes" name="mes" class="form-control" required>
+                            <option value="1">ENERO</option>
+                            <option value="2">FEBRERO</option>
+                            <option value="3">MARZO</option>
+                            <option value="4">ABRIL</option>
+                            <option value="5">MAYO</option>
+                            <option value="6">JUNIO</option>
+                            <option value="7">JULIO</option>
+                            <option value="8">AGOSTO</option>
+                            <option value="9">SEPTIEMBRE</option>
+                            <option value="10">OCTUBRE</option>
+                            <option value="11">NOVIEMBRE</option>
+                            <option value="12">DICIEMBRE</option>
+                        </select>
                     </div>
-                    <div class="col-md-5 col-12 form-group">
-                        <label for="horaInicio">Hora Inicio:</label>
-                        <input type="time" id="horaInicio" name="horaInicio" class="form-control" />
+
+                    <!-- Selección de Año -->
+                    <div class="col-md-3 col-12 form-group">
+                        <label for="año">Año:</label>
+                        <select id="año" name="año" class="form-control">
+                            <option value="@DateTime.Now.Year" selected>@DateTime.Now.Year</option>
+                            <option value="@DateTime.Now.AddYears(1).Year">@DateTime.Now.AddYears(1).Year</option>
+                        </select>
                     </div>
-                    <div class="col-md-2 col-12 form-group align-self-end">
-                        <button type="submit" class="btn btn-primary btn-block">Buscar</button>
+
+                    <!-- Botón para generar horarios -->
+                    <div class="col-md-3 col-12 form-group align-self-end">
+                        <button type="submit" class="btn btn-success btn-block" id="generateButton">
+                            Generar horarios 
+                            <span id="spinner" class="spinner-border text-light" style="display: none;"></span>
+                        </button>
                     </div>
                 </div>
             </form>
         </div>
 
-        <!-- Botones para generar y eliminar horarios -->
-        <div class="action-buttons mb-2">
-            <form asp-action="EliminarHorariosDeLaSemana" method="post">
-                <button type="submit" class="btn btn-danger btn-block btn-sm">Eliminar Todos los Horarios</button>
-            </form>
-            <button type="button" class="btn btn-primary btn-block btn-sm" onclick="location.href='@Url.Action("GenerarFechasYHorariosSemana", "Horario")'">
-                Generar Horarios de la Semana
-            </button>
-        </div>
-
-
+        <!-- Mostrar los meses con disponibilidad -->
         @if (!Model.Any())
         {
             <div class="alert alert-warning" role="alert">
-                No hay horarios disponibles.
+                No se han encontrado horarios para los meses seleccionados.
             </div>
         }
         else
         {
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
-                    <thead class="thead-dark">
+                    <thead>
                         <tr>
-                            <th>Fecha</th>
-                            <th>Hora Inicio</th>
-                            <th>Hora Fin</th>
+                            <th>Año</th>
+                            <th>Mes</th>
                             <th>Disponibilidad</th>
-                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var horario in Model)
+                        @foreach (var item in Model)
                         {
                             <tr>
-                                <td>@horario.FechaHorario.ToShortDateString()</td>
-                                <td>@horario.HoraInicio</td>
-                                <td>@horario.HoraFin</td>
+                                <td>@item.Year</td>
+                                <td>@CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item.Month).ToUpper()</td> <!-- Mes en mayúsculas -->
                                 <td>
-                                    @if (horario.DisponibleHorario == true)
+                                    @if (item.HasAvailableHours)
                                     {
                                         <span class="badge bg-success">Disponible</span>
                                     }
@@ -161,12 +227,6 @@
                                     {
                                         <span class="badge bg-danger">No Disponible</span>
                                     }
-                                </td>
-                                <td>
-                                    <form asp-action="EliminarHorario" method="post" style="display:inline;">
-                                        <input type="hidden" name="id" value="@horario.IdHorarioDisponible" />
-                                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                                    </form>
                                 </td>
                             </tr>
                         }
@@ -176,3 +236,11 @@
         }
     </div>
 </div>
+
+<script>
+    // Mostrar el spinner cuando se haga clic en el botón
+    document.getElementById("horariosForm").onsubmit = function() {
+        document.getElementById("generateButton").disabled = true; // Deshabilitar el botón
+        document.getElementById("spinner").style.display = "inline-block"; // Mostrar el spinner
+    };
+</script>

@@ -105,12 +105,37 @@
     .modal-body p {
         font-size: 0.9em;
     }
+
+        .d-flex {
+            flex-direction: column;
+        }
+            /* Asegurar que el título esté sobre el botón */
+            .d-flex h2 {
+                order: -1;
+            }
+
+        .mb-sm-0 {
+            margin-bottom: 0 !important;
+            margin-bottom: 10px !important;
+            width: 100%;
+        }
+
+        h2 {
+            color: #343a40;
+            text-align: center;
+            margin-top: 7px;
+            margin-bottom: 8px;
+        }
+
 }
 
     
 </style>
 
-<h2>Reservas creadas por Clientes</h2>
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
+    <a asp-controller="Reservas" asp-action="ReservasClientes" class="btn btn-dark mb-2 mb-sm-0">Ver en forma de Tarjetas</a>
+    <h2>Reservas creadas por Clientes</h2>
+</div>
 
 <!-- Contenedor del Calendario -->
 <div id="calendar"></div>

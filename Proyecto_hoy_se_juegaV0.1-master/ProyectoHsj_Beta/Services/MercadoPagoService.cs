@@ -55,8 +55,8 @@ namespace ProyectoHsj_Beta.Services
                 AutoReturn = "approved",
                 ExternalReference = pago.IdReserva.ToString(),
                 Expires = true,
-                ExpirationDateFrom = DateTime.Now.AddHours(3), // Aumenta 3 horas por el servidor
-                ExpirationDateTo = DateTime.Now.AddHours(3).AddMinutes(5).AddSeconds(30)
+                ExpirationDateFrom = DateTime.Now, // Aumenta 3 horas por el servidor
+                ExpirationDateTo = DateTime.Now.AddMinutes(5).AddSeconds(30)
             };
             
             return await client.CreateAsync(request);

@@ -43,7 +43,7 @@ namespace ProyectoHsj_Beta.Controllers
             if (ModelState.IsValid)
             {
                 var descripcionAuditoria = $"El usuario ha actualizado los valores en Monto pago. Detalles, valor de la seña: ${configuracionPago.MontoSena.ToString("N0")}, WhatsApp de cancelaciones: {configuracionPago.CelularCancelaciones}.";
-                configuracionPago.FechaModificacion = DateTime.Now;
+                configuracionPago.FechaModificacion = DateTime.Now.AddHours(3);
                 _context.Update(configuracionPago);
                 await _context.SaveChangesAsync();
                 await _auditoriaService.RegistrarAuditoriaAsync(

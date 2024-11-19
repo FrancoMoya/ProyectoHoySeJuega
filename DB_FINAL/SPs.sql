@@ -328,10 +328,80 @@ BEGIN
     ORDER BY FechaHorario, HoraInicio;
 END;
 
+------------------
+-- LISTAR LAS RESERVAS CONFIRMADAS DE CLIENTES ADMIN (TARJETAS)
+CREATE PROCEDURE SP_GET_RESERVAS_CLIENTES_ADMIN
+AS
+BEGIN
+	DECLARE @FechaHoraActual DATETIME = DATEADD(HOUR, 3, GETDATE());
+    SELECT 
+        r.ID_reserva AS Id,
+		r.Fecha_Reserva AS FechaCreacion,
+		COALESCE(u.Nombre_Usuario, 'UsuarioEliminado') AS NombreUsuario,
+		COALESCE(u.Apellido_Usuario, 'UsuarioEliminado') AS ApellidoUsuario,
+		COALESCE(u.Telefono_Usuario, '0000000000') AS Celular,
+        COALESCE(h.Fecha_Horario, '2000-01-01') AS FechaHorario, 
+        COALESCE(h.Hora_Inicio, '00:00:00') AS HoraInicio, 
+        COALESCE(h.Hora_Fin, '00:00:00') AS HoraFin,
+        COALESCE(es.ID_estado_reserva, '0') AS Estado
+    FROM 
+        RESERVA r
+    LEFT JOIN 
+        HORARIO_DISPONIBLE h ON r.ID_horario_disponible = h.ID_horario_disponible
+	LEFT JOIN 
+        USUARIO u ON r.ID_usuario = u.ID_usuario
+    LEFT JOIN 
+        ESTADO_RESERVA es ON r.ID_estado_reserva = es.ID_estado_reserva 
+	WHERE 
+        es.ID_estado_reserva = 2
+        AND CAST(h.Fecha_Horario AS DATE) >= CAST(@FechaHoraActual AS DATE)
+	ORDER BY h.Fecha_Horario, h.Hora_Inicio
+END;
+
+-----------------------------------
+
+--Listar pagos admin
+CREATE PROCEDURE SP_GET_PAGOS_ADMIN
+AS
+BEGIN
+	SELECT
+	p.ID_pago AS Id,
+	p.Fecha_Pago AS FechaPago,
+	p.Monto_Pago AS Monto,
+	COALESCE(u.Nombre_Usuario, 'UsuarioEliminado') AS NombreUsuario,
+	COALESCE(u.Apellido_Usuario, 'UsuarioEliminado') AS ApellidoUsuario,
+	COALESCE(r.Fecha_Reserva, '2000-01-01 00:00:00') AS FechaCreacionReserva,
+	COALESCE(h.Fecha_Horario, '2000-01-01') AS FechaHorario, 
+    COALESCE(h.Hora_Inicio, '00:00:00') AS HoraInicio, 
+    COALESCE(h.Hora_Fin, '00:00:00') AS HoraFin,
+	CASE es.ID_estado_reserva
+            WHEN 1 THEN 'PENDIENTE'
+            WHEN 2 THEN 'CONFIRMADA'
+            WHEN 3 THEN 'CANCELADA'
+			ELSE 'Sin estado'
+	END AS Estado
+	FROM PAGO p
+	LEFT JOIN 
+		RESERVA r ON p.ID_reserva = r.ID_reserva
+	LEFT JOIN 
+		HORARIO_DISPONIBLE h ON r.ID_horario_disponible = h.ID_horario_disponible
+	LEFT JOIN 
+		USUARIO u ON r.ID_usuario = u.ID_usuario
+	LEFT JOIN 
+		ESTADO_RESERVA es ON r.ID_estado_reserva = es.ID_estado_reserva
+	ORDER BY p.Fecha_Pago DESC
+END;
+
+
+
 
 
 ----------------------------------------------------------
 ----------------------------------------------------------
 -- STORED PROCEDURES SIN APLICARSE...
+
+
+
+
 
 

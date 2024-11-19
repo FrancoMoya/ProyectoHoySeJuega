@@ -70,7 +70,7 @@ namespace ProyectoHsj_Beta.Controllers
                 // Crear el evento recurrente
                 var eventoRecurrente = new EventoRecurrente
                 {
-                    Nombre = modeloEvento.Nombre,
+                    Nombre = modeloEvento.Nombre.ToUpper(),
                     Descripcion = modeloEvento.Descripcion,
                     CorreoCliente = modeloEvento.CorreoCliente,
                     TelefonoCliente = modeloEvento.TelefonoCliente,
@@ -101,8 +101,7 @@ namespace ProyectoHsj_Beta.Controllers
                                 return RedirectToAction("CrearFijos");
                             }
 
-                            var horaActual = DateTime.Now.AddHours(3); // Aumenta 3 horas
-                            var fechaEvento = fecha.ToDateTime(TimeOnly.FromDateTime(horaActual));
+                            var fechaActual = DateTime.Now.AddHours(3); // Aumenta 3 horas
 
                             // Crear el evento asociado con ese horario
                             var evento = new Evento
@@ -111,7 +110,7 @@ namespace ProyectoHsj_Beta.Controllers
                                 DescripcionEvento = eventoRecurrente.Descripcion,
                                 CorreoClienteEvento = eventoRecurrente.CorreoCliente,
                                 TelefonoClienteEvento = Convert.ToInt32(eventoRecurrente.TelefonoCliente),
-                                FechaEvento = fechaEvento,
+                                FechaEvento = fechaActual,
                                 IdHorarioDisponible = horario.IdHorarioDisponible,
                                 IdEstadoReserva = 2
                             };
@@ -124,7 +123,7 @@ namespace ProyectoHsj_Beta.Controllers
                         await _auditoriaService.RegistrarAuditoriaAsync(
                         seccion: "Administración",
                         descripcion: descripcionAuditoria,
-                        idAccion: 2);
+                        idAccion: 1);
 
                         // Confirmar la transacción si todo sale bien
                         await transaction.CommitAsync();

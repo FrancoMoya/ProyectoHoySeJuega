@@ -19,8 +19,6 @@ namespace ProyectoHsj_Beta.Controllers
             var usuariosAutenticados = await _context.Usuarios
                                                     .Where(u => u.EmailConfirmed == true)
                                                     .CountAsync();
-            Console.WriteLine("Total de usuarios registrados : " + totalUsuariosRegistrados);
-            Console.WriteLine("Total de usuarios autenticados : " + usuariosAutenticados);
 
             var data = new
             {

@@ -53,6 +53,7 @@ public partial class HoySeJuegaContext : DbContext
 
     public DbSet<ReservasPendientesDTO> ReservasPendientes { get; set; }
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AccionRealizadum>(entity =>
@@ -442,9 +443,10 @@ public partial class HoySeJuegaContext : DbContext
         modelBuilder.Entity<ReservasPendientesDTO>().HasNoKey();
         modelBuilder.Entity<FijosAdminGetViewModel>().HasNoKey().ToView(null);
         modelBuilder.Entity<ReservasAdminGetAllViewModel>().HasNoKey().ToView(null);
+        modelBuilder.Entity<MonthAvailability>().HasNoKey().ToView(null);
+        modelBuilder.Entity<ReservasClientesAdminGetViewModel>().HasNoKey().ToView(null);
+        modelBuilder.Entity<ListPagosAdminViewModel>().HasNoKey().ToView(null);
         
-
-
     }
 
     partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

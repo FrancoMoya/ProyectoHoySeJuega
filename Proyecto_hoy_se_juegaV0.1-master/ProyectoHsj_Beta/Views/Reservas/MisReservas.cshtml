@@ -2,32 +2,39 @@
 @{
     var number = ViewData["number"]?.ToString();  // Obtiene el número de WhatsApp desde ViewData
 }
+<head>
+    <link rel="icon" href="~/css/img/hoysejuegaa.png" type="image/png" />
+    <style>
 
-<style>
-    .table-responsive {
-        overflow-x: auto;
-    }
-    body {
-        background-color: #333333 !important;
-    }
-    /* Estilos para las tarjetas en dispositivos móviles */
-    @@media (max-width: 767px) {
-        .reservation-card {
-            margin-bottom: 15px;
+        .table-responsive {
+            overflow-x: auto;
         }
-        .card-header {
-            background-color: #343a40;
-            color: white;
+
+        body {
+            background-color: #333333 !important;
         }
-        .card-body {
-            background-color: #f8f9fa;
-            color: black;
+        /* Estilos para las tarjetas en dispositivos móviles */
+        @@media (max-width: 767px) {
+            .reservation-card {
+                margin-bottom: 15px;
+            }
+
+            .card-header {
+                background-color: #343a40;
+                color: white;
+            }
+
+            .card-body {
+                background-color: #f8f9fa;
+                color: black;
+            }
+
+            .card-footer {
+                background-color: #f8f9fa;
+            }
         }
-        .card-footer {
-            background-color: #f8f9fa;
-        }
-    }
-</style>
+    </style>
+</head>
 
 <h1 style="color: white">Mis reservas</h1>
 
@@ -153,7 +160,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" style="color: black;">
-                <strong>Detalles de la reserva:</strong><br><strong>Fecha:</strong> <span id="ObjectFecha"></span><br><strong>Horario:</strong> <span id="ObjectHora"></span><br><strong>Otros campos, como el pago, etc...</strong>
+                <strong>Detalles de la reserva:</strong><br><strong>Fecha:</strong> <span id="ObjectFecha"></span><br><strong>Horario:</strong> <span id="ObjectHora"></span>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -246,5 +253,4 @@
         }
     });
 });
-
 </script>
