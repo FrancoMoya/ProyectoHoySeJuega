@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.ReservasClientesAdminGetViewModel>
 @{
     Layout = "~/Views/Shared/Layout_admin.cshtml";
-    ViewData["Title"] = "Eventos";
+    ViewData["Title"] = "Reservas de Clientes";
 
     // Fecha de hoy y mañana para el agrupamiento, usando DateOnly
-    var today = DateOnly.FromDateTime(DateTime.Today); // Obtiene la fecha de hoy como DateOnly
+    var today = DateOnly.FromDateTime(DateTime.Today.AddHours(3)); // Obtiene la fecha de hoy como DateOnly
     var tomorrow = today.AddDays(1); // Mañana
     var futureDate = tomorrow.AddDays(1); // Día después de mañana
 }
@@ -67,7 +67,7 @@
 
         /* Asegurar que el título esté sobre el botón */
         .d-flex h2 {
-            order: -1;
+            order: -2;
         }
 
         .mb-sm-0 {
@@ -82,6 +82,7 @@
     <!-- Contenedor para el título y el botón -->
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
         <a asp-controller="Admin" asp-action="Index" class="btn btn-dark mb-2 mb-sm-0">Volver al Calendario</a>
+        <a asp-controller="Reservas" asp-action="ReservasClientesHistorial" class="btn btn-danger mb-2 mb-sm-0">Ver HISTORIAL COMPLETO</a>
         <h2 style="color:white">Reservas creadas por Clientes</h2>
     </div>
 
@@ -94,14 +95,13 @@
             {
                 <div class="card">
                     <div class="card-header">
-                        @item.NombreUsuario @item.ApellidoUsuario
+                        ID: @item.Id | @item.NombreUsuario @item.ApellidoUsuario
                     </div>
                     <div class="card-body">
                         <p><strong>Creación:</strong> @item.FechaCreacion.ToString("HH:mm - dd/MM/yyyy")</p>
                         <p><strong>Celular:</strong> @item.Celular</p>
                         <p><strong>Fecha:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
-                        <p><strong>Hora de Inicio:</strong> @item.HoraInicio.ToString("HH:mm")</p>
-                        <p><strong>Hora de finalización:</strong> @item.HoraFin.ToString("HH:mm")</p>
+                        <p><strong>Horario:</strong> @item.HoraInicio.ToString("HH:mm") - @item.HoraFin.ToString("HH:mm")</p>
 
                         <div class="d-flex justify-content-end">
                             <button type="button" class="btn btn-warning btn-sm me-2" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
@@ -124,14 +124,13 @@
             {
                 <div class="card">
                     <div class="card-header">
-                        @item.NombreUsuario @item.ApellidoUsuario
+                        ID: @item.Id | @item.NombreUsuario @item.ApellidoUsuario
                     </div>
                     <div class="card-body">
                         <p><strong>Creación:</strong> @item.FechaCreacion.ToString("HH:mm - dd/MM/yyyy")</p>
                         <p><strong>Celular:</strong> @item.Celular</p>
                         <p><strong>Fecha:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
-                        <p><strong>Hora de Inicio:</strong> @item.HoraInicio.ToString("HH:mm")</p>
-                        <p><strong>Hora de finalización:</strong> @item.HoraFin.ToString("HH:mm")</p>
+                        <p><strong>Horario:</strong> @item.HoraInicio.ToString("HH:mm") - @item.HoraFin.ToString("HH:mm")</p>
 
                         <div class="d-flex justify-content-end">
                             <button type="button" class="btn btn-warning btn-sm me-2" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
@@ -154,14 +153,13 @@
             {
                 <div class="card">
                     <div class="card-header">
-                        @item.NombreUsuario @item.ApellidoUsuario
+                        ID: @item.Id | @item.NombreUsuario @item.ApellidoUsuario
                     </div>
                     <div class="card-body">
                         <p><strong>Creación:</strong> @item.FechaCreacion.ToString("HH:mm - dd/MM/yyyy")</p>
                         <p><strong>Celular:</strong> @item.Celular</p>
                         <p><strong>Fecha:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
-                        <p><strong>Hora de Inicio:</strong> @item.HoraInicio.ToString("HH:mm")</p>
-                        <p><strong>Hora de finalización:</strong> @item.HoraFin.ToString("HH:mm")</p>
+                        <p><strong>Horario:</strong> @item.HoraInicio.ToString("HH:mm") - @item.HoraFin.ToString("HH:mm")</p>
 
                         <div class="d-flex justify-content-end">
                             <button type="button" class="btn btn-warning btn-sm me-2" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"

@@ -1,7 +1,8 @@
 ﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.UsuariosGetViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Lista de Usuarios";
+
     Layout = "~/Views/Shared/Layout_admin.cshtml";
 }
 
@@ -11,12 +12,8 @@
     body {
         margin: 0;
         padding: 0;
-        background-image: url('/css/img/logo fondo admin.png');
-        background-size: contain;
-        background-position: center;
-        background-repeat: no-repeat;
         height: 100vh;
-        background-color: #000;
+        background-color: #212529;
     }
 
     .list-group-item {
@@ -29,7 +26,7 @@
     }
 
     .table-container {
-        background-color: #ffffff;
+        background-color: #6c757d;
         color: #000;
         padding: 20px;
         border-radius: 8px;
@@ -103,22 +100,27 @@
         .table-responsive {
             display: none;
         }
-
+        p{
+            margin-bottom: 0.4rem
+        }
         .user-card {
             background-color: #f8f9fa;
-            margin-bottom: 15px;
-            padding: 15px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px !important;
+            padding: 15px 15px 8px 15px;
         }
 
         .user-card .card-header {
             font-size: 1.2rem;
             font-weight: bold;
+            background-color: lightslategrey;
+            padding: 0.5rem 1rem 0.5rem 1rem;
         }
 
         .user-card .card-body {
             font-size: 0.9rem;
+            padding: 0.5rem 0.5rem 0px 0.5rem;
         }
 
         .search-bar,
@@ -140,7 +142,7 @@
 <div class="container mt-4">
     <!-- Barra de búsqueda y botones de filtrado (visibles en todas las pantallas) -->
     <div class="search-filter-container">
-        <input type="text" id="searchApellido" class="form-control search-bar" placeholder="Buscar por apellido..." />
+        <input type="text" id="searchInput" class="form-control search-bar" placeholder="Buscar por Apellido o ID" />
         <div class="btn-group mb-3" role="group" aria-label="Filtrar usuarios">
             <button id="btnTodos" type="button" class="btn btn-outline-info">Todos</button>
             <button id="btnActivos" type="button" class="btn btn-outline-success">Activos</button>
@@ -152,9 +154,9 @@
     <div class="row d-block d-md-none" id="userCards">
         @foreach (var item in Model)
         {
-            <div class="col-12 mb-4 user-card" data-nombre="@item.NombreUsuario" data-apellido="@item.ApellidoUsuario" data-estado="@item.Activo.ToString().ToLower()">
+            <div class="col-12 mb-4 user-card" data-id="@item.IdUsuario" data-nombre="@item.NombreUsuario" data-apellido="@item.ApellidoUsuario" data-estado="@item.Activo.ToString().ToLower()">
                 <div class="card-header">
-                    @item.NombreUsuario @item.ApellidoUsuario
+                    ID: @item.IdUsuario | @item.NombreUsuario @item.ApellidoUsuario
                 </div>
                 <div class="card-body">
                     <p><strong>Correo:</strong> @item.CorreoUsuario</p>
@@ -179,7 +181,7 @@
                     @if (!@item.Activo)
                     {
                         <button type="button" class="btn btn-delete btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
-                                data-id="@item.IdUsuario" data-nombre="@item.NombreUsuario">
+                                data-id="@item.IdUsuario" data-nombre="@item.NombreUsuario" data-apellido="@item.ApellidoUsuario">
                             <i class="fas fa-trash-alt"></i> Eliminar
                         </button>
                     }
@@ -190,10 +192,10 @@
 
     <!-- Table View for Desktop -->
     <div class="table-responsive table-container d-none d-md-block" id="userTable">
-        <h2>Usuarios</h2>
         <table class="table table-striped table-bordered table-dark">
             <thead class="thead-light">
                 <tr>
+                    <th>ID</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
                     <th>Correo</th>
@@ -208,6 +210,7 @@
                 @foreach (var item in Model)
                 {
                     <tr>
+                        <td>@item.IdUsuario</td>
                         <td>@item.NombreUsuario</td>
                         <td>@item.ApellidoUsuario</td>
                         <td>@item.CorreoUsuario</td>
@@ -232,7 +235,7 @@
                                 @if (!@item.Activo)
                                 {
                                     <button type="button" class="btn btn-delete btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
-                                            data-id="@item.IdUsuario" data-nombre="@item.NombreUsuario">
+                                            data-id="@item.IdUsuario" data-nombre="@item.NombreUsuario" data-apellido="@item.ApellidoUsuario">
                                         <i class="fas fa-trash-alt"></i> Eliminar
                                     </button>
                                 }
@@ -254,7 +257,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                ¿Estás seguro de que deseas eliminar a <span id="deleteObjectName"></span>?<br>(No se puede deshacer esta acción una vez realizada)
+                ¿Estás seguro de que deseas eliminar a <span id="deleteObjectName"></span> <span id="deleteObjectSurname"></span>?<br>(No se puede deshacer esta acción una vez realizada)
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -269,32 +272,36 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const searchInput = document.getElementById("searchApellido");
+        const searchInput = document.getElementById("searchInput");
+
         // Script para capturar el ID y nombre del objeto a eliminar y mostrarlo en el modal
         var confirmDeleteModal = document.getElementById('confirmDeleteModal');
         confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget; // El botón que activó el modal
             var objectId = button.getAttribute('data-id'); // Obtener el ID del usuario
             var objectName = button.getAttribute('data-nombre'); // Obtener el nombre del usuario
+            var objectSurname = button.getAttribute('data-apellido');
             var inputId = document.getElementById('deleteId'); // Campo oculto donde se almacenará el ID
             var objectNameSpan = document.getElementById('deleteObjectName'); // Donde se mostrará el nombre
+            var objectSurnameSpan = document.getElementById('deleteObjectSurname');
 
             // Actualizar el valor del campo oculto y el nombre en el modal
             inputId.value = objectId;
             objectNameSpan.textContent = objectName;
+            objectSurnameSpan.textContent = objectSurname;
         });
 
-        
-        // Función para filtrar por apellido
-        function filterByApellido() {
+        // Función de filtrado unificada
+        function filterUsers() {
             const query = searchInput.value.toLowerCase();
             const userCards = document.querySelectorAll('.user-card');
             const userRows = document.querySelectorAll('tbody tr');
-            
+
             // Filtrar en vista móvil (tarjetas)
             userCards.forEach(card => {
                 const apellido = card.dataset.apellido.toLowerCase();
-                if (apellido.includes(query)) {
+                const id = card.dataset.id.toString();  // Convertir ID a cadena para comparación
+                if (apellido.includes(query) || id.includes(query)) {
                     card.style.display = 'block';
                 } else {
                     card.style.display = 'none';
@@ -303,22 +310,24 @@
 
             // Filtrar en vista de escritorio (tabla)
             userRows.forEach(row => {
-                const apellido = row.cells[1].innerText.toLowerCase();
-                if (apellido.includes(query)) {
-                    row.style.display = '';
+                const apellido = row.cells[2].innerText.toLowerCase();  // Columna Apellido
+                const id = row.cells[0].innerText.toLowerCase();  // Columna ID
+                if (apellido.includes(query) || id.includes(query)) {
+                    row.style.display = '';  // Mostrar la fila
                 } else {
-                    row.style.display = 'none';
+                    row.style.display = 'none';  // Ocultar la fila
                 }
             });
         }
 
         // Agregar evento de búsqueda
-        searchInput.addEventListener('input', filterByApellido);
+        searchInput.addEventListener('input', filterUsers);
 
         // Función para mostrar u ocultar elementos de acuerdo con el estado
-        function filterUsers(estado) {
+        function filterUsersByStatus(estado) {
             let userCards = document.querySelectorAll('.user-card');
             let userRows = document.querySelectorAll('tbody tr');
+
             userCards.forEach(card => {
                 const estadoCard = card.dataset.estado === 'true';
                 if (estado === null || estado === estadoCard) {
@@ -327,29 +336,30 @@
                     card.style.display = 'none';
                 }
             });
+
             userRows.forEach(row => {
                 const estadoRow = row.querySelector('.user-status').classList.contains('active');
                 if (estado === null || estado === estadoRow) {
-                    row.style.display = '';
+                    row.style.display = '';  // Mostrar la fila
                 } else {
-                    row.style.display = 'none';
+                    row.style.display = 'none';  // Ocultar la fila
                 }
             });
         }
 
         // Filtrado por estado de usuario
         document.getElementById('btnTodos').addEventListener('click', function () {
-            filterUsers(null);
+            filterUsersByStatus(null); // Mostrar todos
             setActiveButton('btnTodos');
         });
 
         document.getElementById('btnActivos').addEventListener('click', function () {
-            filterUsers(true); // Solo activos
+            filterUsersByStatus(true); // Solo activos
             setActiveButton('btnActivos');
         });
 
         document.getElementById('btnInactivos').addEventListener('click', function () {
-            filterUsers(false); // Solo inactivos
+            filterUsersByStatus(false); // Solo inactivos
             setActiveButton('btnInactivos');
         });
 
@@ -363,13 +373,14 @@
         }
 
         // Ejecutar al cargar la página
-        filterUsers(null);
+        filterUsersByStatus(null);
 
         // Ajustar el filtro cuando se cambia el tamaño de la ventana
         window.addEventListener('resize', function () {
-            filterUsers(null);
+            filterUsersByStatus(null);
         });
     });
+
 </script>
 
 

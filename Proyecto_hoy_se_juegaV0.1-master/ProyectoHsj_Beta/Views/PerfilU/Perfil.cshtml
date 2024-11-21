@@ -12,9 +12,116 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <title>Mi Perfil</title>
     <link rel="icon" href="~/css/img/hoysejuegaa.png" type="image/png" />
+    <style>
+        body {
+            background-color: #121212; /* Fondo oscuro para el cuerpo */
+            color: #e0e0e0; /* Texto claro */
+            margin: 0;
+        }
+
+        .card {
+            background-color: #1e1e1e; /* Fondo oscuro de la tarjeta */
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Sombra oscura */
+        }
+
+        .card-header {
+            background-color: #333; /* Fondo oscuro para el encabezado de la tarjeta */
+            color: #ffffff; /* Texto blanco */
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .card-body {
+            background-color: #1e1e1e; /* Fondo oscuro para el cuerpo de la tarjeta */
+        }
+
+        .form-label {
+            color: #e0e0e0; /* Color claro para las etiquetas de los campos */
+        }
+
+        .form-control {
+            background-color: #333 !important; /* Fondo oscuro para los campos de texto */
+            color: #e0e0e0 !important; /* Texto claro en los campos */
+            border: 1px solid #555 !important; /* Borde oscuro */
+        }
+
+        .form-control:focus {
+            border-color: #007bff; /* Borde azul cuando el campo está enfocado */
+                background-color: #2b2b2b !important; /* Fondo ligeramente más claro cuando se selecciona */
+        }
+
+        .btn-primary {
+            background-color: #007bff; /* Botón primario azul */
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3; /* Color más oscuro para el hover */
+            border-color: #0056b3;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d; /* Botón secundario gris */
+            border-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268; /* Color más oscuro para el hover */
+            border-color: #545b62;
+        }
+
+        .btn-success {
+            background-color: #28a745; /* Botón verde para modificar */
+            border-color: #28a745;
+        }
+
+        .btn-success:hover {
+            background-color: #218838; /* Hover verde más oscuro */
+            border-color: #1e7e34;
+        }
+
+        .modal-content {
+            background-color: #1e1e1e; /* Fondo oscuro para el contenido del modal */
+            color: #e0e0e0; /* Texto claro */
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #555;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #555;
+        }
+
+        .modal-title {
+            color: #e0e0e0; /* Título del modal en texto claro */
+        }
+
+        .modal-body p {
+            color: #e0e0e0; /* Color claro para el texto del cuerpo del modal */
+        }
+
+        .form-text {
+            color: #999; /* Texto pequeño en gris */
+        }
+
+        .text-muted {
+            color: #bbb; /* Color del texto menor */
+        }
+
+        .btn-close {
+            color: #e0e0e0; /* Botón de cierre del modal en texto claro */
+        }
+
+        .mb-3 {
+            margin-bottom: 0.7rem !important;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
+    <div class="container mt-5" style="margin-top: 9px !important">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
@@ -43,15 +150,14 @@
                             <div class="mb-3">
                                 <label for="TelefonoUsuario" class="form-label">Celular</label> <small class="form-text text-muted">(Recuerde siempre tenerlo actualizado)</small>
                                 <input type="text" class="form-control" id="TelefonoUsuario" value="@Model.TelefonoUsuario" readonly />
-                                <a href="@Url.Action("EditMiPerfil", "PerfilU")" class="btn btn-success">Modificar</a>
+                                <a href="@Url.Action("EditMiPerfil", "PerfilU")" class="btn btn-success" style="margin-top: 5px">Modificar</a>
                             </div>
                             <div class="mb-3 text-center">
-
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">Cambiar contraseña</button>
                             </div>
                         </form>
                         <!-- Botón para volver al Home -->
-                        <div class="text-center mt-4">
+                        <div class="text-center mt-4" style="margin-top: 5px !important">
                             <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">Volver al inicio</a>
                         </div>
                     </div>
@@ -82,3 +188,4 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+</html>

@@ -18,6 +18,12 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ProyectoHsj_alpha.styles.css" asp-append-version="true" />
     <style>
+        html, body {
+            height: 100%; /* Asegura que la altura del cuerpo sea 100% */
+            margin: 0; /* Elimina márgenes predeterminados */
+            display: flex;
+            flex-direction: column; /* Alinea los elementos de arriba a abajo */
+        }
         .navbar {
             background-color: #000000 !important; /* Color oscuro personalizado */
         }
@@ -59,6 +65,14 @@
                 border: none;
             }
 
+        .container {
+            flex: 1; /* Permite que el contenido ocupe el espacio disponible */
+        }
+
+        footer {
+            margin-top: auto; /* Empuja el footer al final de la página */
+            padding: 20px 0;
+        }
         /* Estilo para los íconos de las redes sociales */
         footer a {
             font-size: 24px;
@@ -72,6 +86,26 @@
             footer a:hover i {
                 color: #007bff; /* Cambiar color al pasar el mouse */
             }
+
+        body {
+            margin-bottom: 0px;
+        }
+        /* Para pantallas medianas y pequeñas, ajusta la altura del carrusel */
+        @@media (max-width: 991px) {
+            .carousel-item {
+                height: 300px; /* Ajusta la altura para pantallas más pequeñas */
+            }
+
+            footer {
+                padding: 20px 0px 20px 0px;
+            }
+
+            .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+                --bs-gutter-x: 0.9rem;
+            }
+        }
+
+        
     </style>
     @RenderSection("Styles", required: false)
 </head>
@@ -107,13 +141,13 @@
                             @if (User.IsInRole("2")) // Admin
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Admin_home">Panel Administrador</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Reservas" asp-action="AllReservationsCalendar">Panel Administrador</a>
                                 </li>
                             }
                             else if (User.IsInRole("3")) // Empleado
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Admin_home">Panel Administrador</a>
+                                    <a class="nav-link" asp-area="" asp-controller="Reservas" asp-action="AllReservationsCalendar">Panel Administrador</a>
                                 </li>
                             }
                             <!-- Desplegar el nombre del usuario -->

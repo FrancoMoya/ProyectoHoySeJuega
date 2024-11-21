@@ -164,19 +164,6 @@ CREATE TABLE EVENTO_RECURRENTE (
 );
 
 
---CREATE TABLE EXCEPCION_EVENTO (
---    ID_excepcion_evento INT IDENTITY(1,1) PRIMARY KEY,
---    ID_evento_recurrente INT NOT NULL,
---    FechaCancelacion DATE NOT NULL, -- La fecha que se canceló el evento
---    ID_estado_reserva INT NOT NULL, -- Estado de la reserva (por ejemplo, "Cancelado")
---    FOREIGN KEY (ID_evento_recurrente) REFERENCES EVENTO_RECURRENTE(ID_evento_recurrente) ON DELETE CASCADE,
---    FOREIGN KEY (ID_estado_reserva) REFERENCES ESTADO_RESERVA(ID_estado_reserva) ON DELETE CASCADE
---);
-
-
-
-
-
 --EJEMPLOS: 
 
 --Aún sin implementar
@@ -191,11 +178,6 @@ INSERT INTO ROL (Nombre_Rol) VALUES
 ('CLIENTE'), 
 ('ADMIN'), 
 ('EMPLEADO'); 
---INSERT INTO USUARIO (Nombre_Usuario, Apellido_Usuario, Correo_Usuario, Contrasenia_Usuario, Telefono_Usuario, ID_rol) VALUES 
---('Carlos', 'Sánchez', 'franco@gmail.com', 'hola', '1234567890', 1),
---('Laura', 'Méndez', 'laura.mendez@example.com', 'hashedpassword2', '0987654321', 3),
---('Laura2', 'Méndez2', 'laura.mendez2@example.com', 'hashedpassword2', '0987654321', 3),
---('Lauta', 'Méndez3', 'laura.mendez3@example.com', 'hashedpassword2', '0987654321', 2);
 INSERT INTO PERMISO (Nombre_Permiso) VALUES 
 ('Crear reservas'),
 ('Administrar horarios'),
@@ -230,43 +212,20 @@ INSERT INTO ACCION_REALIZADA (Titulo_Accion_Realizada) VALUES
 ('CREACIÓN'),
 ('MODIFICACIÓN'),
 ('ELIMINACIÓN');
---INSERT INTO AUDITORIA (ID_usuario, Seccion, Descripcion_De_Accion, ID_accion_realizada) VALUES 
---(1, 'USUARIO', 'El usuario Carlos inició sesión.', 1),
---(2, 'RESERVA', 'El usuario Laura realizó una reserva.', 2);
 INSERT INTO CANCHA (Nombre_Cancha, Ubicacion_Cancha) VALUES 
 ('Hoy se juega', 'Tabaré 697, CABA');
-
---REVISAR SI ES NECESARIO AGREGAR
-INSERT INTO HORARIO_DISPONIBLE (ID_cancha, Fecha_Horario, Hora_Inicio, Hora_Fin) VALUES 
-(1, '2024-11-30', '08:00:00', '09:00:00'),
-(1, '2024-11-30', '09:00:00', '10:00:00'),
-(1, '2024-11-30', '10:00:00', '11:00:00'),
-(1, '2024-11-30', '11:00:00', '12:00:00'),
-(1, '2024-11-30', '12:00:00', '13:00:00'),
-(1, '2024-11-30', '13:00:00', '14:00:00');
 INSERT INTO ESTADO_RESERVA (Nombre_Estado_Reserva) VALUES 
 ('PENDIENTE'),
 ('CONFIRMADA'),
 ('CANCELADA');
---INSERT INTO RESERVA (ID_usuario, ID_horario_disponible, ID_estado_reserva) VALUES 
---(2, 1, 1), -- Laura hizo una reserva en estado pendiente
---(2, 2, 1), -- La
---(3, 3, 2); -- Carlos tiene una reserva confirmada
 
 --Aún sin implementar
---INSERT INTO PAGO (ID_reserva, Monto_Pago) VALUES 
---(1, 500.00), -- Pago de Laura por su reserva pendiente
---(2, 700.00); -- Pago de Carlos por su reserva confirmada
 --INSERT INTO TITULO_NOTIFICACION (Titulo_Notificacion) VALUES 
 --('Confirmación de Reserva'),
 --('Cancelación de Reserva');
 --INSERT INTO NOTIFICACION (ID_usuario, ID_reserva, Mensaje_Notificacion, ID_titulo_notificacion) VALUES 
 --(2, 1, 'Su reserva está pendiente de confirmación.', 1), 
 --(1, 2, 'Su reserva ha sido confirmada con éxito.', 1);
---INSERT INTO EVENTO (Descripcion_Evento, ID_horario_disponible, ID_estado_reserva) VALUES 
---('Cumple de Carlos, reserva a nombre Lucas Martinez, celular: 11-4444-3333', 4, 1), -- Laura hizo una reserva en estado pendiente
---('Cumple de Matias, reserva a nombre Julian Alvarez, celular: 11-4444-5555', 5, 1), -- La
---('Cumple de Gonzalo, reserva a nombre Tomas Ojeda, celular: 11-6666-5555', 6, 2); -- Carlos tiene una reserva confirmada
 INSERT INTO CONFIGURACION_PAGO(Monto_Sena) VALUES
 (500);
 

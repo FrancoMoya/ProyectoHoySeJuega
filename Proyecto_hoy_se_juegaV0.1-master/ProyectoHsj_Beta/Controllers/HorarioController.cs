@@ -93,7 +93,8 @@ namespace ProyectoHsj_Beta.Controllers
                         // Confirmar la transacción
                         await transaction.CommitAsync();
 
-                        TempData["Message"] = "Horarios generados exitosamente para el mes.";
+                        TempData["Message"] = "Horarios generados exitosamente para el mes seleccionado.";
+                        TempData["MessageDetails"] = $"Se generaron {horariosAGuardar.Count} horarios.";
                     }
                     else
                     {

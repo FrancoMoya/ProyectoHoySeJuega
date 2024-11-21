@@ -1,6 +1,7 @@
 ﻿@model ProyectoHsj_Beta.ViewsModels.EditMiPerfilViewModel
 
 @{
+    ViewData["Title"] = "Modificar número de celular";
 }
 
 <h2 class="text-center mt-4">Modificar número de celular</h2>
@@ -16,7 +17,7 @@
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                     <div class="form-group mb-4">
-                        <label asp-for="TelefonoUsuario" class="form-label">Nuevo número de celular</label>
+                        <label asp-for="TelefonoUsuario" class="form-label">Nuevo número de celular:</label>
                         <input asp-for="TelefonoUsuario" class="form-control" placeholder="Ingrese su número de celular" />
                         <span asp-validation-for="TelefonoUsuario" class="text-danger"></span>
                     </div>

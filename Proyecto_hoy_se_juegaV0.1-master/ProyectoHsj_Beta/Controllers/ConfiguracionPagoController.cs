@@ -21,6 +21,7 @@ namespace ProyectoHsj_Beta.Controllers
             return View(await _context.ConfiguracionPagos.ToListAsync());
         }
 
+
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)

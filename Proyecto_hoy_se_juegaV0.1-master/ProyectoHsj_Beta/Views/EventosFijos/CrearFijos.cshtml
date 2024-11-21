@@ -2,7 +2,7 @@
 
 @{
     Layout = "~/Views/Shared/Layout_admin.cshtml";
-    ViewData["Title"] = "Crear reserva fija";
+    ViewData["Title"] = "Crear RESERVA FIJA";
 }
 
 <h2 class="mb-4">CREAR RESERVA FIJA</h2>
@@ -20,37 +20,43 @@
     
     <div class="card p-4 mb-4">
         <div class="form-group">
-            <label for="Nombre" class="form-label">Nombre de la reserva</label>
+            <label for="Nombre" class="form-label">Identificador de los eventos/reservas:</label>
+            <span style="color:red">*</span>
             <input type="text" class="form-control" id="Nombre" name="Nombre" required />
         </div>
 
         <div class="form-group mt-3">
-            <label for="Descripcion" class="form-label">Descripción</label>
+            <label for="Descripcion" class="form-label">Nombre del cliente y detalles de los eventos:</label>
+            <span style="color:red">*</span>
             <textarea class="form-control" id="Descripcion" name="Descripcion" rows="4" required></textarea>
         </div>
 
         <div class="form-group mt-3">
             <label for="CorreoCliente" class="form-label">Correo del cliente</label>
-            <input type="email" class="form-control" id="CorreoCliente" name="CorreoCliente" required />
+            <input type="email" class="form-control" id="CorreoCliente" name="CorreoCliente" />
         </div>
 
         <div class="form-group mt-3">
             <label for="TelefonoCliente" class="form-label">Celular del cliente</label>
+            <span style="color:red">*</span>
             <input type="tel" class="form-control" id="TelefonoCliente" name="TelefonoCliente" required />
         </div>
 
         <div class="form-group mt-3">
             <label for="FechaInicio" class="form-label">Fecha de inicio</label>
+            <span style="color:red">*</span>
             <input type="date" class="form-control" id="FechaInicio" name="FechaInicio" required />
         </div>
 
         <div class="form-group mt-3">
             <label for="FechaFin" class="form-label">Fecha de fin</label>
+            <span style="color:red">*</span>
             <input type="date" class="form-control" id="FechaFin" name="FechaFin" required />
         </div>
 
         <div class="form-group mt-3">
             <label for="HoraInicio" class="form-label">Hora de inicio (En la reserva)</label>
+            <span style="color:red">*</span>
             <select class="form-control" id="HoraInicio" name="HoraInicio" required>
                 <!-- Opciones dinámicas de horas -->
                 @for (int i = 10; i <= 23; i++)
@@ -63,6 +69,7 @@
 
         <div class="form-group mt-3">
             <label for="DiaSemana" class="form-label">Día de la Semana (En la reserva)</label>
+            <span style="color:red">*</span>
             <select class="form-control" id="DiaSemana" name="DiaSemana" required>
                 <option value="0">Domingo</option>
                 <option value="1">Lunes</option>
@@ -74,36 +81,45 @@
             </select>
         </div>
 
-        <button type="submit" class="btn btn-primary mt-4">Crear Evento Recurrente</button>
+        <button type="submit" class="btn btn-primary mt-4">Crear reserva FIJA</button>
     </div>
 </form>
 
 @section Styles {
     <style>
+        body{
+            background-color: #212529;
+        }
         /* Estilo personalizado para los labels */
+
         .form-label {
             font-weight: bold;
-            color: #333; /* Color oscuro para buen contraste */
+            color: #dddddd;
             font-size: 1rem;
         }
 
-        /* Estilos para mejorar la apariencia de los campos del formulario */
         .form-control {
-            border-radius: 0.375rem;
-            border: 1px solid #ced4da; /* Borde suave */
-            padding: 0.75rem; /* Relleno adecuado */
+            background-color: #333 !important; /* Fondo oscuro para los campos de texto */
+            color: #e0e0e0 !important; /* Texto claro en los campos */
+            border: 1px solid #555 !important; /* Borde oscuro */
+            margin-bottom: 0px !important;
         }
 
             .form-control:focus {
-                border-color: #80bdff; /* Color cuando el campo está enfocado */
-                box-shadow: 0 0 0 0.25rem rgba(38, 143, 255, 0.5); /* Sombra de enfoque */
+                border-color: #007bff; /* Borde azul cuando el campo está enfocado */
+                background-color: #2b2b2b !important; /* Fondo ligeramente más claro cuando se selecciona */
+                box-shadow: 0 0 0 0.25rem rgba(38, 143, 255, 0.5);
             }
 
         /* Asegurar que los campos de entrada y botón tengan una distancia uniforme */
         .card {
-            background-color: #f8f9fa;
-            border: 1px solid #e0e0e0;
+            background-color: #444547;
+            border: 0px;
             border-radius: 0.5rem;
+        }
+
+        .p-4 {
+            padding: 1.0rem !important;
         }
 
         /* Botón con un diseño más visible */
@@ -122,14 +138,16 @@
 
         /* Añadir un poco de separación entre los elementos */
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 0px;
         }
 
         /* Espaciado entre el título y el formulario */
         h2.mb-4 {
-            margin-bottom: 2rem;
+            margin-bottom: 0.5rem !important;
+            margin-top: 0.4rem;
             font-size: 2rem;
             font-weight: bold;
+            text-align: center;
         }
     </style>
 }

@@ -1,16 +1,16 @@
-﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.AuditoriaGetViewModel> 
+﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.AuditoriaGetViewModel>
 
 @{
     Layout = "~/Views/Shared/Layout_admin.cshtml";
-    ViewData["Title"] = "Auditoría";
+    ViewData["Title"] = "Historial completo de Auditoría";
 }
 
 <div class="container mt-4">
     <div class="row">
         <div class="col-12">
             <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
-                <a asp-controller="Auditoria" asp-action="HistorialAuditoria" class="btn btn-dark mb-2 mb-sm-0">Ver historial completo</a>
-                <h2 style="color: white; text-align: center ">Historial de Auditoría</h2>
+                <a asp-controller="Reservas" asp-action="AllReservationsCalendar" class="btn btn-dark mb-2 mb-sm-0">Volver al Panel de Control</a>
+                <h2 style="color: white; text-align: center ">Historial COMPLETO de Auditoría</h2>
             </div>
             <!-- Modificación: Botones de filtro para las acciones -->
             <div class="mb-3 text-center">
@@ -32,9 +32,9 @@
                             <div class="card-body">
                                 <h5 class="card-title">@item.TituloAccionRealizada</h5>
                                 <p class="card-text">
-                                    <strong>Fecha:</strong> @item.FechaAuditoria<br/>
-                                    <strong>Nombre:</strong> @item.NombreUsuario @item.ApellidoUsuario<br/>
-                                    <strong>Sección:</strong> @item.Seccion<br/>
+                                    <strong>Fecha:</strong> @item.FechaAuditoria<br />
+                                    <strong>Nombre:</strong> @item.NombreUsuario @item.ApellidoUsuario<br />
+                                    <strong>Sección:</strong> @item.Seccion<br />
                                     <strong>Descripción:</strong> @item.DescripcionDeAccion
                                 </p>
                             </div>
@@ -126,19 +126,19 @@
             font-size: 0.85rem;
         }
     }
-
+    /* Para pantallas muy pequeñas, los botones se ajustarán a toda la fila */
+    @@media (max-width: 576px) {
+        .btn-group .btn {
+            flex: 1 1 100%; /* Los botones ocupan todo el ancho de la pantalla */
+        }
+    }
     /* Mostrar tarjetas solo en pantallas pequeñas */
     @@media (max-width: 767px) {
         .d-block.d-md-none {
             display: block !important;  /* Aseguramos que las tarjetas se muestren en móviles */
         }
     }
-    /* Para pantallas muy pequeñas, los botones se ajustarán a toda la fila */
-@@media (max-width: 576px) {
-    .btn-group .btn {
-        flex: 1 1 100%; /* Los botones ocupan todo el ancho de la pantalla */
-    }
-}
+
     /* Ocultar la tabla en pantallas pequeñas y mostrar en pantallas grandes */
     @@media (min-width: 768px) {
         .d-none.d-md-block {

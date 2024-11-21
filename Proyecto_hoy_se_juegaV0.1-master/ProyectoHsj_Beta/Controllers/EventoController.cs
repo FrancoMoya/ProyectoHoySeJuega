@@ -30,6 +30,14 @@ namespace ProyectoHsj_Beta.Controllers
                 .ToListAsync();
             return View(eventos);
         }
+        
+        public async Task<IActionResult> ReservasAdminHistorial()
+        {
+            var eventos = await _context.Set<ReservasAdminHistorialGetViewModel>()
+                .FromSqlRaw("EXEC SP_GET_RESERVAS_ADMIN_HISTORIAL")
+                .ToListAsync();
+            return View(eventos);
+        }
 
         //Obtener y renderizar los horarios PARA EVENTOS ADMIN
         [HttpGet]
@@ -163,6 +171,42 @@ namespace ProyectoHsj_Beta.Controllers
         }
 
 
-
+        //para el calendario
+        public IActionResult IndexCalendar()
+        {
+            return View();
+        }
+        public async Task<IActionResult> GetReservas()
+        {
+            var reservas = await _context.Set<ReservasAdminGetViewModel>()
+                .FromSqlRaw("EXEC SP_GET_RESERVAS_EVENTOS_CALENDAR_ADMIN")
+                .ToListAsync();
+            return Json(reservas);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CancelConfirmedCalendar(int id)
+        {
+            var evento = await _context.Eventos.FindAsync(id);
+            if (evento != null)
+            {
+                var horario = await _context.HorarioDisponibles
+                                             .FirstOrDefaultAsync(h => h.IdHorarioDisponible == evento.IdHorarioDisponible);
+                var estado = evento.IdEstadoReserva;
+                if ((horario != null) && (estado != null))
+                {
+                    var descripcionAuditoria = $"El usuario ha cancelado un evento. Detalles, ID del evento: {evento.IdEvento}.";
+                    horario.DisponibleHorario = true;
+                    // Guardar los cambios en la tabla HorariosDisponibles
+                    evento.IdEstadoReserva = 3;
+                    // Cambiar a estado cancelado
+                    await _context.SaveChangesAsync();
+                    await _auditoriaService.RegistrarAuditoriaAsync(
+                    seccion: "Administración",
+                    descripcion: descripcionAuditoria,
+                    idAccion: 2);
+                }
+            }
+            return RedirectToAction(nameof(IndexCalendar));
+        }
     }
 }

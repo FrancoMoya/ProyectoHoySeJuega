@@ -2,7 +2,7 @@
 
 @{
     Layout = "~/Views/Shared/Layout_admin.cshtml";
-    ViewData["Title"] = "Crear FIJOS";
+    ViewData["Title"] = "Reservas FIJAS";
 }
 
 
@@ -10,64 +10,73 @@
 <div class="mb-2">
     <a href="@Url.Action("CrearFijos", "EventosFijos")" class="btn btn-primary custom-btn">Crear una RESERVA FIJA</a>
 </div>
-
-<!-- Contenedor para la tabla y tarjetas -->
-<div class="container custom-container">
-
-    <!-- Tabla responsiva en pantallas grandes -->
-    <div class="table-responsive d-none d-md-block">
-        <table class="table custom-table">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Descripción</th>
-                    <th>Correo del cliente</th>
-                    <th>Celular del cliente</th>
-                    <th>Día seleccionado</th>
-                    <th>Hora seleccionada</th>
-                    <th>Fecha de inicio</th>
-                    <th>Fecha de finalización</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var evento in Model)
-                {
-                    <tr>
-                        <td>@evento.Nombre</td>
-                        <td>@evento.Descripcion</td>
-                        <td>@evento.CorreoCliente</td>
-                        <td>@evento.TelefonoCliente</td>
-                        <td>@evento.DiaSemana</td>
-                        <td>@evento.HoraInicio</td>
-                        <td>@evento.FechaInicio</td>
-                        <td>@evento.FechaFin</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+    @if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info" role="alert">
+        Aún no se han creado RESERVAS FIJAS.
     </div>
+}
+else
+{
+    <!-- Contenedor para la tabla y tarjetas -->
+    <div class="container custom-container">
 
-    <!-- Vista de tarjetas para pantallas pequeñas -->
-    <div class="row d-block d-md-none">
-        @foreach (var evento in Model)
-        {
-            <div class="col-12 col-sm-6 col-lg-4 mb-2">
-                <div class="card custom-card">
-                    <div class="card-body">
-                        <h5 class="card-title">@evento.Nombre</h5>
-                        <p class="card-text"><strong>Descripción:</strong> @evento.Descripcion</p>
-                        <p class="card-text"><strong>Correo:</strong> @evento.CorreoCliente</p>
-                        <p class="card-text"><strong>Celular:</strong> @evento.TelefonoCliente</p>
-                        <p class="card-text"><strong>Día:</strong> @evento.DiaSemana</p>
-                        <p class="card-text"><strong>Hora:</strong> @evento.HoraInicio</p>
-                        <p class="card-text"><strong>Fecha de inicio:</strong> @evento.FechaInicio.ToShortDateString()</p>
-                        <p class="card-text"><strong>Fecha de finalización:</strong> @evento.FechaFin.ToShortDateString()</p>
+        <!-- Tabla responsiva en pantallas grandes -->
+        <div class="table-responsive d-none d-md-block">
+            <table class="table custom-table">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Descripción</th>
+                        <th>Correo del cliente</th>
+                        <th>Celular del cliente</th>
+                        <th>Día seleccionado</th>
+                        <th>Hora seleccionada</th>
+                        <th>Fecha de inicio</th>
+                        <th>Fecha de finalización</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var evento in Model)
+                    {
+                        <tr>
+                            <td>@evento.Nombre</td>
+                            <td>@evento.Descripcion</td>
+                            <td>@evento.CorreoCliente</td>
+                            <td>@evento.TelefonoCliente</td>
+                            <td>@evento.DiaSemana</td>
+                            <td>@evento.HoraInicio</td>
+                            <td>@evento.FechaInicio</td>
+                            <td>@evento.FechaFin</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Vista de tarjetas para pantallas pequeñas -->
+        <div class="row d-block d-md-none">
+            @foreach (var evento in Model)
+            {
+                <div class="col-12 col-sm-6 col-lg-4 mb-2">
+                    <div class="card custom-card">
+                        <div class="card-body">
+                            <h5 class="card-title">@evento.Nombre</h5>
+                            <p class="card-text"><strong>Descripción:</strong> @evento.Descripcion</p>
+                            <p class="card-text"><strong>Correo:</strong> @evento.CorreoCliente</p>
+                            <p class="card-text"><strong>Celular:</strong> @evento.TelefonoCliente</p>
+                            <p class="card-text"><strong>Día:</strong> @evento.DiaSemana</p>
+                            <p class="card-text"><strong>Hora:</strong> @evento.HoraInicio</p>
+                            <p class="card-text"><strong>Fecha de inicio:</strong> @evento.FechaInicio.ToShortDateString()</p>
+                            <p class="card-text"><strong>Fecha de finalización:</strong> @evento.FechaFin.ToShortDateString()</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
-</div>
+}
+
 
 <!-- Agregar estilos CSS personalizados -->
 <style>

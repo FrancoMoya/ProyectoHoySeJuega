@@ -1,208 +1,211 @@
 ﻿@{
     Layout = "~/Views/Shared/Layout_admin.cshtml";
 
-    ViewData["Title"] = "Reservas Clientes";
+    ViewData["Title"] = "Reservas creadas por Admin";
 }
 
 <style>
-    /* General */
-    body {
-        background-color: #333 !important;  /* Fondo oscuro */
-        color: #fff;  /* Texto blanco para contraste */
-        font-family: 'Roboto', sans-serif;
-    }
-    h2 {
-        color: #f1f1f1;
-        text-align: center;
-        margin-top: 20px;
-        margin-bottom: 30px;
-    }
-
-    #calendar {
-        max-width: 90%;
-        margin: 0 auto;
-        border: 1px solid #444;
-        border-radius: 10px;
-        overflow: hidden;
-        background-color: #2d2d2d;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-        /* Cambia el cursor a una mano (puntero de enlace) sobre las fechas del calendario */
-        #calendar .fc-day {
-            cursor: pointer;
+        /* General */
+        body {
+            background-color: #333 !important;  /* Fondo oscuro */
+            color: #fff;  /* Texto blanco para contraste */
+            font-family: 'Roboto', sans-serif;
         }
-    /* Modificar las celdas del calendario */
-    #calendar .fc-daygrid-day {
-        background-color: #3e3e3e; /* Fondo de las celdas */
-        color: #ccc; /* Color de texto claro */
-    }
-    #calendar .fc-daygrid-day-number {
-    color: #fff; /* Número de día blanco */
-    }
-    /* Modal */
-    /* Resaltar el día seleccionado */
-    #calendar .fc-daygrid-day.fc-day-today {
-        background-color: #007bff;  /* Fondo azul para el día actual */
-        color: #fff; /* Texto blanco */
-    }
-    /* Cabecera del calendario */
-    .fc-toolbar {
-        background-color: #444;  /* Fondo oscuro en la cabecera */
-        color: #fff;  /* Texto blanco */
-    }
-    .fc-toolbar-title {
-    color: #fff;  /* Título en blanco */
-    text-transform: uppercase;
-    }
-    /* Botones de la cabecera */
-    .fc-button {
-        background-color: #555;
-        border-color: #555;
-        color: #fff;
-    }
-    .fc-button:hover {
-    background-color: #007bff;
-    border-color: #007bff;
-    }
-    /* Eventos */
-    .fc-event {
-        background-color: #007bff;  /* Fondo de los eventos */
-        color: white;  /* Texto blanco */
-        border-radius: 5px;
-        padding: 5px;
-    }
-    .fc-event:hover {
-    background-color: #0056b3; /* Cambio de color al pasar el mouse */
-    }
-    /* Hacer los nombres de los días en mayúsculas */
-    .fc-col-header-cell {
-        text-transform: uppercase;
-    }
-    .modal-content {
-        background-color: #444;  /* Fondo oscuro en el modal */
-        color: #f1f1f1;  /* Texto blanco */
-        border-radius: 10px; /*!!!*/
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .modal-header {
-        background-color: #333;
-        color: #fff;
-    }
-
-    .modal-body {
-        color: #ddd;
-    }
-
-    .list-group-item {
-        font-size: 1.17rem; /*!!!*/
-        background-color: #555;  /* Fondo gris oscuro para los items */
-        color: #fff;  /* Texto blanco */
-        border: 1px solid #444;  /* Borde más oscuro */
-    }
-
-    /* Estilos específicos para la vista de reservas dentro del modal!!! */
-    #reservationDetailModal .list-group-item {
-        background-color: #2b2b2b; /* Color de fondo blanco */
-        padding: 20px; /* Aumenta el padding para dar más espacio a los contenidos */
-        border: 1px solid #dee2e6; /* Borde gris claro */
-        border-radius: 8px; /* Bordes redondeados */
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil para dar profundidad */
-        margin-bottom: 10px; /* Espacio entre elementos */
-    }
-
-        #reservationDetailModal .list-group-item p {
-            margin: 0; /*!!! Asegura que no haya márgenes adicionales dentro de los párrafos */
-        }
-
-        /* Hover sobre los elementos de la lista */
-        #reservationDetailModal .list-group-item:hover {
-            background-color: #1f1f1f; /* Resalta el fondo cuando el cursor pasa por encima */
-        }
-
-        /* Estilo para los botones dentro de cada item!!! */
-        #reservationDetailModal .list-group-item .btn {
-            border-radius: 8px; /* Bordes redondeados en los botones */
-            margin-top: 5px;
-        }
-        /* Botones en el modal */
-        #reservationDetailModal .btn {
-            border-radius: 8px;
-        }
-
-    .fc-toolbar-title {
-        text-transform: uppercase; /* Pone en mayúsculas el nombre del mes */
-    }
-    /* Estilos comunes para el botón de "Ver Historial Completo" */
-.btn-ver-historial {
-    margin-top: 20px;  /* Espacio superior en móviles */
-}
-
-
-/* Estilos para dispositivos pequeños (móviles) */
-@@media (max-width: 767px) {
-    .btn-ver-historial {
-        position: center;
-        margin-top: 20px;  /* Espacio en la parte superior */
-        margin-bottom: 15px;  /* Espacio inferior */
-    }
-}
-        /* Diseño Responsivo */
-    @@media (max-width: 768px) {
-    #calendar {
-        max-width: 100%;
-        margin: 10px auto;
-        /* Asegura que el calendario ocupe más espacio verticalmente */
-        min-height: 80vh; /* Ajusta el valor según lo que necesites */
-        height: auto; /* Si no quieres que se ajuste a un valor fijo, puedes usar auto */
-    }
-
-    .fc-toolbar {
-        flex-direction: column;
-    }
-
-    .fc-toolbar-title {
-        font-size: 1.2em;
-        margin-bottom: 10px;
-    }
-
-    .modal-dialog {
-        margin: 10px;
-    }
-
-    .modal-body p {
-        font-size: 0.9em;
-    }
-
-        .d-flex {
-            flex-direction: column;
-        }
-            /* Asegurar que el título esté sobre el botón */
-            .d-flex h2 {
-                order: -1;
-            }
-
-        .mb-sm-0 {
-            margin-bottom: 0 !important;
-            margin-bottom: 10px !important;
-            width: 100%;
-        }
-
         h2 {
             color: #f1f1f1;
             text-align: center;
-            margin-top: 7px;
-            margin-bottom: 8px;
+            margin-top: 20px;
+            margin-bottom: 30px;
         }
 
-}
+        #calendar {
+            max-width: 90%;
+            margin: 0 auto;
+            border: 1px solid #444;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #2d2d2d;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+            /* Cambia el cursor a una mano (puntero de enlace) sobre las fechas del calendario */
+            #calendar .fc-day {
+                cursor: pointer;
+            }
+        /* Modificar las celdas del calendario */
+        #calendar .fc-daygrid-day {
+            background-color: #3e3e3e; /* Fondo de las celdas */
+            color: #ccc; /* Color de texto claro */
+        }
+        #calendar .fc-daygrid-day-number {
+        color: #fff; /* Número de día blanco */
+        }
+        /* Modal */
+        /* Resaltar el día seleccionado */
+        #calendar .fc-daygrid-day.fc-day-today {
+            background-color: #007bff;  /* Fondo azul para el día actual */
+            color: #fff; /* Texto blanco */
+        }
+        /* Cabecera del calendario */
+        .fc-toolbar {
+            background-color: #444;  /* Fondo oscuro en la cabecera */
+            color: #fff;  /* Texto blanco */
+        }
+        .fc-toolbar-title {
+        color: #fff;  /* Título en blanco */
+        text-transform: uppercase;
+        }
+        /* Botones de la cabecera */
+        .fc-button {
+            background-color: #555;
+            border-color: #555;
+            color: #fff;
+        }
+        .fc-button:hover {
+        background-color: #007bff;
+        border-color: #007bff;
+        }
+        /* Eventos */
+        .fc-event {
+            background-color: #007bff;  /* Fondo de los eventos */
+            color: white;  /* Texto blanco */
+            border-radius: 5px;
+            padding: 5px;
+        }
+        .fc-event:hover {
+        background-color: #0056b3; /* Cambio de color al pasar el mouse */
+        }
+        /* Hacer los nombres de los días en mayúsculas */
+        .fc-col-header-cell {
+            text-transform: uppercase;
+        }
+        .modal-content {
+            background-color: #444;  /* Fondo oscuro en el modal */
+            color: #f1f1f1;  /* Texto blanco */
+            border-radius: 10px; /*!!!*/
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
 
-    
+        .modal-header {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .modal-body {
+            color: #ddd;
+        }
+
+        .list-group-item {
+            font-size: 1.17rem; /*!!!*/
+            background-color: #555;  /* Fondo gris oscuro para los items */
+            color: #fff;  /* Texto blanco */
+            border: 1px solid #444;  /* Borde más oscuro */
+        }
+
+        /* Estilos específicos para la vista de reservas dentro del modal!!! */
+        #reservationDetailModal .list-group-item {
+            background-color: #2b2b2b; /* Color de fondo blanco */
+            padding: 20px; /* Aumenta el padding para dar más espacio a los contenidos */
+            border: 1px solid #dee2e6; /* Borde gris claro */
+            border-radius: 8px; /* Bordes redondeados */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil para dar profundidad */
+            margin-bottom: 10px; /* Espacio entre elementos */
+        }
+
+            #reservationDetailModal .list-group-item p {
+                margin: 0; /*!!! Asegura que no haya márgenes adicionales dentro de los párrafos */
+            }
+
+            /* Hover sobre los elementos de la lista */
+            #reservationDetailModal .list-group-item:hover {
+                background-color: #1f1f1f; /* Resalta el fondo cuando el cursor pasa por encima */
+            }
+
+            /* Estilo para los botones dentro de cada item!!! */
+            #reservationDetailModal .list-group-item .btn {
+                border-radius: 8px; /* Bordes redondeados en los botones */
+                margin-top: 5px;
+            }
+            /* Botones en el modal */
+            #reservationDetailModal .btn {
+                border-radius: 8px;
+            }
+
+        .fc-toolbar-title {
+            text-transform: uppercase; /* Pone en mayúsculas el nombre del mes */
+        }
+
+    /* Estilos comunes para el botón de "Ver Historial Completo" */
+    .btn-ver-historial {
+        margin-top: 20px; /* Espacio superior en móviles */
+    }
+
+
+    /* Estilos para dispositivos pequeños (móviles) */
+    @@media (max-width: 767px) {
+        .btn-ver-historial {
+            position: center;
+            margin-top: 20px; /* Espacio en la parte superior */
+            margin-bottom: 15px; /* Espacio inferior */
+        }
+    }
+
+            /* Diseño Responsivo */
+        @@media (max-width: 768px) {
+        #calendar {
+            max-width: 100%;
+            margin: 10px auto;
+            /* Asegura que el calendario ocupe más espacio verticalmente */
+            min-height: 80vh; /* Ajusta el valor según lo que necesites */
+            height: auto; /* Si no quieres que se ajuste a un valor fijo, puedes usar auto */
+        }
+
+        .fc-toolbar {
+            flex-direction: column;
+        }
+
+        .fc-toolbar-title {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .modal-dialog {
+            margin: 10px;
+        }
+
+        .modal-body p {
+            font-size: 0.9em;
+        }
+
+            .d-flex {
+                flex-direction: column;
+            }
+                /* Asegurar que el título esté sobre el botón */
+                .d-flex h2 {
+                    order: -2;
+                }
+
+            .mb-sm-0 {
+                margin-bottom: 0 !important;
+                margin-bottom: 10px !important;
+                width: 100%;
+            }
+
+            h2 {
+                color: #f1f1f1;
+                text-align: center;
+                margin-top: 7px;
+                margin-bottom: 8px;
+            }
+
+    }
+
+
 </style>
 
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
-    <a asp-controller="Reservas" asp-action="ReservasClientes" class="btn btn-dark mb-2 mb-sm-0">Ver en forma de Tarjetas</a>
-    <h2>Reservas creadas por Clientes</h2>
+    <a asp-controller="Evento" asp-action="Index" class="btn btn-dark mb-2 mb-sm-0">Ver en forma de Tarjetas</a>
+    <a asp-action="Create" class="btn btn-primary mb-2 mb-sm-0">Nueva RESERVA</a>
+    <h2>Reservas creadas por Administración</h2>
 </div>
 
 <!-- Contenedor del Calendario -->
@@ -226,7 +229,7 @@
     </div>
 </div>
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
-    <a asp-controller="Reservas" asp-action="ReservasClientesHistorial" class="btn btn-danger mb-2 mb-sm-0 btn-ver-historial">Ver HISTORIAL COMPLETO</a>
+    <a asp-controller="Evento" asp-action="ReservasAdminHistorial" class="btn btn-danger mb-2 mb-sm-0 btn-ver-historial">Ver HISTORIAL COMPLETO</a>
 </div>
 <!-- Scripts de FullCalendar y Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
@@ -243,7 +246,7 @@
             initialView: 'timeGridWeek',  // Siempre iniciar en vista de semana
             buttonText: { today: 'Hoy' },
             events: function (fetchInfo, successCallback, failureCallback) {
-                fetch('/Admin/GetReservas')
+                fetch('/Evento/GetReservas')
                     .then(response => response.json())
                     .then(events => {
                         console.log(events);  // Verifica los eventos en la consola
@@ -311,8 +314,8 @@
                         const showCancelButton = reserva.extendedProps.estado === "CONFIRMADA";
                         reservasHtml += `
                                 <li class="list-group-item">
-                                    <p><strong>ID reserva:</strong> ${reserva.extendedProps.idReserva}</p>
-                                    <p><strong>Usuario:</strong> ${reserva.extendedProps.usuarioNombre}</p>
+                                    <p><strong>ID evento:</strong> ${reserva.extendedProps.idReserva}</p>
+                                    <p><strong>Descripción:</strong> ${reserva.extendedProps.usuarioNombre}</p>
                                     <p><strong>Celular:</strong> ${reserva.extendedProps.usuarioTelefono}</p>
                                     <p><strong>Estado:</strong> ${reserva.extendedProps.estado}</p>
                                         <p><strong>Fecha:</strong> ${new Date(reserva.start).toLocaleDateString()} - ${new Date(reserva.start).toLocaleTimeString()}hs</p>
@@ -347,8 +350,8 @@
 
                 reservasHtml += `
                         <li class="list-group-item">
-                            <p><strong>ID reserva:</strong> ${reserva.idReserva}</p>
-                            <p><strong>Usuario:</strong> ${reserva.usuarioNombre}</p>
+                            <p><strong>ID evento:</strong> ${reserva.idReserva}</p>
+                            <p><strong>Descripción:</strong> ${reserva.usuarioNombre}</p>
                             <p><strong>Celular:</strong> ${reserva.usuarioTelefono}</p>
                             <p><strong>Estado:</strong> ${reserva.estado}</p>
                                 <p><strong>Fecha:</strong> ${new Date(info.event.start).toLocaleDateString()} - ${new Date(info.event.start).toLocaleTimeString()}hs</p>
@@ -381,8 +384,8 @@
         calendar.render();
 
         function cancelarReserva(reservaId) {
-            if (confirm('¿Estás seguro de cancelar esta reserva?')) {
-                fetch(`/Admin/CancelarReserva/${reservaId}`, {
+            if (confirm('¿Estás seguro de cancelar este evento?')) {
+                fetch(`/Evento/CancelConfirmedCalendar/${reservaId}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' }
                 })

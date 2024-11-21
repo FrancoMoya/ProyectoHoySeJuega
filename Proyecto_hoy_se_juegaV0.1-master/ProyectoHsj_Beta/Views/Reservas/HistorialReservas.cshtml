@@ -1,40 +1,74 @@
-﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.ListPagosAdminViewModel>
+﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.AdminHistorialReservasGetViewModel>
 
 @{
     Layout = "~/Views/Shared/Layout_admin.cshtml";
-    ViewData["Title"] = "Historial de pagos";
+    ViewData["Title"] = "Historial de reservas";
 }
 <style>
     .h2, h2 {
         font-size: calc(1.325rem + .9vw);
         margin-top: 10px;
         margin-bottom: 0px;
+        padding-right: 15px;
     }
-
+    
+    /* Ajustes para pantallas pequeñas */
     @@media (max-width: 767px) {
         .d-flex {
             flex-direction: column;
         }
-            /* Asegurar que el título esté sobre el botón */
-            .d-flex h2 {
-                order: -1;
-            }
+        /* Asegurar que el título esté sobre los botones */
+        .d-flex h2 {
+            order: -2;
+        }
 
         .mb-sm-0 {
-            margin-bottom: 0px !important;
+            margin-bottom: 0 !important;
+            margin-bottom: 11px !important;
             width: 100%;
         }
+
+        h2 {
+            margin-top: 15px; /* Empuja el título a la derecha */
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
     }
+
+    .d-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+
+    .btn {
+        margin-right: 10px; /* Espaciado entre botones */
+    }
+
+    h2 {
+        margin-left: auto; /* Empuja el título a la derecha */
+        margin-right: auto;
+        padding-right: 0px;
+    }
+
 </style>
 <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
-    <a asp-controller="Pagoes" asp-action="HistorialPagos" class="btn btn-dark mb-2 mb-sm-0">Ver historial completo</a>
-    <h2 style="color: white; text-align: center ">Historial de Pagos</h2>
-</div>
+    <a asp-controller="Reservas" asp-action="AllReservationsCalendar" class="btn btn-dark mb-2 mb-sm-0">Volver al Calendario</a>
+    @if (User.IsInRole("2")) // Admin
+    {
+        <a asp-controller="Admin" asp-action="DeleteData" class="btn btn-danger mb-2 mb-sm-0">Eliminar registros mayores a 90 días</a>
+    }
 
-    @if (Model == null || !Model.Any())
+    
+
+    <h2 style="color: white;">Historial COMPLETO de Reservas</h2>
+</div>
+@if (Model == null || !Model.Any())
 {
     <div class="alert alert-info" role="alert">
-        Aún no se han realizado pagos.
+        Aún no hay ninguna reserva.
     </div>
 }
 else
@@ -48,29 +82,27 @@ else
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Fecha de Pago</th>
-                        <th>Monto</th>
-                        <th>Usuario</th>
-                        <th>ID reserva</th>
-                        <th>Fecha creación reserva</th>
+                        <th>Fecha de creación</th>
+                        <th>Título</th>
+                        <th>Descripción</th>
+                        <th>Celular</th>
                         <th>Fecha de reserva</th>
                         <th>Horario</th>
                         <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var pago in Model)
+                    @foreach (var item in Model)
                     {
                         <tr>
-                            <td>@pago.Id</td>
-                            <td>@pago.FechaPago.ToString("HH:mm - dd/MM/yyyy")</td>
-                            <td>$@pago.Monto.ToString("N0")</td>
-                            <td>@pago.NombreUsuario @pago.ApellidoUsuario</td>
-                            <td>@pago.IdReserva</td>
-                            <td>@pago.FechaCreacionReserva.ToString("HH:mm - dd/MM/yyyy")</td>
-                            <td>@pago.FechaHorario.ToString("dd-MM-yyyy")</td>
-                            <td>@pago.HoraInicio.ToString("HH:mm") - @pago.HoraFin.ToString("HH:mm")</td>
-                            <td>@pago.Estado</td>
+                            <td>@item.Id</td>
+                            <td>@item.FechaCreacion.ToString("HH:mm - dd/MM/yyyy")</td>
+                            <td>@item.Titulo</td>
+                            <td>@item.Descripcion</td>
+                            <td>@item.Celular</td>
+                            <td>@item.FechaHorario.ToString("dd-MM-yyyy")</td>
+                            <td>@item.HoraInicio.ToString("HH:mm") - @item.HoraFin.ToString("HH:mm")</td>
+                            <td>@item.Estado</td>
                         </tr>
                     }
                 </tbody>
@@ -79,20 +111,19 @@ else
 
         <!-- Vista de tarjetas para pantallas pequeñas -->
         <div class="row d-block d-md-none">
-            @foreach (var pago in Model)
+            @foreach (var item in Model)
             {
                 <div class="col-12 col-sm-6 col-lg-4 mb-2">
                     <div class="card custom-card">
                         <div class="card-body">
-                            <h5 class="card-title">ID: @pago.Id</h5>
-                            <p class="card-text"><strong>Fecha de Pago:</strong> @pago.FechaPago.ToString("HH:mm - dd/MM/yyyy")</p>
-                            <p class="card-text"><strong>Monto:</strong> $@pago.Monto.ToString("N0")</p>
-                            <p class="card-text"><strong>Usuario:</strong> @pago.NombreUsuario @pago.ApellidoUsuario</p>
-                            <p class="card-text"><strong>ID reserva:</strong> @pago.IdReserva</p>
-                            <p class="card-text"><strong>Fecha creación reserva:</strong> @pago.FechaCreacionReserva.ToString("HH:mm - dd/MM/yyyy")</p>
-                            <p class="card-text"><strong>Fecha de reserva:</strong> @pago.FechaHorario.ToString("dd-MM-yyyy")</p>
-                            <p class="card-text"><strong>Horario:</strong> @pago.HoraInicio.ToString("HH:mm") - @pago.HoraFin.ToString("HH:mm")</p>
-                            <p class="card-text"><strong>Estado:</strong> @pago.Estado</p>
+                            <h5 class="card-title">ID: @item.Id</h5>
+                            <p class="card-text"><strong>Fecha de creación:</strong> @item.FechaCreacion.ToString("HH:mm - dd/MM/yyyy")</p>
+                            <p class="card-text"><strong>Título:</strong> @item.Titulo</p>
+                            <p class="card-text"><strong>Descripción:</strong> @item.Descripcion</p>
+                            <p class="card-text"><strong>Celular:</strong> @item.Celular</p>
+                            <p class="card-text"><strong>Fecha de reserva:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
+                            <p class="card-text"><strong>Horario:</strong> @item.HoraInicio.ToString("HH:mm") - @item.HoraFin.ToString("HH:mm")</p>
+                            <p class="card-text"><strong>Estado:</strong> @item.Estado</p>
                         </div>
                     </div>
                 </div>
@@ -113,7 +144,7 @@ else
 
     .custom-container {
         margin-top: 0px;
-        padding: 18px;
+        padding: 10px 15px 15px 15px;
     }
 
     .page-title {
@@ -224,11 +255,10 @@ else
             font-size: 0.9rem;
         }
 
-        .d-flex h2 {
-            order: -1;
-            margin-bottom: 8px
+        .custom-container {
+            margin-top: 0px;
+            padding: 8px;
         }
-    
     }
 
     @@media (max-width: 576px) {
@@ -240,9 +270,9 @@ else
             margin-top: 12px;
         }
 
-        .d-flex h2 {
-            order: -1;
-            margin-bottom: 8px
+        .custom-container {
+            margin-top: 0px;
+            padding: 8px;
         }
     }
 </style>

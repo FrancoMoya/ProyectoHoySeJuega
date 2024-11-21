@@ -446,6 +446,9 @@ public partial class HoySeJuegaContext : DbContext
         modelBuilder.Entity<MonthAvailability>().HasNoKey().ToView(null);
         modelBuilder.Entity<ReservasClientesAdminGetViewModel>().HasNoKey().ToView(null);
         modelBuilder.Entity<ListPagosAdminViewModel>().HasNoKey().ToView(null);
+        modelBuilder.Entity<ReservasAdminHistorialGetViewModel>().HasNoKey().ToView(null);
+        modelBuilder.Entity<ReservasClientesHistorialAdminGetViewModel>().HasNoKey().ToView(null);
+        modelBuilder.Entity<AdminHistorialReservasGetViewModel>().HasNoKey().ToView(null);
         
     }
 

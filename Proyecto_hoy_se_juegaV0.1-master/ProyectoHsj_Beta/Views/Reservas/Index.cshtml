@@ -2,10 +2,10 @@
 
 @{
     Layout = "~/Views/Shared/Layout_admin.cshtml";
-    ViewData["Title"] = "Reservas";
+    ViewData["Title"] = "Todas las Reservas";
 
     // Fecha de hoy y mañana para el agrupamiento, usando DateOnly
-    var today = DateOnly.FromDateTime(DateTime.Today); // Obtiene la fecha de hoy como DateOnly
+    var today = DateOnly.FromDateTime(DateTime.Today.AddHours(3)); // Obtiene la fecha de hoy como DateOnly
     var tomorrow = today.AddDays(1); // Mañana
     var futureDate = tomorrow.AddDays(1); // Día después de mañana
 }
@@ -63,11 +63,30 @@
         }
     }
 
+    @@media (max-width: 768px) {
+        .d-flex {
+            flex-direction: column;
+        }
+            /* Asegurar que el título esté sobre el botón */
+            .d-flex h3 {
+                order: -2;
+            }
+
+        .mb-sm-0 {
+            margin-bottom: 0 !important;
+            margin-bottom: 10px !important;
+            width: 100%;
+        }
+    }
+
 </style>
 
-<div class="container mt-4">
-    <h3 style="color:white; text-align: right" >TODAS las reservas</h3>
-
+<div class="container mt-4">  
+    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
+        <a asp-controller="Reservas" asp-action="AllReservationsCalendar" class="btn btn-dark mb-2 mb-sm-0">Volver al Calendario</a>
+        <a asp-controller="Reservas" asp-action="HistorialReservas" class="btn btn-danger mb-2 mb-sm-0">Ver HISTORIAL COMPLETO</a>
+        <h3 style="color:white; text-align: right">TODAS las reservas</h3>
+    </div>
     <div class="grid-container">
 
         <!-- Categoría: Hoy -->
@@ -77,15 +96,14 @@
             {
                 <div class="card">
                     <div class="card-header">
-                        @item.Titulo
+                        ID: @item.Id | @item.Titulo
                     </div>
                     <div class="card-body">
                         <p><strong>Creación:</strong> @item.FechaCreacion.ToString("HH:mm - dd/MM/yyyy")</p>
                         <p><strong>Descripción:</strong> @item.Descripcion</p>
                         <p><strong>Celular:</strong> @item.Celular</p>
                         <p><strong>Fecha:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
-                        <p><strong>Hora de Inicio:</strong> @item.HoraInicio.ToString("HH:mm")</p>
-                        <p><strong>Hora de finalización:</strong> @item.HoraFin.ToString("HH:mm")</p>
+                        <p><strong>Horario:</strong> @item.HoraInicio.ToString("HH:mm") - @item.HoraFin.ToString("HH:mm")</p>
                     </div>
                 </div>
             }
@@ -98,15 +116,14 @@
             {
                 <div class="card">
                     <div class="card-header">
-                        @item.Titulo
+                        ID: @item.Id | @item.Titulo
                     </div>
                     <div class="card-body">
                         <p><strong>Creación:</strong> @item.FechaCreacion.ToString("HH:mm - dd/MM/yyyy")</p>
                         <p><strong>Descripción:</strong> @item.Descripcion</p>
                         <p><strong>Celular:</strong> @item.Celular</p>
                         <p><strong>Fecha:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
-                        <p><strong>Hora de Inicio:</strong> @item.HoraInicio.ToString("HH:mm")</p>
-                        <p><strong>Hora de finalización:</strong> @item.HoraFin.ToString("HH:mm")</p>
+                        <p><strong>Horario:</strong> @item.HoraInicio.ToString("HH:mm") - @item.HoraFin.ToString("HH:mm")</p>
                     </div>
                 </div>
             }
@@ -119,15 +136,14 @@
             {
                 <div class="card">
                     <div class="card-header">
-                        @item.Titulo
+                        ID: @item.Id | @item.Titulo
                     </div>
                     <div class="card-body">
                         <p><strong>Creación:</strong> @item.FechaCreacion.ToString("HH:mm - dd/MM/yyyy")</p>
                         <p><strong>Descripción:</strong> @item.Descripcion</p>
                         <p><strong>Celular:</strong> @item.Celular</p>
                         <p><strong>Fecha:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
-                        <p><strong>Hora de Inicio:</strong> @item.HoraInicio.ToString("HH:mm")</p>
-                        <p><strong>Hora de finalización:</strong> @item.HoraFin.ToString("HH:mm")</p>
+                        <p><strong>Horario:</strong> @item.HoraInicio.ToString("HH:mm") - @item.HoraFin.ToString("HH:mm")</p>
                     </div>
                 </div>
             }

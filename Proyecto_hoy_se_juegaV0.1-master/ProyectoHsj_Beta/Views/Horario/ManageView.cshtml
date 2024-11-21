@@ -1,11 +1,17 @@
 ﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.MonthAvailability>
 @using System.Globalization
 @{
+    var spanishCulture = new CultureInfo("es-ES");
+    Thread.CurrentThread.CurrentCulture = spanishCulture;
+    Thread.CurrentThread.CurrentUICulture = spanishCulture;
     ViewData["Title"] = "Horarios Disponibles";
     Layout = "~/Views/Shared/Layout_admin.cshtml";
 }
 
 <style>
+    body{
+        background-color: dimgray
+    }
     /* Estilo general */
     h1 {
         color: #343a40;
@@ -13,12 +19,39 @@
         margin-top: 20px;
     }
 
+
+    /* Estilo general */
+    h1 {
+        color: #343a40;
+        margin-top: 0; /* Eliminar cualquier margen superior que pueda causar el espacio blanco */
+        margin-bottom: 0; /* Ajustar el margen inferior para que no sobresalga */
+        padding-bottom: 10px; /* Ajuste de espacio inferior para que no se vea estrecho */
+    }
+
+    /* Ajustar el fondo y el padding del card-header */
+    .card-header {
+        background-color: #007bff; /* Fondo azul */
+        color: white;
+        padding: 20px; /* Añadir más espacio interno si es necesario */
+        text-align: center; /* Asegurar que el texto esté centrado */
+        border-radius: 15px 15px 0 0; /* Bordes redondeados solo en la parte superior */
+        margin-bottom: -1px; /* Asegura que no haya espacio debajo del encabezado */
+    }
+
+    /* Ajustar la sombra y el borde del card */
     .card {
         border-radius: 15px;
         margin: 20px auto;
         max-width: 100%;
-        background-color: #f8f9fa; /* Gris suave */
+        background-color: #74818f; /* Gris suave */
+        box-shadow: none; /* Remueve la sombra que puede estar causando el problema */
     }
+
+        /* O si deseas mantener la sombra pero hacerla menos prominente: */
+        .card.shadow-lg {
+            box-shadow: 3px 8px 5px rgba(0, 0, 0, 0.1) !important; /* Sombra más suave */
+        }
+
 
     .btn-danger, .btn-warning, .btn-primary {
         border-radius: 5px;
@@ -40,10 +73,7 @@
         margin-bottom: 20px;
     }
 
-    .card-header {
-        background-color: #007bff;
-        color: white;
-    }
+
 
     .table th, .table td {
         vertical-align: middle;
@@ -53,6 +83,10 @@
     /* Estilo de los meses */
     .form-control {
         text-transform: uppercase; /* Meses en mayúsculas */
+    }
+
+    .form-label {
+        margin-bottom: 0rem;
     }
 
     /* Estilo personalizado para la tabla */
@@ -141,6 +175,10 @@
     {
         <div class="alert alert-success" role="alert">
             @TempData["Message"]
+            @if (TempData["MessageDetails"] != null)
+            {
+                <p>@TempData["MessageDetails"]</p>
+            }
         </div>
     }
     else if (TempData["ErrorMessage"] != null)
@@ -157,7 +195,7 @@
                 <div class="row action-buttons">
                     <!-- Selección de Mes -->
                     <div class="col-md-3 col-12 form-group">
-                        <label for="mes" class="form-label">Mes</label>
+                        <label for="mes" class="form-label">Mes:</label>
                         <select id="mes" name="mes" class="form-control" required>
                             <option value="1">ENERO</option>
                             <option value="2">FEBRERO</option>
@@ -198,7 +236,7 @@
         @if (!Model.Any())
         {
             <div class="alert alert-warning" role="alert">
-                No se han encontrado horarios para los meses seleccionados.
+                No hay horarios disponibles.
             </div>
         }
         else
@@ -221,11 +259,11 @@
                                 <td>
                                     @if (item.HasAvailableHours)
                                     {
-                                        <span class="badge bg-success">Disponible</span>
+                                        <span class="badge bg-success">Horarios generados</span>
                                     }
                                     else
                                     {
-                                        <span class="badge bg-danger">No Disponible</span>
+                                        <span class="badge bg-danger">Horarios no generados</span>
                                     }
                                 </td>
                             </tr>

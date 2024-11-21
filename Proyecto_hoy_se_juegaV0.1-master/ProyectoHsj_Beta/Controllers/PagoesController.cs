@@ -118,7 +118,7 @@ namespace ProyectoHsj_Beta.Controllers
             // Guarda los cambios en la base de datos
             await _context.SaveChangesAsync();
             await _auditoriaService.RegistrarAuditoriaAsync(
-                seccion: "Administración",
+                seccion: "Reserva",
                 descripcion: descripcionAuditoria,
                 idAccion: 1);
 
@@ -142,6 +142,13 @@ namespace ProyectoHsj_Beta.Controllers
         {
             var pagos = await _context.Set<ListPagosAdminViewModel>()
                 .FromSqlRaw("EXEC SP_GET_PAGOS_ADMIN")
+                .ToListAsync();
+            return View(pagos);
+        }
+        public async Task<IActionResult> HistorialPagos()
+        {
+            var pagos = await _context.Set<ListPagosAdminViewModel>()
+                .FromSqlRaw("EXEC SP_GET_ALL_PAGOS_ADMIN")
                 .ToListAsync();
             return View(pagos);
         }

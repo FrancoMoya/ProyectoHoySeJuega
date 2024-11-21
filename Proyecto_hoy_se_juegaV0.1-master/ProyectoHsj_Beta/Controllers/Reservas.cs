@@ -25,8 +25,28 @@ namespace ProyectoHsj_Beta.Controllers
             _auditoriaService = auditoriaService;
         }
 
-        
-
+        public async Task<IActionResult> ReservasClientesHistorial()
+        {
+            var eventos = await _context.Set<ReservasClientesHistorialAdminGetViewModel>()
+                .FromSqlRaw("EXEC SP_GET_RESERVAS_CLIENTES_HISTORIAL_ADMIN")
+                .ToListAsync();
+            return View(eventos);
+        }
+        public async Task<IActionResult> HistorialReservas()
+        {
+            var eventos = await _context.Set<AdminHistorialReservasGetViewModel>()
+                .FromSqlRaw("EXEC SP_GET_ADMIN_HISTORIAL_RESERVAS")
+                .ToListAsync();
+            return View(eventos);
+        }
+        //public async Task<IActionResult> EliminarReservasClientes()
+        //{
+            
+        //}
+        //public async Task<IActionResult> EliminarTodasLasReservas()
+        //{
+            
+        //}
         public async Task<IActionResult> Reservar()
         {
             var configPago = await _context.ConfiguracionPagos
@@ -53,6 +73,10 @@ namespace ProyectoHsj_Beta.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (userId == null)
+                {
+                    RedirectToAction("Signup", "Acces");
+                }
 
                 // Verifica que el objeto request no sea nulo y que el IdHorarioDisponible sea válido
                 if (request != null && request.IdHorarioDisponible > 0)
@@ -117,6 +141,10 @@ namespace ProyectoHsj_Beta.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Obtiene el ID del usuario autenticado
+                if (userId == null)
+                {
+                    RedirectToAction("Signup", "Acces");
+                }
                 try
                 {
                     var misReservas = await _context.Set<MisReservasGetViewModel>()
@@ -203,6 +231,19 @@ namespace ProyectoHsj_Beta.Controllers
             return Redirect(preferencia.InitPoint);
         }
 
+        //para el calendario
+        public IActionResult AllReservationsCalendar()
+        {
+            return View();
+        }
+        public async Task<IActionResult> GetReservas()
+        {
+            var reservas = await _context.Set<ReservasAdminGetViewModel>()
+                .FromSqlRaw("EXEC SP_GET_ALL_RESERVAS_CALENDAR_ADMIN")
+                .ToListAsync();
+            return Json(reservas);
+        }
+
         // TODAS LAS RESERVAS ADMIN
         public async Task<IActionResult> Index()
         {
@@ -219,6 +260,7 @@ namespace ProyectoHsj_Beta.Controllers
                 .ToListAsync();
             return View(eventos);
         }
+
 
         // CANCELAR RESERVAS DESDE LA VISTA DE ADMIN RESERVAS CLIENTES(Tarjetas)
         [HttpPost, ActionName("CancelReserva")]

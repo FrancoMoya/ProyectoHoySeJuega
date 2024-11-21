@@ -252,7 +252,7 @@ namespace ProyectoHsj_Beta.Controllers
                                      ).FirstOrDefaultAsync();
             if (usuario_found == null || !PasswordHasher.VerifyPassword(modelo.ContraseniaUsuario, usuario_found.ContraseniaUsuario))
             {
-                ViewData["Message"] = "No se encontro el usuario solicitado, por favor revise los campos a rellenar";
+                ViewData["Message"] = "No se pudo iniciar sesión, por favor revise los datos ingresados.";
                 return View();
             }
 
@@ -324,13 +324,13 @@ namespace ProyectoHsj_Beta.Controllers
             var usuario_foound = await _hoysejuegacontext.Usuarios.FirstOrDefaultAsync(u => u.CorreoUsuario == email);
             if(usuario_foound == null)
             {
-                ViewData["Message"] = "El usuario no existe";
+                ViewData["Message"] = "El usuario no existe.";
                 return RedirectToAction("Login");
             }
 
             if (usuario_foound.EmailConfirmed == true)
             {
-                ViewData["Message"] = "El correo ya fue confirmado";
+                ViewData["Message"] = "El correo ya fue confirmado.";
                 return RedirectToAction("Login");
 
             }

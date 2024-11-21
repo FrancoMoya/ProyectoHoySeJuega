@@ -1,8 +1,10 @@
 ﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.MisReservasGetViewModel>
 @{
     var number = ViewData["number"]?.ToString();  // Obtiene el número de WhatsApp desde ViewData
+    ViewData["Title"] = "Mis Reservas";
 }
 <head>
+    <title>@ViewData["Title"]</title>
     <link rel="icon" href="~/css/img/hoysejuegaa.png" type="image/png" />
     <style>
 
@@ -15,6 +17,9 @@
         }
         /* Estilos para las tarjetas en dispositivos móviles */
         @@media (max-width: 767px) {
+            body {
+                margin: 0px;
+            }
             .reservation-card {
                 margin-bottom: 15px;
             }
@@ -32,6 +37,43 @@
             .card-footer {
                 background-color: #f8f9fa;
             }
+            .mb-4 {
+                margin-bottom: 1.1rem !important;
+            }
+
+            p {
+                margin-bottom: 0.35rem;
+            }
+
+            .btn-group {
+                display: flex;
+                justify-content: space-between;
+                width: 100%;
+            }
+
+                .btn-group .btn {
+                    width: 50%; /* Los botones ocuparán un 50% del espacio cada uno */
+                    margin: 0; /* Aseguramos que no haya margen extra entre ellos */
+                }
+            /* Estilo oscuro para las tarjetas */
+        .card {
+            background-color: #343a40; /* Fondo oscuro para la tarjeta */
+            color: white; /* Texto blanco */
+            border: none; /* Eliminar borde */
+            border-radius: 0.5rem; /* Bordes redondeados */
+        }
+
+        /* Opcional: puedes agregar sombra para un estilo más moderno */
+        .card-body {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding-top: 0px;
+            padding-bottom: 5px;
+        }
+
+        .card-title, .card-text {
+            color: black; 
+            margin-top: 5px;
+        }
         }
     </style>
 </head>
@@ -73,25 +115,31 @@
                             <p><strong>Fecha reservada:</strong> @item.FechaHorario.ToString("dd-MM-yyyy")</p>
                             <p><strong>Horario:</strong> @item.HoraInicio.ToString("hh\\:mm") - @item.HoraFin.ToString("hh\\:mm")</p>
                         </div>
-                        <div class="card-footer">
-                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDetailsModal"
-                                    data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
-                                    data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
-                                    data-fin="@item.HoraFin.ToString("hh\\:mm")">
-                                Detalles
-                            </button>
+                        @if (item.NombreEstadoReserva == "CONFIRMADA")
+                        {
+                            <div class="card-footer">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDetailsModal"
+                                            data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                            data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
+                                            data-fin="@item.HoraFin.ToString("hh\\:mm")"
+                                            data-idPago="@item.IdPago"
+                                            data-horaPago="@item.FechaPago.ToString("HH:mm")"
+                                            data-fechaPago="@item.FechaPago.ToString("dd/MM/yyyy")"
+                                            data-monto="@item.Monto.ToString("N0")">
+                                        Detalles
+                                        </button>
 
-                            @if (item.NombreEstadoReserva == "CONFIRMADA")
-                            {
-                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
-                                        data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
-                                        data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
-                                        data-fin="@item.HoraFin.ToString("hh\\:mm")"
-                                        data-msg="@mensajeCancelacion">
-                                    Cancelar
-                                </button>
-                            }
-                        </div>
+                                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
+                                                data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                                data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
+                                                data-fin="@item.HoraFin.ToString("hh\\:mm")"
+                                                data-msg="@mensajeCancelacion">
+                                            Cancelar
+                                        </button>
+                                    </div>
+                            </div>
+                        }
                     </div>
                 </div>
             }
@@ -125,15 +173,19 @@
                             <td>@item.HoraInicio.ToString("hh\\:mm")</td>
                             <td>@item.HoraFin.ToString("hh\\:mm")</td>
                             <td>
-                                <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDetailsModal"
-                                        data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
-                                        data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
-                                        data-fin="@item.HoraFin.ToString("hh\\:mm")">
-                                    Detalles
-                                </button>
-
                                 @if (item.NombreEstadoReserva == "CONFIRMADA")
                                 {
+                                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDetailsModal"
+                                        data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
+                                        data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
+                                        data-fin="@item.HoraFin.ToString("hh\\:mm")"
+                                        data-idPago="@item.IdPago"
+                                        data-horaPago="@item.FechaPago.ToString("HH:mm")"
+                                        data-fechaPago="@item.FechaPago.ToString("dd/MM/yyyy")"
+                                        data-monto="@item.Monto.ToString("N0")">
+                                    Detalles
+                                    </button>
+
                                     <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmCancelModal"
                                             data-fecha="@item.FechaHorario.ToString("dd-MM-yyyy")"
                                             data-inicio="@item.HoraInicio.ToString("hh\\:mm")"
@@ -156,11 +208,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" style="color: black" id="confirmDetailsModalLabel">Detalles</h5>
+                <h5 class="modal-title" style="color: black" id="confirmDetailsModalLabel">DETALLES</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" style="color: black;">
-                <strong>Detalles de la reserva:</strong><br><strong>Fecha:</strong> <span id="ObjectFecha"></span><br><strong>Horario:</strong> <span id="ObjectHora"></span>
+                <strong>Detalles de la reserva:</strong><br><strong>Fecha:</strong> <span id="ObjectFecha"></span><br><strong>Horario:</strong> <span id="ObjectHora"></span><br><hr class="bg-succes border-2 border-top border-success" />
+                <strong>Detalles del pago:</strong><br><strong>ID de pago:</strong> <span id="ObjectIdPago"></span><br><strong>Fecha de pago:</strong> <span id="ObjectFechaaPago"></span><br><strong>Monto de pago:</strong> <span id="ObjectMontoPago"></span>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -174,7 +227,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" style="color: black" id="confirmCancelModalLabel">Detalles</h5>
+                <h5 class="modal-title" style="color: black" id="confirmCancelModalLabel">¿CANCELAR?</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" style="color: black;">
@@ -201,9 +254,24 @@
         var objectHoraInicio = button.getAttribute('data-inicio');
         var objectHoraFin = button.getAttribute('data-fin');
 
+        var objectFechaPago = button.getAttribute('data-fechaPago');
+        var objectHoraPago = button.getAttribute('data-horaPago');
+        var objectIdPago = button.getAttribute('data-idPago');
+        var objectMontoPago = button.getAttribute('data-monto');
+
         var objectFechaSpan = document.getElementById('ObjectFecha');
         var objectHoraSpan = document.getElementById('ObjectHora');
+
+        var objectIdPagoSpan = document.getElementById('ObjectIdPago');
+        var objectFechaaPagoSpan = document.getElementById('ObjectFechaaPago');
+        var objectMontoPagoSpan = document.getElementById('ObjectMontoPago');
+
         objectFechaSpan.textContent = objectFecha;
+
+        objectFechaaPagoSpan.textContent = objectHoraPago+ 'hs ' + objectFechaPago;
+        objectIdPagoSpan.textContent = objectIdPago;
+        objectMontoPagoSpan.textContent = '$' + objectMontoPago;
+
         objectHoraSpan.textContent = objectHoraInicio + ' a ' + objectHoraFin + 'hs';
     });
 

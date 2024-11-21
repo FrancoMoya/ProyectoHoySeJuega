@@ -1,0 +1,227 @@
+﻿@{
+    ViewData["Title"] = "Eliminar Registros Antiguos";
+    Layout = null;
+}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="icon" href="~/css/img/hoysejuegaa.png" type="image/png">
+</head>
+
+<!-- Título -->
+<h2 class="text-center text-light mb-4" style="margin-top: 15px;">Eliminar Registros Antiguos</h2>
+
+<!-- Información sobre la eliminación -->
+<div class="alert alert-info bg-dark text-light border-0 mb-4">
+    <p>Se eliminarán registros antiguos de las siguientes tablas. Esta acción es irreversible y solo debe realizarse cuando sea estrictamente necesario.</p>
+</div>
+
+<!-- Mensajes de éxito o error -->
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success bg-success text-light border-0 mb-3">
+        @TempData["Message"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger bg-danger text-light border-0 mb-3">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<!-- Sección de tabla, convertida en tarjetas responsivas -->
+<div class="container">
+    <div class="row">
+        <!-- Tarjeta para RESERVA -->
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="card bg-dark text-light">
+                <div class="card-header bg-danger text-white">
+                    RESERVA
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Registros de reservas realizadas por los usuarios.</p>
+                    <p class="card-text">Todos los registros mayores a 90 días.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta para EVENTO -->
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="card bg-dark text-light">
+                <div class="card-header bg-danger text-white">
+                    EVENTO
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Registros de eventos realizados por los administradores.</p>
+                    <p class="card-text">Todos los registros mayores a 90 días.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta para HORARIO_DISPONIBLE -->
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="card bg-dark text-light">
+                <div class="card-header bg-danger text-white">
+                    HORARIO_DISPONIBLE
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Horarios que ya no están disponibles.</p>
+                    <p class="card-text">Todos los horarios mayores a 90 días.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta para AUDITORIA -->
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="card bg-dark text-light">
+                <div class="card-header bg-danger text-white">
+                    AUDITORIA
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Registros de auditorías de todos los usuarios.</p>
+                    <p class="card-text">Todos los registros mayores a 90 días.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta para PAGO -->
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="card bg-dark text-light">
+                <div class="card-header bg-danger text-white">
+                    PAGO
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Registros de pagos realizados por los usuarios.</p>
+                    <p class="card-text">Todos los registros mayores a 90 días.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta para EVENTO_RECURRENTE -->
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div class="card bg-dark text-light">
+                <div class="card-header bg-danger text-white">
+                    EVENTO_RECURRENTE
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Registros de Reservas FIJAS realizados por los administradores.</p>
+                    <p class="card-text">Todos los registros mayores a 90 días.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Botón para confirmar eliminación -->
+<div class="text-center">
+    <button class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#confirmModal">
+        Eliminar Registros
+    </button>
+</div>
+<div class="text-center mt-5">
+    <a asp-controller="Reservas" asp-action="AllReservationsCalendar" class="btn btn-primary btn-lg" style="margin-bottom: 25px;">Volver al Panel de Control</a>
+</div>
+
+<!-- Modal de confirmación -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmModalLabel">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    <strong>Advertencia:</strong> Se eliminarán todos los registros mayores a 90 días en las tablas especificadas.
+                    <br>
+                    Esta acción no se puede deshacer.
+                </p>
+                <p>¿Estás seguro de que deseas continuar?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form asp-action="EliminarTodosLosRegistros" asp-controller="Admin" method="post">
+                    <button type="submit" class="btn btn-danger">Eliminar Registros</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Incluir Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Estilos personalizados -->
+<style>
+    body {
+        background-color: #121212;
+        color: #e0e0e0;
+    }
+
+    h2 {
+        color: #f5f5f5;
+    }
+
+    .alert-info {
+        background-color: #2f2f2f;
+    }
+
+    .card-header {
+        background-color: #c0392b;
+    }
+
+    .card {
+        background-color: #333;
+        margin-bottom: 20px;
+    }
+
+    .modal-content {
+        background-color: #333;
+    }
+
+    .modal-footer .btn-secondary {
+        background-color: #6c757d;
+    }
+
+    .btn-danger {
+        background-color: #e74c3c;
+        border-color: #e74c3c;
+    }
+
+    .btn-danger:hover {
+        background-color: #c0392b;
+        border-color: #c0392b;
+    }
+
+    .btn-close {
+        color: white;
+    }
+
+    .modal-header.bg-danger {
+        background-color: #c0392b !important;
+    }
+
+    /* Estilos para pantallas pequeñas */
+    @@media (max-width: 767px) {
+        .card {
+            margin-bottom: 15px;
+        }
+        .card-header {
+            font-size: 1.25rem;
+        }
+        .card-body {
+            font-size: 0.875rem;
+        }
+    }
+
+    /* Estilos para pantallas grandes */
+    @@media (min-width: 768px) {
+        .card {
+            margin-bottom: 30px;
+        }
+    }
+</style>
+
