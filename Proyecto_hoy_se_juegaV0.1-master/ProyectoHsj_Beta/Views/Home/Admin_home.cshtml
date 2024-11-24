@@ -1,6 +1,5 @@
 ﻿@{
     ViewData["Title"] = "Estadísticas";
-
     Layout = "~/Views/Shared/Layout_admin.cshtml";
 }
 <style>
@@ -16,25 +15,103 @@
     .card-title {
         font-weight: bold;
     }
+
+    #myChart, #myChart2 {
+        max-height: 250px; /* Ajusta la altura máxima según sea necesario */
+    }
+    /* Estilo para los títulos dentro de las tarjetas */
+    .card-body h5 {
+        font-style: italic; /* Aplica cursiva al texto */
+        color: #333333; /* Color de texto oscuro */
+        font-size: 18px; /* Tamaño de fuente */
+        margin-bottom: 12px; /* Espacio debajo de cada título */
+    }
+
+        /* Estilo específico para los textos con números (el texto en los spans) */
+        .card-body h5 span {
+            font-size: 20px; /* Tamaño de fuente mayor para los números */
+            color: #4CAF50; /* Color verde para destacar los números */
+            font-weight: bold; /* Negrita para los números */
+        }
+
+    .card {
+        background-color: white;
+        padding: 0px 8px !important;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .card-container {
+        display: flex; /* Hace que las tarjetas estén en una fila */
+        justify-content: center;
+        flex-wrap: wrap; /* Para que las tarjetas se ajusten si el tamaño de pantalla es pequeño */
+    }
+    @@media (max-width: 768px) {
+        .card-container {
+            display: block; /* En pantallas pequeñas, las tarjetas se apilan verticalmente */
+        }
+        .card {
+            width: 100%; /* Las tarjetas ocupan el 100% del ancho disponible */
+            margin-bottom: 8px; /* Agrega espacio entre las tarjetas apiladas */
+        }
+
+        .card-body h5 {
+            font-size: 1rem; /* Tamaño de fuente */
+            margin-bottom: 6px; /* Espacio debajo de cada título */
+        }
+            /* Estilo específico para los textos con números (el texto en los spans) */
+            .card-body h5 span {
+                font-size: 1rem; /* Tamaño de fuente mayor para los números */
+                color: #4CAF50; /* Color verde para destacar los números */
+                font-weight: bold; /* Negrita para los números */
+            }
+    }
 </style>
 
 
 <div class="card" style="background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
     <div class="card-body">
-        <h5 class="card-title">User Statistics</h5>
+        <h5 class="card-title">Estadísticas de Usuarios</h5>
         <canvas id="myChart"></canvas>
     </div>
 </div>
+<div class="card-container">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Usuarios registrados este mes: <span id="usuariosRegistradosMensual"></span></h5>
+            <h5 class="card-title">Usuarios autenticados este mes: <span id="usuariosAutenticadosMensual"></span></h5>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Canchas reservadas este mes: <span id="canchasReservadasMensual"></span></h5>
+            <h5 class="card-title">Canchas confirmadas este mes: <span id="canchasConfirmadasMensual"></span></h5>
+        </div>
+    </div>
+</div>
+<div class="card" style="background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <div class="card-body">
+        <h5 class="card-title">Estadísticas de Reservas</h5>
+        <!-- Segundo gráfico -->
+        <canvas id="myChart2"></canvas>
+    </div>
+</div>
+
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         $(document).ready(function () {
+            
             $.ajax({
                 url: '@Url.Action("GetUserStatistics", "Estadisticas")',
                 method: 'GET',
                 success: function (data) {
-                    console.log(data); // Muestra los datos en la consola del navegador
+                    // Actualizar los valores de los elementos HTML con los datos del backend
+                    $('#usuariosRegistradosMensual').text(parseInt(data.usuariosRegistradosMensual, 10));
+                    $('#usuariosAutenticadosMensual').text(parseInt(data.usuariosAutenticadosMensual, 10));
+                    $('#canchasReservadasMensual').text(parseInt(data.canchasReservadasMensual, 10));
+                    $('#canchasConfirmadasMensual').text(parseInt(data.canchasConfirmadasMensual, 10));
 
                     var ctx = document.getElementById('myChart').getContext('2d');
 
@@ -61,7 +138,36 @@
                         options: {
                             scales: {
                                 y: {
-                                    beginAtZero: true
+                                    beginAtZero: true,
+                                }
+                            }
+                        }
+                    });
+                    var ctx2 = document.getElementById('myChart2').getContext('2d');
+                    if (!ctx2) {
+                        console.error("No se encontró el canvas 'myChart2'.");
+                        return;
+                    }
+                    var reservas = parseInt(data.reservas, 10);
+                    var confirmadas = parseInt(data.confirmadas, 10);
+
+                    var chart2 = new Chart(ctx2, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Cantidad de Reservas', 'Reservas CONFIRMADAS'],
+                            datasets: [{
+                                label: 'Cantidad de Reservas',
+                                data: [reservas, confirmadas],
+                                backgroundColor: ['#FF6384', '#FFCE56'],
+                                borderColor: ['#FF6384', '#FFCE56'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
                                 }
                             }
                         }

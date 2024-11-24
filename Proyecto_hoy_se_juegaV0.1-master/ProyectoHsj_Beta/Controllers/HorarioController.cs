@@ -3,6 +3,7 @@ using ProyectoHsj_Beta.Models;
 using Microsoft.EntityFrameworkCore;
 using ProyectoHsj_Beta.ViewsModels;
 using ProyectoHsj_Beta.Services;
+using Microsoft.AspNetCore.Authorization;
 namespace ProyectoHsj_Beta.Controllers
 {
     public class HorarioController : Controller
@@ -15,7 +16,7 @@ namespace ProyectoHsj_Beta.Controllers
             _auditoriaService = auditoriaService;
         }
 
-
+        [Authorize(Policy = "AdminOrEmployed")]
         public async Task<IActionResult> GenerarFechasYHorariosMes(int mes, int año)
         {
             // Obtener el mes y año actuales
@@ -113,6 +114,7 @@ namespace ProyectoHsj_Beta.Controllers
             return RedirectToAction("ManageView", "Horario");
         }
 
+        [Authorize(Policy = "AdminOrEmployed")]
         public async Task<IActionResult> ManageView()
         {
             // Obtener todos los horarios disponibles
@@ -143,53 +145,6 @@ namespace ProyectoHsj_Beta.Controllers
             return View(monthAvailabilityList);
         }
 
-
-        //public async Task<IActionResult> Search(DateTime? fecha, TimeOnly? horaInicio)
-        //{
-        //    var horarios = _context.HorarioDisponibles.AsQueryable();
-
-        //    if (fecha.HasValue)
-        //    {
-        //        horarios = horarios.Where(h => h.FechaHorario == DateOnly.FromDateTime(fecha.Value));
-        //    }
-
-        //    if (horaInicio.HasValue)
-        //    {
-        //        horarios = horarios.Where(h => h.HoraInicio == horaInicio);
-        //    }
-
-        //    var resultado = await horarios.ToListAsync();
-        //    return View("ManageView", resultado); // Reutilizamos la vista 'ManageView' para mostrar los resultados de búsqueda
-        //}
-
-        //public async Task<IActionResult> EliminarHorariosDeLaSemana()
-        //{
-        //    // Obtener la fecha actual y el rango de dos semanas (fecha actual hasta 13 días después)
-        //    DateTime fechaActual = DateTime.Now.Date;
-        //    DateTime finDeSemana = fechaActual.AddDays(14); // Rango de dos semanas
-
-        //    // Eliminar los horarios dentro de este rango de fechas
-        //    var horariosAEliminar = await _context.HorarioDisponibles
-        //        .Where(h => h.FechaHorario >= DateOnly.FromDateTime(fechaActual) && h.FechaHorario <= DateOnly.FromDateTime(finDeSemana))
-        //        .ToListAsync();
-
-        //    if (horariosAEliminar.Any())
-        //    {
-        //        _context.HorarioDisponibles.RemoveRange(horariosAEliminar);
-        //        await _context.SaveChangesAsync();
-        //        await _auditoriaService.RegistrarAuditoriaAsync(
-        //        seccion: "Administración",
-        //        descripcion: "El usuario ha eliminado los horarios de la semana.",
-        //        idAccion: 3);
-        //        TempData["Message"] = "Horarios de la semana eliminados exitosamente.";
-        //    }
-        //    else
-        //    {
-        //        TempData["Message"] = "No se encontraron horarios para eliminar en el rango de las dos semanas.";
-        //    }
-
-        //    return RedirectToAction("ManageView", "Horario");
-        //}
 
     }
 }

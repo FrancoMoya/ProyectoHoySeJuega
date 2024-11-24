@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<ProyectoHsj_Beta.ViewsModels.EventosAdminGetViewModel>
 @{
     Layout = "~/Views/Shared/Layout_admin.cshtml";
-    ViewData["Title"] = "Eventos";
+    ViewData["Title"] = "Reservas creadas por Admin";
 
     // Fecha de hoy y mañana para el agrupamiento, usando DateOnly
     var today = DateOnly.FromDateTime(DateTime.Today.AddHours(3)); // Obtiene la fecha de hoy como DateOnly

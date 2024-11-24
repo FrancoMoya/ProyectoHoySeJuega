@@ -21,6 +21,7 @@ BEGIN
         COALESCE(ac.Titulo_Accion_Realizada,'TituloEliminado') AS TituloAccionRealizada, 
         COALESCE(u.Nombre_Usuario, 'UsuarioEliminado') AS NombreUsuario, 
         COALESCE(u.Apellido_Usuario, 'UsuarioEliminado') AS ApellidoUsuario, 
+		COALESCE(u.ID_usuario, '0') AS IdUsuario, 
         a.Seccion AS Seccion, 
         a.Descripcion_De_Accion AS DescripcionDeAccion
     FROM 
@@ -43,6 +44,7 @@ BEGIN
         COALESCE(ac.Titulo_Accion_Realizada,'TituloEliminado') AS TituloAccionRealizada, 
         COALESCE(u.Nombre_Usuario, 'UsuarioEliminado') AS NombreUsuario, 
         COALESCE(u.Apellido_Usuario, 'UsuarioEliminado') AS ApellidoUsuario, 
+		COALESCE(u.ID_usuario, '0') AS IdUsuario, 
         a.Seccion AS Seccion, 
         a.Descripcion_De_Accion AS DescripcionDeAccion
     FROM 
@@ -126,7 +128,7 @@ BEGIN
         ESTADO_RESERVA e ON r.ID_estado_reserva = e.ID_estado_reserva 
     WHERE r.ID_usuario = @ID_usuario
     ORDER BY
-        h.Fecha_Horario DESC, h.Hora_Inicio DESC, h.Hora_Fin DESC
+        r.Fecha_Reserva DESC
 END;
 -----------------------------------------
 -- LISTAR USUARIOS ADMIN
@@ -146,7 +148,8 @@ BEGIN
         USUARIO u
     LEFT JOIN 
         ROL r ON u.ID_rol = r.ID_rol
-		ORDER BY u.Fecha_Registro DESC
+	WHERE u.EmailConfirmed = 1
+	ORDER BY u.Fecha_Registro DESC
 END;
 ---------------------------------------------
 -- LISTAR ROLES CON PERMISOS ADMIN
@@ -223,7 +226,7 @@ BEGIN
 	DECLARE @FechaHoraActual DATETIME = DATEADD(HOUR, 3, GETDATE());
     SELECT
         r.ID_reserva AS idReserva, 
-        COALESCE(u.Apellido_Usuario, 'UsuarioEliminado') AS title,
+        UPPER(COALESCE(u.Apellido_Usuario, 'UsuarioEliminado')) AS title,
 		COALESCE(
 		CAST(
 			CONCAT(
@@ -290,7 +293,7 @@ BEGIN
 	--reservas clientes
 	SELECT
         r.ID_reserva AS idReserva, 
-        COALESCE(u.Apellido_Usuario, 'UsuarioEliminado') AS title,
+        UPPER(COALESCE(u.Apellido_Usuario, 'UsuarioEliminado')) AS title,
 		COALESCE(
 		CAST(
 			CONCAT(
@@ -572,6 +575,7 @@ BEGIN
 	p.Monto_Pago AS Monto,
 	COALESCE(u.Nombre_Usuario, 'UsuarioEliminado') AS NombreUsuario,
 	COALESCE(u.Apellido_Usuario, 'UsuarioEliminado') AS ApellidoUsuario,
+	COALESCE(r.ID_usuario, '0') AS IdUsuario,
 	COALESCE(r.Fecha_Reserva, '2000-01-01 00:00:00') AS FechaCreacionReserva,
 	COALESCE(r.ID_reserva, '0') AS IdReserva,
 	COALESCE(h.Fecha_Horario, '2000-01-01') AS FechaHorario, 
@@ -606,6 +610,7 @@ BEGIN
 	p.Monto_Pago AS Monto,
 	COALESCE(u.Nombre_Usuario, 'UsuarioEliminado') AS NombreUsuario,
 	COALESCE(u.Apellido_Usuario, 'UsuarioEliminado') AS ApellidoUsuario,
+	COALESCE(r.ID_usuario, '0') AS IdUsuario,
 	COALESCE(r.Fecha_Reserva, '2000-01-01 00:00:00') AS FechaCreacionReserva,
 	COALESCE(r.ID_reserva, '0') AS IdReserva,
 	COALESCE(h.Fecha_Horario, '2000-01-01') AS FechaHorario, 

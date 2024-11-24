@@ -197,6 +197,9 @@
                 margin-bottom: 8px;
             }
 
+        #reservationDetailModal .list-group-item .btn {
+            border-radius: 4px; /* Bordes redondeados en los botones */
+        }
     }
 
 
@@ -249,7 +252,6 @@
                 fetch('/Evento/GetReservas')
                     .then(response => response.json())
                     .then(events => {
-                        console.log(events);  // Verifica los eventos en la consola
 
                         // Filtra los eventos para mostrar solo los confirmados
                         const confirmedEvents = events.filter(event => event.estado === 'CONFIRMADA');

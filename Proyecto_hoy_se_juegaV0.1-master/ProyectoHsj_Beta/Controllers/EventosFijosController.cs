@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoHsj_Beta.Models;
@@ -17,7 +18,7 @@ namespace ProyectoHsj_Beta.Controllers
             _auditoriaService = auditoriaService;
         }
 
-        // GET: EventosFijosController/CrearEventoRecurrente
+        [Authorize(Policy = "AdminOrEmployed")]
         public IActionResult CrearFijos()
         {
             // Aquí puedes cargar cualquier lista que necesites para mostrar en los formularios
@@ -25,6 +26,7 @@ namespace ProyectoHsj_Beta.Controllers
             return View();
         }
 
+        [Authorize(Policy = "AdminOrEmployed")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CrearFijos(EventoRecurrente modeloEvento)
@@ -145,7 +147,7 @@ namespace ProyectoHsj_Beta.Controllers
             return View(modeloEvento);
         }
 
-
+        [Authorize(Policy = "AdminOrEmployed")]
         public async Task<IActionResult> Index()
         {
             var fijosCreados = await _context.Set<FijosAdminGetViewModel>()

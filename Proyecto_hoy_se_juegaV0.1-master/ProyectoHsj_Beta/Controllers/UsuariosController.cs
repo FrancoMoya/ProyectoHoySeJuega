@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +23,7 @@ namespace ProyectoHsj_Beta.Controllers
             _auditoriaService = auditoriaService;
         }
 
-        // Metodo Get
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Index()
         {
             var usuarios = await _context.Set<UsuariosGetViewModel>()
@@ -30,9 +31,9 @@ namespace ProyectoHsj_Beta.Controllers
                 .ToListAsync();
             return View(usuarios);
         }
-      
 
-        // GET: Usuarios/Edit/5
+
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -67,7 +68,7 @@ namespace ProyectoHsj_Beta.Controllers
             return View(viewModel);
         }
 
-        // POST: Usuario/Edit/5
+        [Authorize(Policy = "AdminOnly")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, UsuarioEditViewModel viewModel)
@@ -121,7 +122,7 @@ namespace ProyectoHsj_Beta.Controllers
             return View(viewModel);
         }
 
-        // GET: Usuarios/Delete/5
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -140,7 +141,7 @@ namespace ProyectoHsj_Beta.Controllers
             return View(usuario);
         }
 
-        // POST: Usuarios/Delete/5
+        [Authorize(Policy = "AdminOnly")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

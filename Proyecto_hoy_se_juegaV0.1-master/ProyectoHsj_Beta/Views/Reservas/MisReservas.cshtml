@@ -79,7 +79,22 @@
 </head>
 
 <h1 style="color: white">Mis reservas</h1>
-
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["Message"]
+        @if (TempData["MessageDetails"] != null)
+        {
+            <p>@TempData["MessageDetails"]</p>
+        }
+    </div>
+}
+else if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
 <div class="container mt-4">
     <!-- Botones de filtro por estado -->
     <div class="btn-group mb-4" role="group" aria-label="Filtros">
@@ -140,6 +155,20 @@
                                     </div>
                             </div>
                         }
+                        @if (item.NombreEstadoReserva == "PENDIENTE")
+                        {
+                            <div class="card-footer">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                            data-idReserva="@item.IdReserva"
+                                            onclick="continuarPagando(this)">
+                                        Continuar pagando
+                                        </button>
+
+                                    </div>
+                            </div>
+                        }
+
                     </div>
                 </div>
             }
@@ -194,6 +223,14 @@
                                         Cancelar
                                     </button>
                                 }
+                                @if (item.NombreEstadoReserva == "PENDIENTE")
+                                {
+                                    <button type="button" class="btn btn-primary btn-sm"
+                                                    data-idReserva="@item.IdReserva"
+                                                    onclick="continuarPagando(this)">
+                                                Continuar pagando
+                                    </button>
+                                }
                             </td>
                         </tr>
                     }
@@ -227,7 +264,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" style="color: black" id="confirmCancelModalLabel">¿CANCELAR?</h5>
+                <h5 class="modal-title" style="color: black" id="confirmCancelModalLabel">CONFIRMAR CANCELACIÓN</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body" style="color: black;">
@@ -291,6 +328,15 @@
         var number = whatsappLink.getAttribute('data-whatsapp-number');
         whatsappLink.href = "https://wa.me/54" + number + "?text=" + encodeURIComponent(mensaje);
     });
+
+    function continuarPagando(button) {
+    // Obtener el id de reserva desde el atributo 'data-idReserva'
+    var reservaId = button.getAttribute('data-idReserva');
+
+    // Redirigir a la página de pago pasando el 'reservaId' como parámetro en la URL
+    window.location.href = `/Pagoes/Index?reservaId=${reservaId}`;
+    }
+
 
     // Filtrar reservas por estado
     document.querySelectorAll('.filter-btn').forEach(button => {

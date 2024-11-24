@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoHsj_Beta.Models;
 using ProyectoHsj_Beta.ViewsModels;
@@ -15,6 +16,7 @@ namespace ProyectoHsj_Beta.Controllers
         }
 
         // GET: Auditoria
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Index()
         {
             var registros = await _context.Set<AuditoriaGetViewModel>()
@@ -22,6 +24,7 @@ namespace ProyectoHsj_Beta.Controllers
                 .ToListAsync();
             return View(registros);
         }
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> HistorialAuditoria()
         {
             var registros = await _context.Set<AuditoriaGetViewModel>()

@@ -11,6 +11,7 @@ using static ProyectoHsj_Beta.DTO.ReservationPostDTO;
 using Microsoft.Data.SqlClient;
 using System.Data;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Authorization;
 namespace ProyectoHsj_Beta.Controllers
 {
     public class Reservas : Controller
@@ -25,6 +26,7 @@ namespace ProyectoHsj_Beta.Controllers
             _auditoriaService = auditoriaService;
         }
 
+        [Authorize(Policy = "AdminOrEmployed")]
         public async Task<IActionResult> ReservasClientesHistorial()
         {
             var eventos = await _context.Set<ReservasClientesHistorialAdminGetViewModel>()
@@ -32,6 +34,7 @@ namespace ProyectoHsj_Beta.Controllers
                 .ToListAsync();
             return View(eventos);
         }
+        [Authorize(Policy = "AdminOrEmployed")]
         public async Task<IActionResult> HistorialReservas()
         {
             var eventos = await _context.Set<AdminHistorialReservasGetViewModel>()
@@ -39,14 +42,9 @@ namespace ProyectoHsj_Beta.Controllers
                 .ToListAsync();
             return View(eventos);
         }
-        //public async Task<IActionResult> EliminarReservasClientes()
-        //{
-            
-        //}
-        //public async Task<IActionResult> EliminarTodasLasReservas()
-        //{
-            
-        //}
+
+
+        [Authorize(Policy = "UserOnly")]
         public async Task<IActionResult> Reservar()
         {
             var configPago = await _context.ConfiguracionPagos
@@ -65,6 +63,7 @@ namespace ProyectoHsj_Beta.Controllers
         }
 
         // CALENDARIO
+        [Authorize(Policy = "UserOnly")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ReservaCreate([FromBody] ReservaRequestID request)
@@ -75,7 +74,7 @@ namespace ProyectoHsj_Beta.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 if (userId == null)
                 {
-                    RedirectToAction("Signup", "Acces");
+                    RedirectToAction("Login", "Acces");
                 }
 
                 // Verifica que el objeto request no sea nulo y que el IdHorarioDisponible sea válido
@@ -108,17 +107,17 @@ namespace ProyectoHsj_Beta.Controllers
                             idAccion: 1);
 
                             // Devuelve una respuesta JSON de éxito con el ID de la reserva
-                            return Json(new { success = true, message = "Reserva confirmada correctamente", idReserva });
+                            return Json(new { success = true, message = "Horario reservado correctamente.", idReserva });
                         }
-                        catch (Exception ex)
+                        catch (Exception) //ex
                         {
                             // Maneja cualquier error de ejecución de la base de datos
-                            return Json(new { success = false, message = "Ocurrió un error al crear la reserva: " + ex.Message });
+                            return Json(new { success = false, message = "Ocurrió un error al crear la reserva." }); //+ex.Message
                         }
                     }
                     else
                     {
-                        return Json(new { success = false, message = "El horario seleccionado ya no está disponible" });
+                        return Json(new { success = false, message = "El horario seleccionado ya no está disponible, por favor seleccione otro." });
                     }
 
                 }
@@ -130,11 +129,12 @@ namespace ProyectoHsj_Beta.Controllers
             else
             {
                 // Si el usuario no está autenticado, redirige a la página de login
-                return Json(new { success = false, message = "Usuario no autenticado." });
+                return RedirectToAction("Login", "Acces");
             }
         }
 
         //GET: Reservas/MisReservas
+        [Authorize(Policy = "UserOnly")]
         [HttpGet]
         public async Task<IActionResult> MisReservas()
         {
@@ -143,7 +143,7 @@ namespace ProyectoHsj_Beta.Controllers
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // Obtiene el ID del usuario autenticado
                 if (userId == null)
                 {
-                    RedirectToAction("Signup", "Acces");
+                    RedirectToAction("Login", "Acces");
                 }
                 try
                 {
@@ -156,15 +156,13 @@ namespace ProyectoHsj_Beta.Controllers
                         return View(new List<MisReservasGetViewModel>());
                     }
 
-                    // Obtener el número de WhatsApp de alguna tabla de configuración
                     var celularCancelaciones = await _context.ConfiguracionPagos
                         .Select(c => c.CelularCancelaciones)
-                        .FirstOrDefaultAsync();  // Toma el primer (y único) resultado que cumple la condición
+                        .FirstOrDefaultAsync(); 
 
-                    // Si no existe el número de WhatsApp en la configuración, asignar un valor predeterminado
                     if (celularCancelaciones == null)
                     {
-                        celularCancelaciones = 1234567890; // Valor predeterminado o lanzar un error si prefieres
+                        celularCancelaciones = 1234567890; // Valor predeterminado
                     }
 
                     string number = celularCancelaciones.ToString();
@@ -173,21 +171,20 @@ namespace ProyectoHsj_Beta.Controllers
 
                     return View(misReservas);
                 }
-                catch (Exception ex)
+                catch (Exception) //ex
                 {
-                    // Log del error para ver el mensaje detallado
-                    Console.WriteLine("Error al obtener reservas: " + ex.Message);
-                    return Json(new { success = false, message = "Ocurrió un error al obtener las reservas: " + ex.Message });
+                    return Json(new { success = false, message = "Ocurrió un error al obtener las reservas."}); // +ex.Message
                 }
             }
             else
             {
-                return Json(new { success = false, message = "Usuario no autenticado." });
+                return RedirectToAction("Login", "Acces");
             }
         }
 
-       
+
         //Obtener y renderizar los horarios
+        [Authorize(Policy = "UserOnly")]
         [HttpGet]
         public async Task<IActionResult> GetAvailableTimeSlots(DateTime fecha) //Modificado para incluir solo los horarios dentro de 2 semanas
         {
@@ -212,11 +209,25 @@ namespace ProyectoHsj_Beta.Controllers
             return Json(horarios);
         }
 
+        [Authorize(Policy = "UserOnly")]
         [HttpPost]
         public async Task<IActionResult> PagarReserva(int reservaId, decimal monto)
         {
-            Console.WriteLine("La id reserva es :" + reservaId);
-            Console.WriteLine("El monto de pago es:" + monto);
+            var reserva = await _context.Reservas
+                                 .FirstOrDefaultAsync(r => r.IdReserva == reservaId);
+            if (reserva == null)
+            {
+                // Si no se encuentra la reserva, mostrar un mensaje de error
+                TempData["ErrorMessage"] = "La reserva no existe.";
+                return RedirectToAction("MisReservas", "Reservas");
+            }
+            // Verificamos el estado de la reserva
+            if (reserva.IdEstadoReserva != 1)
+            {
+                // Si el estado de la reserva no es 1, mostrar un mensaje de error
+                TempData["ErrorMessage"] = "La reserva ya no está disponible para proceder con el pago.";
+                return RedirectToAction("MisReservas", "Reservas");
+            }
             var pago = new Pago
             {
                 IdReserva = reservaId,
@@ -225,17 +236,17 @@ namespace ProyectoHsj_Beta.Controllers
 
             var preferencia = await _MercadoPagoService.CrearPreferenciaDePago(pago);
 
-            // REVISAR SI PAGO SE DEBE AGREGAR UN AUDITORIAAAAAA!
-
             // Redirige al usuario al URL de Mercado Pago
             return Redirect(preferencia.InitPoint);
         }
 
         //para el calendario
+        [Authorize(Policy = "AdminOrEmployed")]
         public IActionResult AllReservationsCalendar()
         {
             return View();
         }
+        [Authorize(Policy = "AdminOrEmployed")]
         public async Task<IActionResult> GetReservas()
         {
             var reservas = await _context.Set<ReservasAdminGetViewModel>()
@@ -245,6 +256,7 @@ namespace ProyectoHsj_Beta.Controllers
         }
 
         // TODAS LAS RESERVAS ADMIN
+        [Authorize(Policy = "AdminOrEmployed")]
         public async Task<IActionResult> Index()
         {
             var reservas = await _context.Set<ReservasAdminGetAllViewModel>()
@@ -253,6 +265,7 @@ namespace ProyectoHsj_Beta.Controllers
             return View(reservas);
         }
 
+        [Authorize(Policy = "AdminOrEmployed")]
         public async Task<IActionResult> ReservasClientes()
         {
             var eventos = await _context.Set<ReservasClientesAdminGetViewModel>()
@@ -263,6 +276,7 @@ namespace ProyectoHsj_Beta.Controllers
 
 
         // CANCELAR RESERVAS DESDE LA VISTA DE ADMIN RESERVAS CLIENTES(Tarjetas)
+        [Authorize(Policy = "AdminOrEmployed")]
         [HttpPost, ActionName("CancelReserva")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CancelConfirmed(int id)

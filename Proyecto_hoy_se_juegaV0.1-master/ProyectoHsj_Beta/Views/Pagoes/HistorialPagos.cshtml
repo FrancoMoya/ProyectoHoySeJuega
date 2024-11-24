@@ -65,7 +65,7 @@ else
                             <td>@pago.Id</td>
                             <td>@pago.FechaPago.ToString("HH:mm - dd/MM/yyyy")</td>
                             <td>$@pago.Monto.ToString("N0")</td>
-                            <td>@pago.NombreUsuario @pago.ApellidoUsuario</td>
+                            <td>[ID: @pago.IdUsuario] @pago.NombreUsuario @pago.ApellidoUsuario</td>
                             <td>@pago.IdReserva</td>
                             <td>@pago.FechaCreacionReserva.ToString("HH:mm - dd/MM/yyyy")</td>
                             <td>@pago.FechaHorario.ToString("dd-MM-yyyy")</td>
@@ -87,7 +87,7 @@ else
                             <h5 class="card-title">ID: @pago.Id</h5>
                             <p class="card-text"><strong>Fecha de Pago:</strong> @pago.FechaPago.ToString("HH:mm - dd/MM/yyyy")</p>
                             <p class="card-text"><strong>Monto:</strong> $@pago.Monto.ToString("N0")</p>
-                            <p class="card-text"><strong>Usuario:</strong> @pago.NombreUsuario @pago.ApellidoUsuario</p>
+                            <p class="card-text"><strong>Usuario:</strong> [ID: @pago.IdUsuario] @pago.NombreUsuario @pago.ApellidoUsuario</p>
                             <p class="card-text"><strong>ID reserva:</strong> @pago.IdReserva</p>
                             <p class="card-text"><strong>Fecha creación reserva:</strong> @pago.FechaCreacionReserva.ToString("HH:mm - dd/MM/yyyy")</p>
                             <p class="card-text"><strong>Fecha de reserva:</strong> @pago.FechaHorario.ToString("dd-MM-yyyy")</p>

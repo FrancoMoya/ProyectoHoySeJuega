@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProyectoHsj_Beta.ViewsModels;
 using ProyectoHsj_Beta.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProyectoHsj_Beta.Controllers
 {
@@ -19,7 +20,7 @@ namespace ProyectoHsj_Beta.Controllers
             _context = Context;
             _auditoriaService = auditoriaService;
         }
-        
+        [Authorize(Policy = "UserOnly")]
         public async Task <IActionResult> Perfil()
         {
             var usuarioclaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -43,7 +44,7 @@ namespace ProyectoHsj_Beta.Controllers
 
 
 
-        // GET: Usuarios/Edit/5
+        [Authorize(Policy = "UserOnly")]
         public async Task<IActionResult> EditMiPerfil()
         {
             if (!User.Identity.IsAuthenticated)
@@ -66,7 +67,6 @@ namespace ProyectoHsj_Beta.Controllers
             return View(viewModel);
         }
 
-        // POST: Usuario/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditMiPerfil(int id, EditMiPerfilViewModel viewModel)

@@ -183,6 +183,7 @@ INSERT INTO PERMISO (Nombre_Permiso) VALUES
 ('Administrar horarios'),
 ('Administrar reservas'),
 ('Administrar eventos'),
+('Ver pagos'),
 ('Administrar usuarios'),
 ('Administrar roles'),
 ('Ver estadísticas'),
@@ -198,13 +199,15 @@ INSERT INTO PERMISO_ROL (ID_rol, ID_permiso) VALUES
 (2, 6), 
 (2, 7),
 (2, 8), 
-(2, 9); 
+(2, 9), 
+(2, 10); 
 -- Asignar permisos a Empleado
 INSERT INTO PERMISO_ROL (ID_rol, ID_permiso) VALUES 
 (3, 1), 
 (3, 2),
 (3, 3), 
-(3, 4); 
+(3, 4), 
+(3, 5); 
 -- Asignar permisos a Cliente
 INSERT INTO PERMISO_ROL (ID_rol, ID_permiso) VALUES 
 (1, 1);
@@ -227,7 +230,7 @@ INSERT INTO ESTADO_RESERVA (Nombre_Estado_Reserva) VALUES
 --(2, 1, 'Su reserva está pendiente de confirmación.', 1), 
 --(1, 2, 'Su reserva ha sido confirmada con éxito.', 1);
 INSERT INTO CONFIGURACION_PAGO(Monto_Sena) VALUES
-(500);
+(5000);
 
 
 ------------------------------------------------------

@@ -33,6 +33,7 @@ namespace ProyectoHsj_Beta.Controllers
         {
             return View();
         }
+
         //Logueo via Google
         [HttpGet]
         public async Task GoogleLogin()
@@ -46,8 +47,8 @@ namespace ProyectoHsj_Beta.Controllers
             
         }
 
-        [HttpGet]
         //Autenticacion de via google method :  GET
+        [HttpGet]
         public async Task<IActionResult> GoogleResponse( string remoteError = null)
         {
             if (remoteError != null)
@@ -202,11 +203,13 @@ namespace ProyectoHsj_Beta.Controllers
             ViewData["Message"] = "No se pudo registrar al usuario";
             return View();
         }
+
         // View para indicar al usuario que su registro se completo y debe verificar su correo(Ayuda tengo depresion)
         public IActionResult RegistroExitoso()
         {
             return View();
         }
+
         //Validar correo method post
         public async Task<IActionResult> ConfirmarCorreo(string token, string email)
         {
@@ -236,14 +239,13 @@ namespace ProyectoHsj_Beta.Controllers
         }
 
         [HttpGet]
-        //Controlador method : GET
         public IActionResult Login()
         {
             return View();
         }
 
-        [HttpPost]
         //Controlador de Login method POST
+        [HttpPost]
         public async Task<IActionResult> Login(LoginVM modelo)
         {
             Usuario? usuario_found = await _hoysejuegacontext.Usuarios
@@ -354,6 +356,7 @@ namespace ProyectoHsj_Beta.Controllers
             ViewData["Message"] = "Se ha reenviado el correo de confirmación.";
             return RedirectToAction("Login");
         }
+
         //Logout
         public async Task<IActionResult> Cerrar()
         {
@@ -361,10 +364,7 @@ namespace ProyectoHsj_Beta.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-        // A eliminar o a utilizar
-        public IActionResult Index()
-        {
-            return View();
-        }
+
+
     }
 }

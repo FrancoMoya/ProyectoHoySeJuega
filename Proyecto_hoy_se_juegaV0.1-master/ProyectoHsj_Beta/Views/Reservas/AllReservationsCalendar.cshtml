@@ -137,7 +137,18 @@
     .btn-ver-historial {
         margin-top: 20px; /* Espacio superior en móviles */
     }
-
+    .whatsapp-button {
+    background-color: #1a9c4b; /* Color verde característico de WhatsApp */
+    color: white;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.whatsapp-button:hover {
+    background-color: #0fd458;
+}
 
     /* Estilos para dispositivos pequeños (móviles) */
     @@media (max-width: 767px) {
@@ -174,6 +185,12 @@
             font-size: 0.9em;
         }
 
+        .whatsapp-button {
+             margin-bottom: 0 !important;
+             margin-top: 4px;
+             width: 100%;
+             padding: 4px 20px;
+        }
         .d-flex {
                 flex-direction: column;
             }
@@ -247,7 +264,6 @@
                 fetch('/Reservas/GetReservas')
                     .then(response => response.json())
                     .then(events => {
-                        console.log(events);  // Verifica los eventos en la consola
 
                         // Filtra los eventos para mostrar solo los confirmados
                         const confirmedEvents = events.filter(event => event.estado === 'CONFIRMADA');
@@ -317,6 +333,11 @@
                                     <p><strong>Celular:</strong> ${reserva.extendedProps.usuarioTelefono}</p>
                                     <p><strong>Estado:</strong> ${reserva.extendedProps.estado}</p>
                                         <p><strong>Fecha:</strong> ${new Date(reserva.start).toLocaleDateString()} - ${new Date(reserva.start).toLocaleTimeString()}hs</p>
+                                        <div class="d-flex justify-content-end">
+                                        <a href="https://wa.me/54${reserva.extendedProps.usuarioTelefono}" target="_blank">
+                                            <button class="whatsapp-button">WhatsApp</button>
+                                        </a>
+                                    </div>
                                 </li>
                             `;
                     });
@@ -349,6 +370,11 @@
                             <p><strong>Celular:</strong> ${reserva.usuarioTelefono}</p>
                             <p><strong>Estado:</strong> ${reserva.estado}</p>
                                 <p><strong>Fecha:</strong> ${new Date(info.event.start).toLocaleDateString()} - ${new Date(info.event.start).toLocaleTimeString()}hs</p>
+                                <div class="d-flex justify-content-end">
+                                        <a href="https://wa.me/54${reserva.usuarioTelefono}" target="_blank">
+                                            <button class="whatsapp-button">WhatsApp</button>
+                                        </a>
+                                    </div>
                         </li>
                     `;
 

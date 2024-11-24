@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectoHsj_Beta.Models;
 using ProyectoHsj_Beta.Services;
@@ -16,12 +17,13 @@ namespace ProyectoHsj_Beta.Controllers
             _context = context;
             _auditoriaService = auditoriaService;
         }
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.ConfiguracionPagos.ToListAsync());
         }
 
-
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -33,7 +35,7 @@ namespace ProyectoHsj_Beta.Controllers
 
             return View(configuracionPago);
         }
-
+        [Authorize(Policy = "AdminOnly")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ConfiguracionPago configuracionPago)

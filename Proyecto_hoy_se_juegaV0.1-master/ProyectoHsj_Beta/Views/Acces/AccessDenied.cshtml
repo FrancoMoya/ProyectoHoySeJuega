@@ -1,33 +1,69 @@
 ﻿@{
-    Layout = null; // No usar un layout para esta vista específica
+    Layout = null; 
 }
 
-
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <link href="~/css/AccesDenied.css" rel="stylesheet" />
-        <title>ERROR</title>
-    </head>
-    <body>
-    <div id="app">
-        <div>403</div>
-        <div class="txt">
-            Acceso denegado<span class="blink">_</span>
-        </div>
-        @if (User.IsInRole("3"))
-        {
-            <p>
-                <a style="color: var(--color); text-decoration: none;" asp-controller="Home" asp-action="Admin_home" >Go to Home</a>
-            </p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acceso No Autorizado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
         }
-        else
-        {
-            <p>
-                <a href="/" style="color: var(--color); text-decoration: none;">Go to Home</a>
-            </p>
 
+        .container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
         }
+
+        h2 {
+            color: #e74c3c;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            background-color: #3498db;
+            color: #fff;
+            padding: 12px 24px;
+            font-size: 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn:hover {
+                background-color: #2980b9;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Usuario no autenticado y/o autorizado</h2>
+        <p>Parece que no tienes permiso para acceder a esta página. Si crees que es un error, por favor contacta con el administrador.</p>
     </div>
+
 </body>
 </html>

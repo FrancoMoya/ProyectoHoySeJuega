@@ -1,19 +1,13 @@
 ﻿@model ProyectoHsj_Beta.ViewsModels.PagoViewModel
 
 @{
-    ViewData["Title"] = "Detalle del Pago";
+    ViewData["Title"] = "Pago de la seña";
 }
 
 <!-- Estilos personalizados -->
 <style>
     body {
         background-color: #202021;
-    }
-
-    h2 {
-        text-align: center;
-        margin-top: 40px;
-        color: white;
     }
 
     .card {
@@ -24,7 +18,7 @@
     }
 
     .card-body {
-        padding: 30px;
+        padding: 28px 19px;
         background-color: #ffffff;
         border-radius: 10px;
     }
@@ -67,28 +61,36 @@
         }
 </style>
 
-<h2>Detalle del Pago</h2>
+
 
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">Detalles de la Reserva</h5>
+        <h5 class="card-title">Detalles de la Reserva y Seña</h5>
+        <p class="card-text">Para que su reserva quede confirmada debe realizar el pago de la seña.</p>
         <p class="card-text">
-            <strong>ID de la Reserva:</strong> @Model.ReservaId
+            <strong>Fecha a Reservar</strong> @Model.FechaReserva.ToString("dd-MM-yyyy")
         </p>
         <p class="card-text">
-            <strong>Monto a Pagar:</strong> $@Model.Monto
+            <strong>Horario:</strong> @Model.HoraInicio.ToString("HH:mm") - @Model.HoraFin.ToString("HH:mm")
+        </p>
+        <p class="card-text">
+            <strong>Monto a Pagar:</strong> $@Model.Monto.ToString("N0")
         </p>
         <p class="card-text">
             <strong>Método de Pago:</strong> Mercado Pago
         </p>
         <p class="card-text">
-            <strong>(Recuerda que solo dispones de 5 minutos para concretar tu pago)</strong>
+            <strong>(Recordá que solo dispones de 5 minutos para terminar de concretar el pago de la seña)</strong>
         </p>
 
         <form asp-controller="Reservas" asp-action="PagarReserva" method="post">
             <input type="hidden" name="ReservaId" value="@Model.ReservaId" />
             <input type="hidden" name="Monto" value="@Model.Monto" />
-            <button type="submit" class="btn btn-primary">Pagar con Mercado Pago</button>
+            <div class="d-grid d-md-flex justify-content-md-end">
+                <button type="submit" class="btn btn-primary">
+                    Pagar con Mercado Pago
+                </button>
+            </div>
         </form>
     </div>
 </div>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MercadoPago.Resource.Preference;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -25,8 +26,8 @@ namespace ProyectoHsj_Beta.Controllers
             _auditoriaService = auditoriaService;
         }
 
-        // GET: Pagoes
-        public async Task<IActionResult> Index(int reservaId)
+        [Authorize(Policy = "UserOnly")]
+        public IActionResult Index(int reservaId)
         {
             // Obtenemos la configuración de pago (puedes ajustar esto según tu estructura)
             var pagoConfiguracion = _context.ConfiguracionPagos.FirstOrDefault();
@@ -37,22 +38,27 @@ namespace ProyectoHsj_Beta.Controllers
                 // Manejar el caso en que no haya configuración de pago (opcional)
                 pagoConfiguracion = new ConfiguracionPago { MontoSena = 0 };
             }
-            var reserva = _context.Reservas.FirstOrDefault(r => r.IdReserva == reservaId);
+            var reserva = _context.Reservas
+                       .Include(r => r.IdHorarioDisponibleNavigation)
+                       .FirstOrDefault(r => r.IdReserva == reservaId);
+
 
             if (reserva == null)
             {
-                // Manejar el caso en que no se encuentre la reserva
-                return RedirectToAction("Acces", "AccesDenied");
+                TempData["ErrorMessage"] = "La reserva no existe.";
+                return RedirectToAction("MisReservas", "Reservas");
             }
 
             var viewModel = new PagoViewModel
             {
                 Monto = pagoConfiguracion.MontoSena,
-                ReservaId = reservaId
+                ReservaId = reservaId,
+                FechaReserva = reserva.IdHorarioDisponibleNavigation.FechaHorario,
+                HoraInicio = reserva.IdHorarioDisponibleNavigation.HoraInicio,
+                HoraFin = reserva.IdHorarioDisponibleNavigation.HoraFin
             };
 
             return View(viewModel);
-            
         }
 
         [HttpPost]
@@ -100,7 +106,6 @@ namespace ProyectoHsj_Beta.Controllers
                 throw new InvalidOperationException("No se encontró la configuración de pago.");
             }
             montoPago = configuracionPago.MontoSena;
-            Console.WriteLine("El monto es :" + montoPago);
             // Crea un nuevo registro de pago
             var pago = new Pago
             {
@@ -112,7 +117,6 @@ namespace ProyectoHsj_Beta.Controllers
             // Agrega el pago a la base de datos
             _context.Pagos.Add(pago);
 
-            // Actualiza el estado de la reserva a CONFIRMADA (por ejemplo, usando un código de estado 2)
             reserva.IdEstadoReserva = 2; // Asegúrate de que 2 signifique CONFIRMADA en tu lógica
             var descripcionAuditoria = $"El usuario ha concretado con éxito el pago de su reserva con los siguientes detalles, ID: {reserva.IdReserva}, Monto: ${montoPago.ToString("N0")}.";
             // Guarda los cambios en la base de datos
@@ -121,16 +125,8 @@ namespace ProyectoHsj_Beta.Controllers
                 seccion: "Reserva",
                 descripcion: descripcionAuditoria,
                 idAccion: 1);
-
-            return RedirectToAction("PagoExitoso", "Pagoes", new { reservaId, montoPago }); // Redirige a una vista de confirmación
-        }
-
-        [HttpGet]
-        public IActionResult PagoExitoso(int reservaId, decimal montoPago)
-        {
-            ViewBag.ReservaId = reservaId;
-            ViewBag.MontoSena = montoPago;
-            return View();
+            TempData["Message"] = "La reserva ha sido confirmada con éxito.";
+            return RedirectToAction("MisReservas", "Reservas");
         }
 
         private bool PagoExists(int id)
@@ -138,6 +134,7 @@ namespace ProyectoHsj_Beta.Controllers
             return _context.Pagos.Any(e => e.IdPago == id);
         }
 
+        [Authorize(Policy = "AdminOrEmployed")]
         public async Task<IActionResult> ListPagos()
         {
             var pagos = await _context.Set<ListPagosAdminViewModel>()
@@ -145,6 +142,7 @@ namespace ProyectoHsj_Beta.Controllers
                 .ToListAsync();
             return View(pagos);
         }
+        [Authorize(Policy = "AdminOrEmployed")]
         public async Task<IActionResult> HistorialPagos()
         {
             var pagos = await _context.Set<ListPagosAdminViewModel>()

@@ -30,7 +30,7 @@ namespace ProyectoHsj_Beta.Controllers
             return View();
         }
 
-        [Authorize(Policy = "AdminOrEmployed")]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Admin_home()
         {
             return View();

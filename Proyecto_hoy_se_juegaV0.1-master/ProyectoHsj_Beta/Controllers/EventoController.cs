@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -22,7 +23,7 @@ namespace ProyectoHsj_Beta.Controllers
             _auditoriaService = auditoriaService;
         }
 
-        // GET: EventoController
+        [Authorize(Policy = "AdminOrEmployed")]
         public async Task<IActionResult> Index()
         {
             var eventos = await _context.Set<EventosAdminGetViewModel>()
@@ -30,7 +31,7 @@ namespace ProyectoHsj_Beta.Controllers
                 .ToListAsync();
             return View(eventos);
         }
-        
+        [Authorize(Policy = "AdminOrEmployed")]
         public async Task<IActionResult> ReservasAdminHistorial()
         {
             var eventos = await _context.Set<ReservasAdminHistorialGetViewModel>()
@@ -40,6 +41,7 @@ namespace ProyectoHsj_Beta.Controllers
         }
 
         //Obtener y renderizar los horarios PARA EVENTOS ADMIN
+        [Authorize(Policy = "AdminOrEmployed")]
         [HttpGet]
         public async Task<IActionResult> GetAvailableTimeSlotsAdmin(DateTime fecha)
         {
@@ -63,8 +65,7 @@ namespace ProyectoHsj_Beta.Controllers
             return Json(horarios);
         }
 
-
-        // POST: EventoController/Cancel/5
+        [Authorize(Policy = "AdminOrEmployed")]
         [HttpPost, ActionName("Cancel")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CancelConfirmed(int id)
@@ -92,35 +93,13 @@ namespace ProyectoHsj_Beta.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: EventoController/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var evento = await _context.Eventos.FindAsync(id);
-            if (evento != null)
-            {
-                var descripcionAuditoria = $"El usuario ha eliminado un evento. Detalles, ID del evento: {evento.IdEvento}.";
-                _context.Eventos.Remove(evento);
-                await _context.SaveChangesAsync();
-                await _auditoriaService.RegistrarAuditoriaAsync(
-                seccion: "Administración",
-                descripcion: descripcionAuditoria,
-                idAccion: 3);
-            }
-            
-            return RedirectToAction(nameof(Index));
-        }
-
-
-
-        // GET: EventoController/Create
+        [Authorize(Policy = "AdminOrEmployed")]
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: EventoController/Create
+        [Authorize(Policy = "AdminOrEmployed")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(EventoCreateViewModel model)
@@ -148,7 +127,6 @@ namespace ProyectoHsj_Beta.Controllers
                 descripcion: descripcionAuditoria,
                 idAccion: 1);
 
-
                 // Obtener el ID del horario seleccionado y actualizar el estado en HorariosDisponibles
                 var horario = await _context.HorarioDisponibles
                                              .FirstOrDefaultAsync(h => h.IdHorarioDisponible == model.IdHorarioDisponible);
@@ -171,11 +149,12 @@ namespace ProyectoHsj_Beta.Controllers
         }
 
 
-        //para el calendario
+        [Authorize(Policy = "AdminOrEmployed")]
         public IActionResult IndexCalendar()
         {
             return View();
         }
+        [Authorize(Policy = "AdminOrEmployed")]
         public async Task<IActionResult> GetReservas()
         {
             var reservas = await _context.Set<ReservasAdminGetViewModel>()
@@ -183,6 +162,7 @@ namespace ProyectoHsj_Beta.Controllers
                 .ToListAsync();
             return Json(reservas);
         }
+        [Authorize(Policy = "AdminOrEmployed")]
         [HttpPost]
         public async Task<IActionResult> CancelConfirmedCalendar(int id)
         {

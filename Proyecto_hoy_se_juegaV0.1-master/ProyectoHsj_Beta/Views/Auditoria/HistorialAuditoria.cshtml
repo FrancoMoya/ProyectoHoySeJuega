@@ -33,7 +33,7 @@
                                 <h5 class="card-title">@item.TituloAccionRealizada</h5>
                                 <p class="card-text">
                                     <strong>Fecha:</strong> @item.FechaAuditoria<br />
-                                    <strong>Nombre:</strong> @item.NombreUsuario @item.ApellidoUsuario<br />
+                                    <strong>Usuario:</strong> [ID: @item.IdUsuario] @item.NombreUsuario @item.ApellidoUsuario<br />
                                     <strong>Sección:</strong> @item.Seccion<br />
                                     <strong>Descripción:</strong> @item.DescripcionDeAccion
                                 </p>
@@ -50,8 +50,7 @@
                         <tr class="text-center">
                             <th>Fecha</th>
                             <th>Acción realizada</th>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
+                            <th>Usuario</th>
                             <th>Sección</th>
                             <th>Descripción</th>
                         </tr>
@@ -62,8 +61,7 @@
                             <tr class="text-center align-middle" data-action="@item.TituloAccionRealizada">
                                 <td>@item.FechaAuditoria.ToString("HH:mm:ss - dd/MM/yyyy")</td>
                                 <td>@Html.DisplayFor(modelItem => item.TituloAccionRealizada)</td>
-                                <td>@Html.DisplayFor(modelItem => item.NombreUsuario)</td>
-                                <td>@Html.DisplayFor(modelItem => item.ApellidoUsuario)</td>
+                                <td>[ID: @item.IdUsuario] @item.NombreUsuario @item.ApellidoUsuario</td>
                                 <td>@Html.DisplayFor(modelItem => item.Seccion)</td>
                                 <td>@Html.DisplayFor(modelItem => item.DescripcionDeAccion)</td>
                             </tr>

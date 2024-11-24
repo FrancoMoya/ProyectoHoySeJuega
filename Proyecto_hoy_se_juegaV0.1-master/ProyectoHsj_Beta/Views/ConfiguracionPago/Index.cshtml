@@ -5,17 +5,17 @@
     ViewData["Title"] = "Configuración de Pago";
 }
 
-<h2 class="text-center text-white">Configuración de Monto de Seña</h2>
+<h2 class="text-center text-white mb-4 custom-title">Configuración de Monto de Seña</h2>
 
-
-<div class="table-responsive">
-    <table class="table table-dark table-hover table-bordered">
-        <thead class="thead-light">
+<!-- Contenedor principal de la tabla -->
+<div class="table-responsive d-none d-sm-block">
+    <table class="table table-dark table-striped table-bordered table-hover shadow-lg">
+        <thead>
             <tr>
-                <th class="text-black">Monto seña</th>
-                <th class="text-black">WhatsApp cancelaciones</th>
-                <th class="text-black">Fecha de Modificación</th>
-                <th class="text-black">Acciones</th>
+                <th class="text-light">Monto Seña</th>
+                <th class="text-light">WhatsApp Cancelaciones</th>
+                <th class="text-light">Fecha de Modificación</th>
+                <th class="text-light">Acciones</th>
             </tr>
         </thead>
         <tbody>
@@ -34,37 +34,138 @@
     </table>
 </div>
 
+<!-- Contenedor de Cards para pantallas pequeñas -->
+<div class="row d-block d-sm-none">
+    @foreach (var item in Model)
+    {
+        <div class="col-12 col-md-6 mb-4">
+            <div class="card bg-dark text-light shadow-lg">
+                <div class="card-header">
+                    <h5 class="card-title">DETALLES</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Monto Seña:</strong> $@item.MontoSena.ToString("N0")</p>
+                    <p><strong>WhatsApp Cancelaciones:</strong> @item.CelularCancelaciones</p>
+                    <p><strong>Fecha de Modificación:</strong> @item.FechaModificacion.ToString("HH:mm - dd/MM/yyyy")</p>
+                </div>
+                <div class="card-footer text-center">
+                    <a asp-action="Edit" asp-route-id="@item.IdConfiguracion" class="btn btn-warning btn-sm">Editar</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
 <style>
-
+    /* Fondo oscuro con imagen de fondo */
     body {
+        background-color: #121212; /* Fondo oscuro para todo el cuerpo */
         background-image: url('/css/img/logo fondo admin.png');
-        background-size: contain; /* Ajusta la imagen para cubrir el fondo */
-        background-repeat: no-repeat; /* Evita que la imagen se repita */
-        background-attachment: fixed; /* Mantiene la imagen fija al hacer scroll */
-        background-position: center; /* Centra la imagen de fondo */
+        background-size: cover; /* La imagen cubre toda la pantalla */
+        background-position: center; /* Centra la imagen */
+        background-repeat: no-repeat;
+        background-attachment: fixed; /* Mantiene la imagen fija mientras se hace scroll */
     }
 
-    h2 {
-        margin-bottom: 20px;
+    h2.custom-title { /* Modificado: nueva clase custom-title */
+        margin-top: 13px;
+        margin-bottom: 30px;
         font-weight: bold;
+        font-family: 'Arial', sans-serif;
+        font-size: 2.5rem; /* Modificado: tamaño grande para pantallas grandes */
+        text-transform: uppercase; /* Modificado: convierte a mayúsculas */
+        letter-spacing: 2px; /* Modificado: espaciado entre letras */
+        color: #fff;
+        background: linear-gradient(to right, #ff7e5f, #feb47b); /* Modificado: Degradado de colores */
+        -webkit-background-clip: text; /* Modificado: aplica degradado solo al texto */
+        background-clip: text; /* Modificado: aplica degradado solo al texto */
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Modificado: sombra de texto para profundidad */
     }
 
-    table {
-        background-color: #343a40;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
+    /* Estilo de las celdas en la tabla */
     th, td {
         text-align: center;
         vertical-align: middle;
+        font-size: 16px;
+        padding: 15px;
     }
 
-    .btn {
-        margin-right: 5px;
+    /* Estilo de la tabla */
+    .table {
+        background-color: #343a40;
+        border-radius: 10px;
+        border: none;
     }
 
+    /* Hover de la fila en la tabla */
     .table-hover tbody tr:hover {
         background-color: #495057;
+    }
+
+    /* Estilo de los botones */
+    .btn {
+        font-weight: bold;
+        border-radius: 5px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+        background-color: #f39c12;
+    }
+
+    /* Responsividad para pantallas más pequeñas */
+    @@media (max-width: 768px) {
+        h2.custom-title { /* Modificado: nueva clase custom-title */
+            margin-top: 5px;
+            margin-bottom: 8px !important;
+            font-weight: bold;
+            font-family: 'Arial', sans-serif;
+            font-size: 1.5rem;
+            text-transform: uppercase; /* Modificado: convierte a mayúsculas */
+            letter-spacing: 1.5px; /* Modificado: espaciado entre letras */
+            color: #fff;
+            background: linear-gradient(to right, #ff7e5f, #feb47b); /* Modificado: Degradado de colores */
+            -webkit-background-clip: text; /* Modificado: aplica degradado solo al texto */
+            background-clip: text; /* Modificado: aplica degradado solo al texto */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Modificado: sombra de texto para profundidad */
+        }
+        .table {
+            display: none; /* Ocultar tabla en pantallas pequeñas */
+        }
+
+        .card {
+            background-color: #343a40;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .card-header, .card-footer {
+            background-color: #495057;
+        }
+
+        .card-body {
+            font-size: 14px;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            font-size: 1.2rem;
+            width: 100%;
+        }
+    }
+
+    /* Estilo para pantalla muy pequeña (celulares en retrato) */
+    @@media (max-width: 576px) {
+        .card {
+            font-size: 13px;
+        }
+        .card-header, .card-footer {
+            text-align: center;
+        }
     }
 </style>

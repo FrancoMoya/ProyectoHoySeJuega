@@ -22,7 +22,6 @@ namespace ProyectoHsj_Beta.Controllers
         {
             _permisoRepository = permisoRepository;
         }
-        [Authorize(Policy = "AdminOnly")]
 
         [HttpGet]
         public async Task<IActionResult>ManageView()

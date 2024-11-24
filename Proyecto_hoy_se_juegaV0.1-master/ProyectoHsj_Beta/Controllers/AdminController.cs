@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using ProyectoHsj_Beta.ViewsModels;
 using ProyectoHsj_Beta.Services;
+using Microsoft.AspNetCore.Authorization;
 namespace ProyectoHsj_Beta.Controllers
 {
     public class AdminController : Controller
@@ -20,7 +21,8 @@ namespace ProyectoHsj_Beta.Controllers
             _context = context;
             _auditoriaService = auditoriaService;
         }
-
+        //RESERVAS CLIENTES CALENDARIO
+        [Authorize(Policy = "AdminOrEmployed")]
         public IActionResult Index()
         {
             return View();
@@ -28,6 +30,7 @@ namespace ProyectoHsj_Beta.Controllers
 
 
         //para el calendario
+        [Authorize(Policy = "AdminOrEmployed")]
         public async Task<IActionResult> GetReservas()
         {
             var reservas = await _context.Set<ReservasAdminGetViewModel>()
@@ -36,6 +39,7 @@ namespace ProyectoHsj_Beta.Controllers
             return Json(reservas);
         }
 
+        [Authorize(Policy = "AdminOrEmployed")]
         [HttpPost]
         public async Task<IActionResult> CancelarReserva(int id)
         {
@@ -45,7 +49,6 @@ namespace ProyectoHsj_Beta.Controllers
             {
                 return NotFound();
             }
-            Console.WriteLine("Entro a la condicional.");
             var descripcionAuditoria = $"El usuario ha cancelado una reserva. Detalles de la reserva, ID: {reserva.IdReserva}.";
             reserva.IdEstadoReserva = 3;  // Estado: Cancelada
             _context.Reservas.Update(reserva); // Cambiar el estado
@@ -57,30 +60,13 @@ namespace ProyectoHsj_Beta.Controllers
             return Ok();
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> EliminarReserva(int id)
-        {
-            var reserva = _context.Reservas.Find(id);
-            if (reserva != null)
-            {
-                var descripcionAuditoria = $"El usuario ha eliminado la reserva con el ID: {reserva.IdReserva}.";
-                _context.Reservas.Remove(reserva);
-                _context.SaveChanges();
-                await _auditoriaService.RegistrarAuditoriaAsync(
-                seccion: "Administración",
-                descripcion: descripcionAuditoria,
-                idAccion: 3);
-                return Ok();
-            }
-            return NotFound();
-        }
-
         //ELIMINAR REGISTROS
-
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult DeleteData()
         {
             return View();
         }
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> EliminarTodosLosRegistros()
         {
             try

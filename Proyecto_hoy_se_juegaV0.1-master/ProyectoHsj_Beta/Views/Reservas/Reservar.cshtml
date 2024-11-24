@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Crear Reserva - Hoy se Juega";
+    ViewData["Title"] = "Crear Reserva";
     Layout = null;
 }
 
@@ -177,7 +177,7 @@
     /* Estilo del mensaje */
     .message-container {
         position: fixed;
-        top: 50%;
+        top: 40%;
         left: 50%;
         transform: translate(-50%, -50%);
         z-index: 9999;
@@ -240,6 +240,20 @@
         #text-mp {
             font-size: 0.9em !important;
         }
+        .calendar-day.selected {
+            background-color: #007bff;  /* Asegúrate de que este estilo esté bien definido */
+        }
+
+        .schedule-item.selected-schedule {
+            background-color: #007bff;
+        }
+        .message-container {
+        width: 90%; /* En pantallas pequeñas, el mensaje ocupa el 90% del ancho */
+        font-size: 16px; /* Puedes reducir el tamaño del texto para que se vea mejor */
+        padding: 15px; /* Ajusta el padding para pantallas pequeñas */
+        top: 24%;
+        left: 50%;
+    }
     }
 </style>
 
@@ -432,7 +446,6 @@
                 const clickedDayElement = document.querySelector(`[data-date="${formatDate(day)}"]`);
                 clickedDayElement.classList.add('selected');
 
-                console.log("Fecha seleccionada:", formatDate(day));  // Verifica que la fecha esté bien formateada
                 fetchAvailableTimes(formatDate(day));  // Mostrar los horarios del día seleccionado
                 document.getElementById('schedule-message').textContent = "Horarios disponibles:";
             }
@@ -463,7 +476,6 @@
             // Seleccionar un horario
             function selectSlot(id) {
                 selectedSlot = id;  // Guardar el ID del horario seleccionado
-                console.log("Horario seleccionado con ID:", id);
 
                 const formattedDate = formatDateVerbose(selectedDate);  // Formatear la fecha seleccionada
                 const slotDetails = document.querySelector(`[data-id="${id}"]`).textContent;  // Obtener los detalles del horario
@@ -510,7 +522,7 @@
                         })
                         .then(data => {
                             if (data.success) {
-                                showMessage('success', 'Reserva confirmada correctamente.', true); //alert('Selección confirmada: ' + data.message);
+                                showMessage('success', data.message, true); //alert('Selección confirmada: ' + data.message);
                                 // Deshabilitar la interacción con la página (mostrar overlay)
                                 document.body.style.pointerEvents = 'none'; // Deshabilita todos los clics en la página
                                 setTimeout(() => {
@@ -519,15 +531,19 @@
                                     window.location.href = `/Pagoes/Index?reservaId=${reservaId}`;
                                 }, 670);
                             } else {
-                                showMessage('error', 'Ocurrió un error al procesar la reserva.'); //alert('Error: ' + data.message);
+                                document.body.style.pointerEvents = 'auto';
+                                showMessage('error', data.message); //alert('Error: ' + data.message);
+                                setTimeout(() => {
+                                    hideMessage();
+                                 
+
+                                }, 2000);
                             }
                         })
                         .catch(error => {
-                            alert('Error al confirmar la selección: ' + error.message);
+                            alert('Error al confirmar la selección: ' + error.message); //Cuando no inicio sesion da un error de token
                         });
 
-                } else {
-                    console.log("No se ha seleccionado un horario.");
                 }
             }
 

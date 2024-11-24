@@ -7,6 +7,7 @@
         public string TituloAccionRealizada { get; set; }
         public string NombreUsuario { get; set; }
         public string ApellidoUsuario { get; set; }
+        public int IdUsuario { get; set; }
         public string Seccion {  get; set; }
         public string DescripcionDeAccion { get; set; }
     }

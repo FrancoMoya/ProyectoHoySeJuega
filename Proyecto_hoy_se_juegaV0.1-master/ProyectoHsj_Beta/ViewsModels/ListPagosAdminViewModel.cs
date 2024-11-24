@@ -7,6 +7,7 @@
 		public decimal Monto { get; set; }
 		public string NombreUsuario { get; set; }
         public string ApellidoUsuario { get; set; }
+        public int IdUsuario { get; set; }
         public DateTime FechaCreacionReserva {  get; set; }
         public int IdReserva { get; set; }
         public DateOnly FechaHorario { get; set; }

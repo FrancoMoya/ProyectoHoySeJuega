@@ -23,9 +23,7 @@ namespace ProyectoHsj_Beta.Controllers
             _context = context;
         }
 
-        // View de rol
-
-        //[Permiso("bloc")]
+        [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> Index()
         {
             var roles = await _context.Set<RolesPermisosGetViewModel>()

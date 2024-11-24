@@ -1,17 +1,20 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio - Hoy Se Juega Fútbol 5";
 }
-<style>
-    p {
-        color: aliceblue;
-    }
-</style>
+<head>
+    <title>@ViewData["Title"]</title>
+    <style>
+        p {
+            color: aliceblue;
+        }
+    </style>
+</head>
+
 
 
 <!-- Carrusel -->
 <div id="carouselExample" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3500">
     <div class="carousel-indicators">
-        <link href="c:\users\tiago\source\repos\proyectohsj_alpha\proyectohsj_alpha\wwwroot\css\style_navbar.css" rel="stylesheet" />
         <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
         <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="1" aria-label="Slide 2"></button>
         <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="2" aria-label="Slide 3"></button>
@@ -66,7 +69,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(0, 0, 0, 0.4);
         z-index: 1;
     }
 
@@ -164,13 +167,19 @@
             .whatsapp-link i {
                 margin-right: 5px;
             }
+
+        @@media (max-width: 576px) {
+            .photo-text-section1 {
+                padding: 20px 0; /* Padding de 20px en altura (arriba y abajo) para móviles */
+            }
+        }
     </style>
 </section>
 
 <section class="photo-text-section2">
     <div class="container">
         <div class="row align-items-center">
-            <div class="col-md-6">
+            <div class="col-md-6 order-2 order-md-1">
                 <h2 class="section-title">Grabamos tu partido</h2>
                 <p>
                     📷⚽ Revive cada momento de la acción con las cámaras de
@@ -183,7 +192,7 @@
                     Además, podrás compartir los mejores momentos con tus compañeros y familiares a través de la plataforma digital. Con Beelup, no solo guardas recuerdos, sino que también puedes analizar tu rendimiento y mejorar en cada partido. ¡Haz que cada juego cuente y dale vida a tus mejores momentos con nuestras grabaciones! 📷⚽
                 </p>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 order-1 order-md-2">
                 <img src="~/css/img/beelup.jpeg" alt="Descripción de la foto" class="img-fluid">
             </div>
         </div>
@@ -214,6 +223,11 @@
             font-size: 1.2em;
             line-height: 1.5;
             margin-bottom: 0;
+        }
+        @@media (max-width: 576px) {
+            .photo-text-section2 {
+                padding: 20px 0;  /* Padding de 20px en altura (arriba y abajo) para móviles */
+            }
         }
     </style>
 </section>
