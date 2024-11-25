@@ -233,7 +233,8 @@ namespace ProyectoHsj_Beta.Controllers
                 IdReserva = reservaId,
                 MontoPago = monto
             };
-
+            reserva.IdEstadoReserva = 4;
+            await _context.SaveChangesAsync();
             var preferencia = await _MercadoPagoService.CrearPreferenciaDePago(pago);
 
             // Redirige al usuario al URL de Mercado Pago

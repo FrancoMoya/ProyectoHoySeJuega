@@ -25,10 +25,6 @@ namespace ProyectoHsj_Beta.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [Authorize(Policy = "AdminOnly")]
         public IActionResult Admin_home()

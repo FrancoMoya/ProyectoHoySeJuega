@@ -66,7 +66,19 @@ BEGIN
     SELECT ID_reserva 
     FROM RESERVA 
     WHERE ID_estado_reserva = 1 
-    AND DATEDIFF(MINUTE, Fecha_Reserva, @HoraServidor) >= 6;
+    AND DATEDIFF(SECOND, Fecha_Reserva, @HoraServidor) >= 180; --3m
+END;
+---------
+CREATE PROCEDURE SP_GET_RESERVAS_PAGOENCURSO
+AS
+BEGIN
+    -- Sumamos 3 horas a la hora actual del servidor para corregir la diferencia
+    DECLARE @HoraServidor DATETIME = DATEADD(HOUR, 3, GETDATE());
+
+    SELECT ID_reserva 
+    FROM RESERVA 
+    WHERE ID_estado_reserva = 4 
+    AND DATEDIFF(SECOND, Fecha_Reserva, @HoraServidor) >= 370; -- PENDIENTES + 3m10s = 6m 10s
 END;
 ----------
 CREATE PROCEDURE SP_CANCELAR_RESERVAS

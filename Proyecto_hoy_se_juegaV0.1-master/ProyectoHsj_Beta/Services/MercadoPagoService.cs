@@ -48,15 +48,15 @@ namespace ProyectoHsj_Beta.Services
 
                 BackUrls = new PreferenceBackUrlsRequest
                 {
-                    Success = "https://hsejuega.somee.com/Pagoes/Exito",
+                    Success = "https://hsejuega.somee.com/Pagoes/Exito", 
                     Failure = "https://hsejuega.somee.com/Home/Index",
                     Pending = "https://hsejuega.somee.com/Home/Index"
                 },
                 AutoReturn = "approved",
                 ExternalReference = pago.IdReserva.ToString(),
                 Expires = true,
-                ExpirationDateFrom = DateTime.Now, // Aumenta 3 horas por el servidor
-                ExpirationDateTo = DateTime.Now.AddMinutes(5).AddSeconds(30)
+                ExpirationDateFrom = DateTime.UtcNow,
+                ExpirationDateTo = DateTime.UtcNow.AddMinutes(3)
             };
             
             return await client.CreateAsync(request);

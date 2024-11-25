@@ -220,7 +220,8 @@ INSERT INTO CANCHA (Nombre_Cancha, Ubicacion_Cancha) VALUES
 INSERT INTO ESTADO_RESERVA (Nombre_Estado_Reserva) VALUES 
 ('PENDIENTE'),
 ('CONFIRMADA'),
-('CANCELADA');
+('CANCELADA'),
+('PAGO EN CURSO');
 
 --Aún sin implementar
 --INSERT INTO TITULO_NOTIFICACION (Titulo_Notificacion) VALUES 
