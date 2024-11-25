@@ -249,15 +249,22 @@ namespace ProyectoHsj_Beta.Controllers
         public async Task<IActionResult> Login(LoginVM modelo)
         {
             Usuario? usuario_found = await _hoysejuegacontext.Usuarios
-                                    .Where(u =>
-                                     u.CorreoUsuario == modelo.CorreoUsuario
-                                     ).FirstOrDefaultAsync();
-            if (usuario_found == null || !PasswordHasher.VerifyPassword(modelo.ContraseniaUsuario, usuario_found.ContraseniaUsuario))
+                .FirstOrDefaultAsync(u => u.CorreoUsuario == modelo.CorreoUsuario);
+            if (usuario_found == null)
+            {
+                ViewData["Message"] = "El correo electronico ingresado no está registrado.";
+                return View();
+            }
+            if (usuario_found.Activo == false)
+            {
+                ViewData["Message"] = "Su cuenta ha sido suspendida. Si cree que es un error, por favor contacte al administrador";
+                return View();
+            }
+            if (!PasswordHasher.VerifyPassword(modelo.ContraseniaUsuario, usuario_found.ContraseniaUsuario))
             {
                 ViewData["Message"] = "No se pudo iniciar sesión, por favor revise los datos ingresados.";
                 return View();
             }
-
             if(usuario_found.EmailConfirmed != true)
             {
                 ViewData["Message"] = "Debes confirmar tu correo antes de iniciar sesión.";
@@ -265,8 +272,9 @@ namespace ProyectoHsj_Beta.Controllers
                 return View(modelo);
 
             }
+            usuario_found.UltimaSesion = DateOnly.FromDateTime(DateTime.Now);
+            await _context.SaveChangesAsync();
 
-           
             // Obtener permisos desde el rol del usuario(Se usara para dar las restricciones en base a permisos otorgados)
             var permisos = await _permisoRepository.GetPermisosByRolIdAsync((int)usuario_found.IdRol);
 
@@ -300,22 +308,6 @@ namespace ProyectoHsj_Beta.Controllers
             foreach (var claim in claims)
             {
                 Console.WriteLine($"Claim: {claim.Type}, Value: {claim.Value}");
-            }
-
-            //Guardar ultima sesion (NO FUNCIONAAAA)
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!string.IsNullOrEmpty(userId))
-            {
-                // Buscar al usuario en la base de datos
-                var usuario = await _context.Usuarios.FindAsync(userId);
-
-                if (usuario != null)
-                {
-                    // Actualizar el campo UltimaSesion con la fecha actual
-                    usuario.UltimaSesion = DateOnly.FromDateTime(DateTime.Now);
-                    // Guardar los cambios en la base de datos
-                    await _context.SaveChangesAsync();
-                }
             }
 
             return RedirectToAction("Index", "Home");

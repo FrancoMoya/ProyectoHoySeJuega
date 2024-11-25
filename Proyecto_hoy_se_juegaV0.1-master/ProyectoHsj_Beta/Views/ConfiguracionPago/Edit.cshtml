@@ -63,17 +63,16 @@
     }
 
         .btn-primary:hover {
-            background-color: #5578e2;
+            background-color: #152ead;
         }
 
     .btn-secondary {
-        background-color: #e0e0e0;
         border: none;
         transition: background-color 0.3s ease;
     }
 
         .btn-secondary:hover {
-            background-color: #c9c9c9;
+            background-color: #242323;
         }
 
     .form-check-label {
@@ -102,7 +101,7 @@
 
                         <div class="form-group mb-3">
                             <label asp-for="MontoSena" class="control-label">Monto Seña ($)</label>
-                            <input asp-for="MontoSena" class="form-control" />
+                            <input asp-for="MontoSena" class="form-control" value="@Model.MontoSena.ToString("0")" />
                             <span asp-validation-for="MontoSena" class="text-danger"></span>
                         </div>
 

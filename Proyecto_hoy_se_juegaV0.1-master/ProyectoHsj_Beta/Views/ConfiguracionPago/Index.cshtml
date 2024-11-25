@@ -49,7 +49,7 @@
                     <p><strong>Fecha de Modificación:</strong> @item.FechaModificacion.ToString("HH:mm - dd/MM/yyyy")</p>
                 </div>
                 <div class="card-footer text-center">
-                    <a asp-action="Edit" asp-route-id="@item.IdConfiguracion" class="btn btn-warning btn-sm">Editar</a>
+                    <a asp-action="Edit" asp-route-id="@item.IdConfiguracion" class="btn btn-warning btn-sm custom-edit-button">Editar</a>
                 </div>
             </div>
         </div>
@@ -155,6 +155,9 @@
         .btn {
             padding: 8px 12px;
             font-size: 1.2rem;
+        }
+
+        .custom-edit-button {
             width: 100%;
         }
     }
