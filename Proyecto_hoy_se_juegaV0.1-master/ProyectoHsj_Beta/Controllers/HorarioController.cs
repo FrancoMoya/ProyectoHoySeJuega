@@ -144,7 +144,69 @@ namespace ProyectoHsj_Beta.Controllers
             // Pasar la lista de MonthAvailability a la vista
             return View(monthAvailabilityList);
         }
+        [Authorize(Policy = "AdminOrEmployed")]
+        public IActionResult HorariosPorFecha()
+        {
+            return View();
+        }
+        [Authorize(Policy = "AdminOrEmployed")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ListarHorariosPorFecha(DateOnly Fecha)
+        {
+            var horarios = await _context.HorarioDisponibles
+                .Where(h => h.FechaHorario == Fecha)
+                .Select(h => new
+                {
+                    h.IdHorarioDisponible,
+                    h.FechaHorario,
+                    Horario = $"{h.HoraInicio} - {h.HoraFin}",
+                    h.DisponibleHorario,
+                    TieneReservas = h.Reservas.Count != 0
+                })
+                .ToListAsync();
 
+            return Json(horarios);
+        }
+
+        [Authorize(Policy = "AdminOrEmployed")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CambiarDisponibilidadHorario(int idHorarioDisponible, bool activar)
+        {
+            var horario = await _context.HorarioDisponibles
+                .Include(h => h.Reservas)
+                .FirstOrDefaultAsync(h => h.IdHorarioDisponible == idHorarioDisponible);
+
+            if (horario == null)
+            {
+                return Json(new { success = false, message = "Horario no encontrado." });
+            }
+            // Verificar si hay reservas asociadas en estado CONFIRMADA
+            bool tieneReservaConfirmada = horario.Reservas.Any(r => r.IdEstadoReserva == 2);
+
+            if (activar && tieneReservaConfirmada)
+            {
+                return Json(new { success = false, message = "No ha sido posible activar el horario ya que cuenta con una reserva asociada." });
+            }
+
+            horario.DisponibleHorario = activar;
+            _context.HorarioDisponibles.Update(horario);
+            await _context.SaveChangesAsync();
+
+            string accion = activar ? "ACTIVADO" : "DESACTIVADO";
+            await _auditoriaService.RegistrarAuditoriaAsync(
+                seccion: "Administración",
+                descripcion: $"El usuario ha {accion} el horario con ID: {idHorarioDisponible}.",
+                idAccion: 2
+            );
+
+            string mensaje = activar
+                ? "Horario activado exitosamente."
+                : "Horario desactivado exitosamente.";
+
+            return Json(new { success = true, message = mensaje });
+        }
 
     }
 }

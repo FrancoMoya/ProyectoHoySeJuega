@@ -1,0 +1,247 @@
+﻿@{
+    ViewData["Title"] = "Horarios por Fecha";
+    Layout = "~/Views/Shared/Layout_admin.cshtml";
+}
+
+<style>
+    /* Fondo y estilos generales */
+    body {
+        background-color: dimgray
+    }
+
+    h2 {
+        text-align: center;
+        color: #343a40;
+        margin-bottom: 30px;
+    }
+
+    .card {
+        margin: 20px auto;
+        max-width: 900px;
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        background-color: #74818f;
+    }
+
+        .card.shadow-lg {
+            box-shadow: 3px 8px 5px rgba(0, 0, 0, 0.1) !important; 
+        }
+
+    .card-header {
+        background-color: #007bff;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 15px 15px 0 0;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        color: #ffffff;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
+    .table-responsive {
+        margin-top: 20px;
+        overflow-x: auto;
+    }
+
+    .table {
+        border-collapse: collapse;
+    }
+
+    .table th {
+        background-color: #007bff;
+        color: white;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .table td {
+        text-align: center;
+        padding: 10px;
+    }
+            
+            .table td button {
+                width: 100px; 
+                text-align: center;
+                white-space: nowrap; 
+            }
+
+                .table td button.btn-sm {
+                    padding: 5px; 
+                    font-size: 0.875rem;
+                }
+
+
+    tbody, td, tfoot, th, thead, tr {
+        border-color: #74818f;
+    }
+    /* Horarios activos/inactivos */
+    .activo {
+        background-color: #d4edda; 
+    }
+
+    .inactivo {
+        background-color: #f8d7da; 
+    }
+
+  
+    @@media (max-width: 768px) {
+        .card {
+            margin: 10px;
+        }
+
+        .card-body {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+
+        .table {
+            font-size: 14px;
+        }
+
+        .btn {
+            width: 100% !important;
+            margin-bottom: 10px !important;
+        }
+
+        .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+            padding-right: 0px;
+            padding-left: 0px;
+        }
+
+    }
+</style>
+
+<div class="card shadow-lg">
+    <div class="card-header">
+        <h5>Gestión de Horarios por Fecha</h5>
+    </div>
+    
+    <div class="card-body">
+        <form asp-action="ListarHorariosPorFecha" id="form-listar-horarios" method="post">
+            @Html.AntiForgeryToken()
+            <div class="form-group mt-3">
+                <label for="Fecha">Fecha:</label>
+                <input type="date" class="form-control" id="Fecha" name="Fecha" required />
+            </div>
+            <button type="submit" class="btn btn-primary mt-4">
+                Listar horarios
+                <span id="spinner" class="spinner-border text-light" style="display: none;"></span>
+            </button>
+        </form>
+
+        <div id="mensajes" class="mt-4"></div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover mt-4" id="tabla-horarios" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha</th>
+                        <th>Horario</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#form-listar-horarios").on("submit", function (e) {
+                e.preventDefault();
+                const fecha = $("#Fecha").val();
+                const token = $('input[name="__RequestVerificationToken"]').val();
+                $("#spinner").show(); 
+
+                $.post({
+                    url: '/Horario/ListarHorariosPorFecha',
+                    headers: { 'RequestVerificationToken': token },
+                    data: { Fecha: fecha },
+                    success: function (response) {
+                        const tbody = $("#tabla-horarios tbody");
+                        tbody.empty();
+                        if (response.length === 0) {
+                            $("#tabla-horarios").hide();
+                            $("#mensajes").html('<div class="alert alert-warning">No se han encontrado horarios para la fecha seleccionada.</div>');
+                            setTimeout(function () {
+                                $("#mensajes").html('');
+                            }, 4000);
+                        } else {
+                            $("#tabla-horarios").show();
+                            response.forEach(horario => {
+                                const disponibilidad = horario.disponibleHorario ? `<i class="fas fa-check" style="color: green;"></i>` : `<i class="fas fa-times" style="color: red;"></i>`;
+                                const accion = horario.disponibleHorario
+                                    ? `<button class="btn btn-danger btn-sm" onclick="cambiarDisponibilidad(${horario.idHorarioDisponible}, false)">Desactivar</button>`
+                                    : `<button class="btn btn-success btn-sm" onclick="cambiarDisponibilidad(${horario.idHorarioDisponible}, true)">Activar</button>`;
+
+                                const estadoClase = horario.disponibleHorario ? "activo" : "inactivo";
+
+                                tbody.append(`
+                                    <tr class="${estadoClase}">
+                                        <td>${horario.idHorarioDisponible}</td>
+                                        <td>${horario.fechaHorario}</td>
+                                        <td>${horario.horario}</td>
+                                        <td>${disponibilidad}</td>
+                                        <td>${accion}</td>
+                                    </tr>
+                                `);
+                            });
+                        }
+                        $("#spinner").hide();
+
+                    },
+                    error: function () {
+                        $("#mensajes").html('<div class="alert alert-danger">Ocurrió un error al cargar los horarios.</div>');
+                        $("#spinner").hide();
+                        setTimeout(function () {
+                            $("#mensajes").html('');
+                        }, 5000);
+                    }
+                });
+            });
+        });
+
+        function cambiarDisponibilidad(idHorarioDisponible, activar) {
+            const token = $('input[name="__RequestVerificationToken"]').val();
+            $.post({
+                url: '/Horario/CambiarDisponibilidadHorario',
+                headers: { 'RequestVerificationToken': token },
+                data: { idHorarioDisponible, activar },
+                success: function (response) {
+                    $("#mensajes").html(`<div class="alert ${response.success ? 'alert-success' : 'alert-danger'}">${response.message}</div>`);
+                    if (response.success) {
+                        $("#form-listar-horarios").submit(); // Refresca la tabla
+                    }
+                    setTimeout(function () {
+                        $("#mensajes").html('');
+                    }, 3500);
+                }
+            });
+        }
+    </script>
+}
