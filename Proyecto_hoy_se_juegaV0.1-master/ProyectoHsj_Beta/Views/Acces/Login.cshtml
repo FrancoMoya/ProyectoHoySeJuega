@@ -5,13 +5,14 @@
 </head>
 <body>
     <div class="container">
-        <section> class="d-flex align-items-center justify-content-center min-vh-100"
-                
-            <div class="row d-flex justify-content-center align-items-center w-100">
+        <section class="d-flex align-items-center justify-content-center">
+
+            <div class="row d-flex justify-content-center w-100">
                 <div class="col-12 col-md-10 col-lg-8 col-xl-6">
                     <div class="card" style="border-radius: 15px;">
                         <div class="card-body p-5">
                             <h2 class="text-uppercase text-center mb-5">Iniciar Sesión</h2>
+                            
 
                             <form asp-controller="Acces" asp-action="Login" method="post">
                                 <div class="form-outline mb-4">
@@ -50,11 +51,11 @@
                                 </div>*@
 
                                 <p class="text-center text-muted mt-4 mb-0">
-                                    ¿No tienes una cuenta? <a class="fw-bold text-body" asp-controller="Acces" asp-action="Signup"><u>Registrar aquí</u></a>
+                                    ¿No tienes una cuenta? <a class="fw-bold text-body" asp-controller="Acces" asp-action="Signup"><br><u>Registrarse</u></a>
                                 </p>
 
                                 <p class="text-center text-muted mt-2 mb-0">
-                                    ¿Olvidaste tu contraseña? <a class="fw-bold text-body" asp-controller="Account" asp-action="ForgotPassword"><u>Recuperar contraseña</u></a>
+                                    ¿Olvidaste tu contraseña? <a class="fw-bold text-body" asp-controller="Account" asp-action="ForgotPassword"><br><u>Recuperar contraseña</u></a>
                                 </p>
                             </form>
                         </div>
@@ -84,6 +85,24 @@
                 .google-login-box a:hover {
                     text-decoration: underline;
                 }
+
+        @@media (max-width: 768px) {
+            .p-5 {
+                padding-top: 25px !important;
+                padding-bottom: 25px !important;
+                padding-right: 10px !important;
+                padding-left: 10px !important;
+            }
+
+            .form-control {
+                width: 93%;
+            }
+
+            .mb-4 {
+                display: flex;
+                justify-content: center;
+            }
+        }
     </style>
 </body>
 </html>

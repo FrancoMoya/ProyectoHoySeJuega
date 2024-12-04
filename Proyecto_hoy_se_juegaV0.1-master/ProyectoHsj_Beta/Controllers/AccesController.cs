@@ -176,9 +176,6 @@ namespace ProyectoHsj_Beta.Controllers
                 ContraseniaUsuario = hashedPassword,
                 EmailConfirmed = false, // por defecto lo dejamos en falso, para poder gestionar la validacion
                 EmailConfirmationToken = Guid.NewGuid().ToString(), // Obtencion del token jiji
-                // Modificar el valor a (2/3) si es la primera vez ->
-                //  para poder tener acceso al panel de administracion
-                //  2 = admin / 3 = Empleado
                 IdRol = (1),
             };
             await _hoysejuegacontext.Usuarios.AddAsync(usuario);
@@ -293,11 +290,15 @@ namespace ProyectoHsj_Beta.Controllers
             {
                 claims.Add(new Claim("Permiso", permiso.NombrePermiso)); // Tambien se puede colocar idPermiso (A preferencia)
             }
+            // Crear la identidad y las propiedades de autenticación
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             AuthenticationProperties properties = new AuthenticationProperties()
             {
+                IsPersistent = true,
+                ExpiresUtc = DateTime.UtcNow.AddDays(1),
                 AllowRefresh = true,
             };
+            //iniciar sesión con cookies
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
@@ -305,10 +306,6 @@ namespace ProyectoHsj_Beta.Controllers
 
                 );
 
-            foreach (var claim in claims)
-            {
-                Console.WriteLine($"Claim: {claim.Type}, Value: {claim.Value}");
-            }
 
             return RedirectToAction("Index", "Home");
         }

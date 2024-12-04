@@ -20,6 +20,31 @@
         .bodysignup{
             background-color: #1f2124;
         }
+
+        .p-5 {
+            padding-top: 2rem !important;
+            padding-bottom: 2rem !important;
+            padding-right: 1rem !important;
+            padding-left: 1rem !important;
+        }
+
+        @@media (max-width: 768px) {
+            .p-5 {
+                padding-top: 25px !important;
+                padding-bottom: 25px !important;
+                padding-right: 10px !important;
+                padding-left: 10px !important;
+            }
+
+            .form-control {
+                width: 93%;
+            }
+
+            .mb-4 {
+                display: flex;
+                justify-content: center;
+            }
+        }
         
     </style>
 </head>
@@ -33,7 +58,7 @@
                 <!-- Tarjeta de registro -->
                 <div class="card" style="border-radius: 15px;">
                     <div class="card-body p-5">
-                        <h2 class="text-uppercase text-center mb-5">Crear cuenta de usuario</h2>
+                        <h2 class="text-uppercase text-center mb-5">REGISTRARSE</h2>
 
                         <form asp-controller="Acces" asp-action="Signup" method="post">
                             <div class="row">
@@ -85,7 +110,7 @@
                                                    placeholder="Contraseña" required asp-for="ContraseniaUsuario" id="passwordField1" />
                                             <button type="button" onclick="togglePassword('passwordField1', 'toggleIcon1')"
                                                     class="btn position-absolute end-0 top-50 translate-middle-y"
-                                                    style="border: none; background: transparent; right: 10px;">
+                                                    style="border: none; background: transparent; right: 10px !important">
                                                 <i class="fas fa-eye" id="toggleIcon1"></i>
                                             </button>
                                         </div>
@@ -95,10 +120,10 @@
                                     <div class="col-md-6">
                                         <div class="form-outline mb-4 position-relative">
                                             <input type="password" class="form-control form-control-user"
-                                                   placeholder="Confirme contraseña" required asp-for="ConfirmarContraseña" id="passwordField2" />
+                                                   placeholder="Confirmar contraseña" required asp-for="ConfirmarContraseña" id="passwordField2" />
                                             <button type="button" onclick="togglePassword('passwordField2', 'toggleIcon2')"
                                                     class="btn position-absolute end-0 top-50 translate-middle-y"
-                                                    style="border: none; background: transparent; right: 10px;">
+                                                    style="border: none; background: transparent; right: 10px !important;">
                                                 <i class="fas fa-eye" id="toggleIcon2"></i>
                                             </button>
                                         </div>
@@ -147,7 +172,7 @@
 
                             <!-- Enlace a inicio de sesión -->
                             <p class="text-center text-muted mt-3 mb-0">
-                                ¿Ya tienes una cuenta? <a class="fw-bold text-body" asp-controller="Acces" asp-action="Login"><u>Inicia sesión aquí</u></a>
+                                    ¿Ya tienes una cuenta? <a class="fw-bold text-body" asp-controller="Acces" asp-action="Login"><br><u>Ir a Iniciar sesión</u></a>
                             </p>
                         </form>
                     </div>

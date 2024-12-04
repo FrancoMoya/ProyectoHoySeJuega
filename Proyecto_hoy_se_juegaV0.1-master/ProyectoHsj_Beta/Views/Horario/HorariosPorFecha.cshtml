@@ -39,6 +39,7 @@
 
     .card-body {
         padding: 20px;
+        padding-top: 6px;
     }
 
     .form-group label {
@@ -107,9 +108,13 @@
             margin: 10px;
         }
 
-        .card-body {
+        .card-header {
             padding-top: 10px;
             padding-bottom: 10px;
+        }
+        .card-body {
+            padding-top: 6px;
+            padding-bottom: 10px !important;
             padding-right: 5px;
             padding-left: 5px;
         }
@@ -118,16 +123,38 @@
             font-size: 14px;
         }
 
-        .btn {
-            width: 100% !important;
-            margin-bottom: 10px !important;
-        }
-
         .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
             padding-right: 0px;
             padding-left: 0px;
+            
         }
 
+        .list-button {
+            width: 100%;
+            margin-bottom: 8px !important;
+            margin-top: 8px !important;
+            padding-top: 7px;
+            padding-bottom: 7px;
+        }
+
+        .list-button2 {
+            width: 100%;
+            margin-bottom: 20px !important;
+        }
+
+        .table td {
+            text-align: center;
+            padding: 3px;
+        }
+        .table td button {
+            width: 70px;
+            margin-top: 4px;
+            margin-bottom: auto;
+        }
+
+        .mt-3 {
+            margin-top: 0px !important;
+        }
     }
 </style>
 
@@ -143,7 +170,7 @@
                 <label for="Fecha">Fecha:</label>
                 <input type="date" class="form-control" id="Fecha" name="Fecha" required />
             </div>
-            <button type="submit" class="btn btn-primary mt-4">
+            <button type="submit" class="btn btn-primary mt-4 list-button">
                 Listar horarios
                 <span id="spinner" class="spinner-border text-light" style="display: none;"></span>
             </button>
@@ -196,8 +223,8 @@
                             response.forEach(horario => {
                                 const disponibilidad = horario.disponibleHorario ? `<i class="fas fa-check" style="color: green;"></i>` : `<i class="fas fa-times" style="color: red;"></i>`;
                                 const accion = horario.disponibleHorario
-                                    ? `<button class="btn btn-danger btn-sm" onclick="cambiarDisponibilidad(${horario.idHorarioDisponible}, false)">Desactivar</button>`
-                                    : `<button class="btn btn-success btn-sm" onclick="cambiarDisponibilidad(${horario.idHorarioDisponible}, true)">Activar</button>`;
+                                    ? `<button class="btn btn-danger btn-sm list-button2" onclick="cambiarDisponibilidad(${horario.idHorarioDisponible}, false)">Desactivar</button>`
+                                    : `<button class="btn btn-success btn-sm list-button2" onclick="cambiarDisponibilidad(${horario.idHorarioDisponible}, true)">Activar</button>`;
 
                                 const estadoClase = horario.disponibleHorario ? "activo" : "inactivo";
 

@@ -43,21 +43,27 @@ namespace ProyectoHsj_Beta.Controllers
         [HttpPost]
         public async Task<IActionResult> CancelarReserva(int id)
         {
-            var reserva = _context.Reservas.Find(id);
-            Console.WriteLine("tenes la id reserva :" + id);
-            if(reserva == null)
+            var reserva = await _context.Reservas.FindAsync(id);
+            if(reserva != null)
             {
-                return NotFound();
+                var horario = await _context.HorarioDisponibles
+                                             .FirstOrDefaultAsync(h => h.IdHorarioDisponible == reserva.IdHorarioDisponible);
+                var estado = reserva.IdEstadoReserva;
+                if((estado != null) && (horario != null))
+                {
+                    var descripcionAuditoria = $"El usuario ha cancelado una reserva. Detalles de la reserva, ID: {reserva.IdReserva}.";
+                    horario.DisponibleHorario = true;
+                    reserva.IdEstadoReserva = 3;  // Estado: Cancelada
+                    await _context.SaveChangesAsync();
+                    await _auditoriaService.RegistrarAuditoriaAsync(
+                    seccion: "Administración",
+                    descripcion: descripcionAuditoria,
+                    idAccion: 2);
+                }
+                
             }
-            var descripcionAuditoria = $"El usuario ha cancelado una reserva. Detalles de la reserva, ID: {reserva.IdReserva}.";
-            reserva.IdEstadoReserva = 3;  // Estado: Cancelada
-            _context.Reservas.Update(reserva); // Cambiar el estado
-            _context.SaveChanges();
-            await _auditoriaService.RegistrarAuditoriaAsync(
-            seccion: "Administración",
-            descripcion: descripcionAuditoria,
-            idAccion: 2);
-            return Ok();
+            
+            return RedirectToAction(nameof(Index));
         }
 
         //ELIMINAR REGISTROS

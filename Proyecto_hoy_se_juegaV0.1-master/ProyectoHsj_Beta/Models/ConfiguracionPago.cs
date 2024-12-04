@@ -13,6 +13,6 @@ public partial class ConfiguracionPago
 
     public DateTime FechaModificacion { get; set; }
 
-    [Range(100000000, 999999999, ErrorMessage = "El campo {0} debe ser un número de teléfono válido.")]
+    [Range(1000000000, 9999999999, ErrorMessage = "El campo {0} debe ser un número de teléfono válido.")]
     public int? CelularCancelaciones { get; set; }
 }

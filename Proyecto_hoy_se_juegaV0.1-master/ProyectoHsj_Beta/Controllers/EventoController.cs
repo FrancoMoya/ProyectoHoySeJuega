@@ -90,7 +90,7 @@ namespace ProyectoHsj_Beta.Controllers
                     idAccion: 2);
                 }
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(IndexCalendar));
         }
 
         [Authorize(Policy = "AdminOrEmployed")]

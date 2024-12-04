@@ -176,6 +176,7 @@ namespace ProyectoHsj_Beta.Controllers
         {
             var horario = await _context.HorarioDisponibles
                 .Include(h => h.Reservas)
+                .Include(h => h.Eventos)
                 .FirstOrDefaultAsync(h => h.IdHorarioDisponible == idHorarioDisponible);
 
             if (horario == null)
@@ -183,11 +184,16 @@ namespace ProyectoHsj_Beta.Controllers
                 return Json(new { success = false, message = "Horario no encontrado." });
             }
             // Verificar si hay reservas asociadas en estado CONFIRMADA
-            bool tieneReservaConfirmada = horario.Reservas.Any(r => r.IdEstadoReserva == 2);
+            bool TieneReservaConfirmada = horario.Reservas.Any(r => r.IdEstadoReserva != 3);
+            bool TieneEventoConfirmado = horario.Eventos.Any(e => e.IdEstadoReserva != 3);
 
-            if (activar && tieneReservaConfirmada)
+            if (activar && TieneReservaConfirmada)
             {
-                return Json(new { success = false, message = "No ha sido posible activar el horario ya que cuenta con una reserva asociada." });
+                return Json(new { success = false, message = "No ha sido posible activar el horario ya que cuenta con una RESERVA CLIENTE asociada." });
+            }
+            if (activar && TieneEventoConfirmado)
+            {
+                return Json(new { success = false, message = "No ha sido posible activar el horario ya que cuenta con una RESERVA ADMIN asociada." });
             }
 
             horario.DisponibleHorario = activar;
