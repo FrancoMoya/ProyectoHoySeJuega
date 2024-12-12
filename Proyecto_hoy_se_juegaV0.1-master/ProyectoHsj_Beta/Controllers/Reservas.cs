@@ -76,7 +76,14 @@ namespace ProyectoHsj_Beta.Controllers
                 {
                     RedirectToAction("Login", "Acces");
                 }
-
+                int user = int.Parse(userId);
+                var tieneReservasPendientes = await _context.Reservas
+                    .Where(r => r.IdUsuario == user && r.IdEstadoReserva == 1)
+                    .ToListAsync();
+                if (tieneReservasPendientes.Count > 0)
+                {
+                    return Json(new { success = false, message = "Usted cuenta con una reserva pendiente de pago. Por favor complete el pago de la misma o vuelva a intentarlo dentro de unos minutos." });
+                }
                 // Verifica que el objeto request no sea nulo y que el IdHorarioDisponible sea válido
                 if (request != null && request.IdHorarioDisponible > 0)
                 {

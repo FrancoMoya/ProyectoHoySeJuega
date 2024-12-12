@@ -269,7 +269,7 @@ namespace ProyectoHsj_Beta.Controllers
                 return View(modelo);
 
             }
-            usuario_found.UltimaSesion = DateOnly.FromDateTime(DateTime.Now);
+            usuario_found.UltimaSesion = DateOnly.FromDateTime(DateTime.Now.AddHours(3));
             await _context.SaveChangesAsync();
 
             // Obtener permisos desde el rol del usuario(Se usara para dar las restricciones en base a permisos otorgados)
@@ -295,7 +295,7 @@ namespace ProyectoHsj_Beta.Controllers
             AuthenticationProperties properties = new AuthenticationProperties()
             {
                 IsPersistent = true,
-                ExpiresUtc = DateTime.UtcNow.AddDays(1),
+                ExpiresUtc = DateTime.UtcNow.AddDays(2),
                 AllowRefresh = true,
             };
             //iniciar sesión con cookies

@@ -42,7 +42,7 @@ builder.Services.AddAuthentication(options =>
   {
       options.LoginPath = "/Acces/Login"; //Ruta de la página de inicio de sesión
       options.AccessDeniedPath = "/Acces/AccessDenied"; // Ruta de la página de acceso denegado
-      options.ExpireTimeSpan = TimeSpan.FromHours(24);// Tiempo de expiración de la cookie
+      options.ExpireTimeSpan = TimeSpan.FromDays(2);// Tiempo de expiración de la cookie
       options.SlidingExpiration = true; // La cookie se renovará automáticamente si el usuario sigue activo
       options.Cookie.Domain = null; // Define el dominio de la cookie
       options.Cookie.SameSite = SameSiteMode.None; // Permite que la cookie sea enviada en solicitudes entre sitios (necesario si la autenticación es cross-site, como en un subdominio diferente)

@@ -159,8 +159,8 @@ namespace ProyectoHsj_Beta.Controllers
                 .Select(h => new
                 {
                     h.IdHorarioDisponible,
-                    h.FechaHorario,
-                    Horario = $"{h.HoraInicio} - {h.HoraFin}",
+                    FechaHorario = h.FechaHorario.ToString("dd-MM-yyyy"),
+                    Horario = $"{h.HoraInicio.ToString("HH:mm")} - {h.HoraFin.ToString("HH:mm")}",
                     h.DisponibleHorario,
                     TieneReservas = h.Reservas.Count != 0
                 })

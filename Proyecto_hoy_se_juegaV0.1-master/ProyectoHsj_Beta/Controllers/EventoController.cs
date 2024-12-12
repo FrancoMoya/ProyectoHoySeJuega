@@ -140,8 +140,8 @@ namespace ProyectoHsj_Beta.Controllers
                     await _context.SaveChangesAsync();
                 }
 
-                // Si todo va bien, redirigir a otra vista (por ejemplo, la lista de roles)
-                return RedirectToAction("Index", "Evento");
+
+                return RedirectToAction(nameof(IndexCalendar));
             }
             // Si el modelo no es válido, regresa a la vista de creación con errores
             return View(model);

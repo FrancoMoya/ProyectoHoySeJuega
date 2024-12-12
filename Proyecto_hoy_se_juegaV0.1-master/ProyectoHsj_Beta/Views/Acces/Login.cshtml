@@ -33,7 +33,7 @@
 
                                 @if (ViewData["ShowResendLink"] != null && (bool)ViewData["ShowResendLink"])
                                 {
-                                    <p class="text-center mt-3">¿No has confirmado tu correo? <a href="@Url.Action("resendEmail", "Acces", new { email = Model.CorreoUsuario })">Reenviar correo de confirmación</a></p>
+                                    <p class="text-center mt-3">¿No has confirmado tu correo? <br> <a href="@Url.Action("resendEmail", "Acces", new { email = Model.CorreoUsuario })">Reenviar correo de confirmación</a></p>
                                 }
 
                                 @if (ViewData["Message"] != null)

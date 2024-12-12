@@ -501,7 +501,7 @@
 
             // Confirmar selección con solo el ID del horario en el cuerpo
             function confirmSelection() {
-                console.log("Confirmar selección: ", selectedSlot);
+                
                 if (selectedSlot) {
                     fetch('/Reservas/ReservaCreate', {
                         method: 'POST',
@@ -537,11 +537,11 @@
                                     hideMessage();
                                  
 
-                                }, 2000);
+                                }, 4500);
                             }
                         })
                         .catch(error => {
-                            alert('Error al confirmar la selección: ' + error.message); //Cuando no inicio sesion da un error de token
+                            alert('Error al confirmar la selección: ' + error.message); 
                         });
 
                 }
