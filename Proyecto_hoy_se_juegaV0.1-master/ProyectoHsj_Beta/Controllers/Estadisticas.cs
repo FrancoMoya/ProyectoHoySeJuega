@@ -34,7 +34,7 @@ namespace ProyectoHsj_Beta.Controllers
                 .CountAsync();
 
             int usuariosAutenticadosMensual = await _context.Usuarios
-                .Where(u => u.FechaRegistro >= primerDiaDelMes && u.FechaRegistro <= ultimoDiaDelMes)
+                .Where(u => u.FechaRegistro >= primerDiaDelMes && u.EmailConfirmed == true && u.FechaRegistro <= ultimoDiaDelMes)
                 .CountAsync();
 
             // RESERVAS

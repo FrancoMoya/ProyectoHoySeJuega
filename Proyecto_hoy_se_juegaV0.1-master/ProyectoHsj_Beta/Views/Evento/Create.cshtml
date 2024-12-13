@@ -254,7 +254,7 @@
                         <div class="form-group">
                             <label for="TelefonoClienteEvento">Celular del Cliente:</label>
                             <span style="color:red">*</span>
-                            <input type="text" id="TelefonoClienteEvento" name="TelefonoClienteEvento" class="form-control" required>
+                            <input type="text" id="TelefonoClienteEvento" name="TelefonoClienteEvento" class="form-control" required maxlength="12" title="El número debe tener 10 dígitos">
                         </div>
                         <!-- Campo oculto para el ID del horario seleccionado -->
                         <input type="hidden" id="IdHorarioDisponible" name="IdHorarioDisponible">
@@ -282,6 +282,33 @@
             let currentDate = new Date();  // Fecha inicial, que será el lunes de la semana actual
             let selectedDate = null;
             let selectedSlot = null;
+            const telefonoInput = document.getElementById("TelefonoClienteEvento");
+
+            telefonoInput.value = "11-";
+            // Formatear el número mientras se escribe
+            telefonoInput.addEventListener("input", function () {
+                let valor = telefonoInput.value.replace(/\D/g, ""); // Quitar caracteres no numéricos
+                if (!valor.startsWith("11")) {
+                    valor = "11" + valor.slice(2); // Forzar el prefijo "11"
+                }
+                valor = valor.slice(0, 10); // Limitar a 10 dígitos
+
+                // Agregar guiones al número
+                if (valor.length > 2) {
+                    valor = valor.slice(0, 2) + "-" + valor.slice(2);
+                }
+                if (valor.length > 7) {
+                    valor = valor.slice(0, 7) + "-" + valor.slice(7);
+                }
+
+                telefonoInput.value = valor;
+            });
+
+            // Quitar los guiones antes de enviar el formulario
+            const form = document.getElementById("reservation-form");
+            form.addEventListener("submit", function () {
+                telefonoInput.value = telefonoInput.value.replace(/-/g, ""); // Eliminar los guiones
+            });
 
             // Función para formatear la fecha en formato YYYY-MM-DD (sin incluir hora)
             function formatDate(date) {

@@ -375,7 +375,7 @@ BEGIN
             WHEN 4 THEN 'Jueves'
             WHEN 5 THEN 'Viernes'
             WHEN 6 THEN 'Sábado'
-            WHEN 7 THEN 'Domingo'
+            WHEN 0 THEN 'Domingo'
             ELSE 'Desconocido'
         END AS DiaSemana,
         FechaInicio AS FechaInicio,

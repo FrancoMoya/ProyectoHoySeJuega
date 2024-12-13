@@ -74,7 +74,6 @@ namespace ProyectoHsj_alpha.Controllers
         }
 
         //Renderiza la vista para resetear o restrablecer/cambiar la contraseña method : GET
-        [Authorize(Policy = "UserOnly")]
         public IActionResult ResetPassword(string token)
         {
             if (string.IsNullOrEmpty(token))

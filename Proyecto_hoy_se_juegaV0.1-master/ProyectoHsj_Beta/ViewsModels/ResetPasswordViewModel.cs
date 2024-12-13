@@ -13,7 +13,7 @@ namespace ProyectoHsj_Beta.ViewsModels
 
         [Required]
         [DataType(DataType.Password)]
-        [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+        [Compare("NewPassword", ErrorMessage = "Las contraseñas ingresadas no coinciden.")]
         public string? ConfirmPassword { get; set; }
     }
 }

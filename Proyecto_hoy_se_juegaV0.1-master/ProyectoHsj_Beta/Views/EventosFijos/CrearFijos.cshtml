@@ -16,7 +16,7 @@
         </button>
     </div>
 }
-<form asp-action="CrearFijos" method="post">
+<form id="reservation-form" asp-action="CrearFijos" method="post">
     
     <div class="card p-4 mb-4">
         <div class="form-group">
@@ -165,6 +165,7 @@
             const yyyy = today.getFullYear();
             const mm = String(today.getMonth() + 1).padStart(2, '0');  // Meses de 0 a 11
             const dd = String(today.getDate()).padStart(2, '0');  // Día del mes
+            const telefonoInput = document.getElementById("TelefonoCliente");
 
             // Formatear la fecha en formato YYYY-MM-DD
             const formattedDate = `${yyyy}-${mm}-${dd}`;
@@ -185,6 +186,43 @@
 
             // Colocamos las horas generadas en el campo select
             horaInicioField.innerHTML = horasDisponibles;
+
+            // Inicializar el campo con "11-"
+            telefonoInput.value = "11-";
+
+            // Evitar eliminar "11-"
+            telefonoInput.addEventListener("keydown", function (event) {
+                // Prevenir retroceso o borrar cuando el cursor está dentro del prefijo "11-"
+                const cursorPosition = telefonoInput.selectionStart;
+                if ((event.key === "Backspace" || event.key === "Delete") && cursorPosition <= 3) {
+                    event.preventDefault();
+                }
+            });
+
+            // Formatear el número mientras se escribe
+            telefonoInput.addEventListener("input", function () {
+                let valor = telefonoInput.value.replace(/\D/g, ""); // Quitar caracteres no numéricos
+                if (!valor.startsWith("11")) {
+                    valor = "11" + valor.slice(2); // Forzar el prefijo "11"
+                }
+                valor = valor.slice(0, 10); // Limitar a 10 dígitos
+
+                // Agregar guiones al número
+                if (valor.length > 2) {
+                    valor = valor.slice(0, 2) + "-" + valor.slice(2);
+                }
+                if (valor.length > 7) {
+                    valor = valor.slice(0, 7) + "-" + valor.slice(7);
+                }
+
+                telefonoInput.value = valor;
+            });
+
+            // Quitar los guiones antes de enviar el formulario
+            const form = document.getElementById("reservation-form");
+            form.addEventListener("submit", function () {
+                telefonoInput.value = telefonoInput.value.replace(/-/g, ""); // Eliminar los guiones
+            });
         });
     </script>
 }

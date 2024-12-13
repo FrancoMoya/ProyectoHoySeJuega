@@ -7,6 +7,7 @@ using FluentEmail.Smtp;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using ProyectoHsj_Beta.Repositories;
 using ProyectoHsj_Beta.Services;
+using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -66,6 +67,14 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AdminOrEmployed", policy =>
        policy.RequireRole("2", "3")); // Admin (2) y Employed (3)
 });
+
+// Configurar la cultura global
+var cultureInfo = new CultureInfo("es-ES")
+{
+    DateTimeFormat = { ShortDatePattern = "dd-MM-yyyy", ShortTimePattern = "HH:mm" }
+};
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 builder.Services.AddScoped<MercadoPagoService>();
 

@@ -60,7 +60,7 @@
                     <div class="card-body p-5">
                         <h2 class="text-uppercase text-center mb-5">REGISTRARSE</h2>
 
-                        <form asp-controller="Acces" asp-action="Signup" method="post">
+                            <form id="signup-form" asp-controller="Acces" asp-action="Signup" method="post">
                             <div class="row">
                                 <!-- Nombre completo -->
                                     <div class="col-md-6">
@@ -95,9 +95,9 @@
                                 <!-- Número de teléfono-->
                                     <div class="col-md-6">
                                         <div class="form-outline mb-4">
-                                            <input type="tel" class="form-control form-control-user no-arrows"
+                                            <input type="tel" id="TelefonoCliente" class="form-control form-control-user no-arrows"
                                                    placeholder="Número de celular" required asp-for="TelefonoUsuario"
-                                                   pattern="^\d{10}$" maxlength="10" title="El número debe tener 10 dígitos" />
+                                                   maxlength="12" title="El número debe tener 10 dígitos" />
                                         </div>
                                     </div>
                             </div>
@@ -181,6 +181,47 @@
         </div>
     </section>
 </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const telefonoInput = document.getElementById("TelefonoCliente");
 
+            // Inicializar el campo con "11-"
+            telefonoInput.value = "11-";
+
+            // Evitar eliminar "11-"
+            telefonoInput.addEventListener("keydown", function (event) {
+                // Prevenir retroceso o borrar cuando el cursor está dentro del prefijo "11-"
+                const cursorPosition = telefonoInput.selectionStart;
+                if ((event.key === "Backspace" || event.key === "Delete") && cursorPosition <= 3) {
+                    event.preventDefault();
+                }
+            });
+
+            // Formatear el número mientras se escribe
+            telefonoInput.addEventListener("input", function () {
+                let valor = telefonoInput.value.replace(/\D/g, ""); // Quitar caracteres no numéricos
+                if (!valor.startsWith("11")) {
+                    valor = "11" + valor.slice(2); // Forzar el prefijo "11"
+                }
+                valor = valor.slice(0, 10); // Limitar a 10 dígitos
+
+                // Agregar guiones al número
+                if (valor.length > 2) {
+                    valor = valor.slice(0, 2) + "-" + valor.slice(2);
+                }
+                if (valor.length > 7) {
+                    valor = valor.slice(0, 7) + "-" + valor.slice(7);
+                }
+
+                telefonoInput.value = valor;
+            });
+
+            // Quitar los guiones antes de enviar el formulario
+            const form = document.getElementById("signup-form");
+            form.addEventListener("submit", function () {
+                telefonoInput.value = telefonoInput.value.replace(/-/g, ""); // Eliminar los guiones
+            });
+        });
+    </script>
 </body>
 </html>
